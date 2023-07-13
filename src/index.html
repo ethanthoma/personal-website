@@ -12,12 +12,12 @@
                 <h1, class="title-header">Welcome to My Website</h1>
 
 		<div id="tabs" hx-target="#tab-contents" _="on htmx:afterOnLoad take .selected for event.target">
-			<a hx-get="/fragments/tab1.html" class="selected">Tab 1</a>
-			<a hx-get="/fragments/tab2.html">Tab 2</a>
-			<a hx-get="/fragments/tab3.html">Tab 3</a>
+			<a hx-get="/fragments/blog.html" class="selected">Blog</a>
+			<a hx-get="/fragments/resume.html">Resume</a>
+			<a hx-get="/fragments/portfolio.html">Portfolio</a>
 		</div>
 
-		<div id="tab-contents" hx-get="/fragments/tab1.html" hx-trigger="load"></div>
+		<div id="tab-contents" hx-get="/fragments/blog.html" hx-trigger="load"></div>
         </body>
 </html>
 

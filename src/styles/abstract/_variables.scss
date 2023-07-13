@@ -1,9 +1,7 @@
 // Colour scheme
-$theme: 'rose-pine';
-
-$schemes: (
-	rose-pine-dawn: (
-		base: hsl(32deg, 57%, 95%),
-		text: hsl(248deg, 19%, 40%),
-	)
+$rose-pine-dawn: (
+	base: hsl(32deg, 57%, 95%),
+	text: hsl(248deg, 19%, 40%),
 );
+
+$theme: $rose-pine-dawn;

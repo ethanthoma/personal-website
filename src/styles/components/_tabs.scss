@@ -1,0 +1,30 @@
+#tabs {
+	display: flex;
+	align-items: flex-start;
+	background-color: lightgray;
+}
+
+#tabs a {
+	flex: 1;
+	text-align: center;
+	padding: 10px;
+	color: black;
+	text-decoration: none;
+	transition: background-color 0.3s;
+}
+
+#tabs a.selected {
+	background-color: black;
+	color: white;
+}
+
+#tab-contents {
+	display: flex;
+	overflow-x: auto;
+	transition: transform 0.3s;
+}
+
+#tab-contents > * {
+	flex: 0 0 100%;
+	width: 100%;
+}

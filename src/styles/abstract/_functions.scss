@@ -1,0 +1,6 @@
+@use 'variables' as *;
+
+// Define a function to get the color value from the theme
+@function get-color($property) {
+	@return map-get($theme, $property);
+}

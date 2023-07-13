@@ -67,4 +67,9 @@ find "$src_dir" -type f -name '*.scss' -print0 | while IFS= read -r -d '' file; 
 done
 echo "Done"
 
+# Delete files that no longer exist in source directory
+echo "Deleting obsolete files..."
+rsync -r --delete --exclude "*.scss" --exclude "*/" "$src_dir" "$dist_dir"
+echo "Done"
+
 echo "Build complete!"
