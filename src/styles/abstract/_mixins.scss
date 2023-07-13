@@ -1,0 +1,6 @@
+@use 'variables' as *;
+
+@mixin color-scheme() {
+	background-color: map-get($schemes, $theme)['base'];
+	color: map-get($schemes, $theme)['text'];
+}

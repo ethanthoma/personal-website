@@ -1,0 +1,7 @@
+# .gitignore
+
+# build results
+dist/
+
+# 3rd part libraries
+vendor/
