@@ -1,30 +1,17 @@
 #tabs {
-	display: flex;
-	align-items: flex-start;
-	background-color: lightgray;
+	border-bottom: solid 3px #eee;
 }
 
-#tabs a {
-	flex: 1;
-	text-align: center;
-	padding: 10px;
-	color: black;
-	text-decoration: none;
-	transition: background-color 0.3s;
+#tabs > a {
+	display: inline-block;
+	padding: 0.5em 1em;
+	cursor:pointer;
 }
 
-#tabs a.selected {
-	background-color: black;
-	color: white;
+#tabs > a.selected {
+	background-color: #eee;
 }
 
 #tab-contents {
-	display: flex;
-	overflow-x: auto;
-	transition: transform 0.3s;
-}
-
-#tab-contents > * {
-	flex: 0 0 100%;
-	width: 100%;
+	padding:1em;
 }

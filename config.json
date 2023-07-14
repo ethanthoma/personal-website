@@ -1,7 +1,13 @@
 {
 	"main": "dist/index.html",
+	"root": ".",
+	"scripts": {
+		"build": "./bin/build.sh",
+		"deploy": "mirai build && cd infra && aws-admin pulumi up && cd .."
+	},
 	"include": [
-		"*"
+		"src/*",
+		"vendor/*"
 	],
 	"exclude": [
 	]

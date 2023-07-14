@@ -4,17 +4,15 @@
                 <title>My Website</title>
 
 		<!-- htmx --->
-                <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+                <script src="./htmx.min.js"></script>
 
 		<link rel="stylesheet" href="./styles/main.css">
         </head>
         <body>
-                <h1, class="title-header">Welcome to My Website</h1>
-
 		<div id="tabs" hx-target="#tab-contents" _="on htmx:afterOnLoad take .selected for event.target">
-			<a hx-get="/fragments/blog.html" class="selected">Blog</a>
-			<a hx-get="/fragments/resume.html">Resume</a>
-			<a hx-get="/fragments/portfolio.html">Portfolio</a>
+			<a hx-get="/fragments/blog.html" class="tab selected">Blog</a>
+			<a hx-get="/fragments/resume.html" class="tab">Resume</a>
+			<a hx-get="/fragments/portfolio.html" class="tab">Portfolio</a>
 		</div>
 
 		<div id="tab-contents" hx-get="/fragments/blog.html" hx-trigger="load"></div>
