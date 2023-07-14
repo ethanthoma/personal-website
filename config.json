@@ -3,7 +3,8 @@
 	"root": ".",
 	"scripts": {
 		"build": "./bin/build.sh",
-		"deploy": "mirai build && cd infra && aws-admin pulumi up && cd .."
+		"deploy": "mirai build && cd infra && aws-admin pulumi up && cd ..",
+		"deploy-y": "mirai build && cd infra && aws-admin pulumi up -y && cd .."
 	},
 	"include": [
 		"src/*",

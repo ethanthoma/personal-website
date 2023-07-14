@@ -65,7 +65,7 @@ for item in $include; do
 	src=$(echo $item | sed "s,/\*.*$,," | sed "s,\**,,")
 
 	# Find .scss files within the source directory
-	find "$src_dir/$src" -type f -name '*.scss' -print0 | while IFS= read -r -d '' file; do
+	find "$src_dir/$src" -type f -name '*.scss' ! -name '_*.scss' -print0 | while IFS= read -r -d '' file; do
 		# Get the relative path of the file
 		relative_path=$(echo "$file" | sed -e "s,^$src_dir/$src/,,")
 

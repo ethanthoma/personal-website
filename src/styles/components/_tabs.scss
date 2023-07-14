@@ -1,5 +1,9 @@
+@use "../abstract" as *;
+
 #tabs {
-	border-bottom: solid 3px #eee;
+	color: get-color(text);
+	background-color: get-color(surface);
+	border-bottom: solid 3px get-color(muted);
 }
 
 #tabs > a {
@@ -9,7 +13,8 @@
 }
 
 #tabs > a.selected {
-	background-color: #eee;
+	color: get-color(rose);
+	background-color: get-color(muted);
 }
 
 #tab-contents {
