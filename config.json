@@ -1,5 +1,5 @@
 {
-	"main": "dist/index.html",
+	"main": "html/index.html",
 	"root": ".",
 	"scripts": {
 		"build": "./bin/build.sh",
@@ -8,7 +8,7 @@
 	},
 	"include": [
 		"src/*",
-		"vendor/*"
+		"vendor"
 	],
 	"exclude": [
 	]

@@ -62,12 +62,15 @@ for item in $include; do
 
 	# Separate globs from include item
 	filter=$(echo $item | sed "s,^[^\*]*,,")
-	src=$(echo $item | sed "s,/\*.*$,," | sed "s,\**,,")
+	src=$(echo $item | sed "s,/\([^/]*\)$,/,")
+	if [ "$filter" = "" ]; then
+		filter="*"
+	fi
 
 	# Find .scss files within the source directory
 	find "$src_dir/$src" -type f -name '*.scss' ! -name '_*.scss' -print0 | while IFS= read -r -d '' file; do
 		# Get the relative path of the file
-		relative_path=$(echo "$file" | sed -e "s,^$src_dir/$src/,,")
+		relative_path=$(echo "$file" | sed -e "s,^$src_dir/$src,,")
 
 		# Compile non-excluded code
 		if [ -z "$exclude" ] || should_include "$file" "$exclude"; then
@@ -76,7 +79,7 @@ for item in $include; do
 	done
 
 	# Add source and destination paths
-	rsync_cmd+=" --include '$filter' --exclude '*' '$src_dir/$src/' '$dist_dir'"
+	rsync_cmd+=" --include '$filter' --exclude '*' '$src_dir/$src' '$dist_dir'"
 
 	# Execute rsync to copy code
 	eval $rsync_cmd

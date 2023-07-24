@@ -1,0 +1,12 @@
+* {
+  font-variation-settings:
+    'wght' $font-weight;
+    'wdth' $font-width;
+}
+
+body {
+  font-size: 400;
+  font-family: 'Spectral', sans-serif;
+  color: get-color(text);
+  letter-spacing: -.5px;
+}

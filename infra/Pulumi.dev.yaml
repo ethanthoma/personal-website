@@ -1,3 +1,8 @@
 config:
-  aws:profile: assumed-role
   aws:region: us-west-2
+  cloudflare:apiToken:
+    secure: AAABAH4xVdZhaFgOw3pphcPEFzWQYcaiaCIEdZpzGAmYg/ux7p9OuA4TGwj1+7VPv8l8298MuLCd+88d/GmCwY7gKYywvmoA
+  website:bucketName: website-bucket
+  website:cloudflareZoneId:
+    secure: AAABACPY/GnddD5QXY9HFb1E1iHVoElkFzVfHujUDVD1QDqsdiIfULP0MMn4ie8aNnifFJVkLKiVmNgH6AoEBA==
+  website:domainName: ethanthoma.com
