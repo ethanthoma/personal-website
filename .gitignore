@@ -1,6 +1,7 @@
 # .gitignore
 
 # build results
+vendor/
 dist/
 
 # env files
