@@ -1,2 +1,17 @@
 name: website 
 runtime: go
+description: Golang, AWS, Cloudflare project for web hosting
+config:
+  bucket:name: bucket
+  bucket:bucketPolicyName: bucket_policy
+  distribution:distributionName: distribution
+  distribution:functionCodeFilePath: ./functions/cloudfront/redirect.js
+  distribution:functionName: redirect_function
+  distribution:originAccessControlName: OAC
+  records:certificateRecordName: certificate_record
+  records:domainCertificateName: domain_record
+  records:subdomainCertificateName: subdomain_records
+  records:redirectRuleName: redirect_rule
+  validatedCertificate:certificateName: certificate
+  validatedCertificate:certificateValidationName: certificate_validation 
+  validatedCertificate:providerName: aws_provider_us_east_1

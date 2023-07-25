@@ -1,4 +1,4 @@
-module terraform-aws-s3-cloudflare-static-website
+module website
 
 go 1.17
 
