@@ -1,0 +1,81 @@
+@use "../abstract" as *;
+
+header {
+    display: flex;
+    flex-direction: row;
+    margin: 4em 0 2em;
+    justify-content: space-between;
+
+    h1 {
+        font-size: 1.5em;
+        font-weight: 500;
+        color: get-color(pine);
+        position: relative;
+        cursor: pointer;
+        transition: transform .3s ease-in-out;
+
+        &::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            border-radius: 4px;
+            background-color: get-color(love);
+            bottom: 0;
+            left: 0;
+            transform-origin: right;
+            transform: scaleX(0);
+            transition: transform .3s ease-in-out;
+        }
+
+        &:hover {
+            color: get-color(love);
+        }
+
+        &:hover::before {
+            transform-origin: left;
+            transform: scaleX(1);
+        }
+    }
+
+    nav {
+        display: flex;
+        gap: 20px;
+
+        a {
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0.5em 0.5em;
+            transition: color 0.3s;
+
+            &:hover {
+                background-color: get-color(overlay);
+            }
+        }
+
+        #contacts {
+            background-color: get-color(foam);
+            color: get-color(overlay);
+            transition: color 0.3s;
+
+            &:hover {
+                background-color: get-color(love);
+            }
+        }
+
+        @media (max-width: $tablet-breakpoint) {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: $phone-breakpoint) {
+        flex-direction: column;
+        align-items: flex-start;
+
+        nav {
+            margin: 1em 0 0 auto;
+        }
+    }
+}
+

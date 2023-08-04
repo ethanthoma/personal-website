@@ -1,5 +1,13 @@
+@use "../abstract" as *;
+
 body {
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  margin: 0;
+  height: 100%;
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  background-color: get-color(base);
+  color: get-color(text);
 }
+

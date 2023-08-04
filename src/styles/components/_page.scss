@@ -1,0 +1,13 @@
+@use "../abstract" as *;
+
+.page {
+    padding: 4em 30vw;
+    margin: 0 auto;
+}
+
+@media all and (max-width: $laptop-breakpoint) {
+    .page {
+        padding: 25px 5vw;
+    }
+}
+

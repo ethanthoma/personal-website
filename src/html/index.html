@@ -1,22 +1,49 @@
 <!DOCTYPE html>
-<html>
-        <head>
-                <title>My Website</title>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Ethan Thoma</title>
 
-		<!-- htmx --->
-                <script src="../vendor/htmx.min.js"></script>
-		<script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
+        <!-- htmx and hyperscript --->
+        <script src="vendor/htmx.min.js"></script>
+        <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
 
-		<link rel="stylesheet" href="../styles/main.css">
-        </head>
-        <body>
-		<div id="tabs" hx-target="#tab-contents" _="on htmx:afterOnLoad take .selected for event.target">
-			<a hx-get="pages/blog.html" class="tab selected">Blog</a>
-			<a hx-get="pages/resume.html" class="tab">Resume</a>
-			<a hx-get="pages/portfolio.html" class="tab">Portfolio</a>
-		</div>
+        <!-- styles --->
+        <link rel="stylesheet" href="styles/main.css">
+    </head>
 
-		<div id="tab-contents" hx-get="pages/blog.html" hx-trigger="load"></div>
-        </body>
+    <body>
+        <div class="page">
+            <header>
+                <h1>ethanthoma</h1>
+                <nav>
+                    <a>Writings</a>
+                    <a>Projects</a>
+                    <a>Experiences</a>
+                    <a id="contacts">Contacts</a>
+                </nav>
+            </header>
+
+            <main>
+                <article>
+                    <section id="section1">
+                        This line is designed to be 80 characters long so that I can fit my content well    
+                    </section>
+                    <section id="section2">
+                        This line is designed to be 80 characters long so that I can fit my content well123456 
+                    </section>
+                    <section id="section3">
+                        <!-- Content of section 3 -->
+                    </section>
+                </article>
+            </main>    
+        </div>
+
+        <footer>
+            <!-- Footer Content Here -->
+        </footer>
+    </body>
 </html>
 
