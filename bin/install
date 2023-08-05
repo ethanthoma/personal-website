@@ -5,7 +5,7 @@ declare -a SOURCE_URLS=(
 )
 
 # Define the target directory where the file will be saved
-TARGET_DIR="../vendors"
+TARGET_DIR="../frontend/vendors"
 
 mkdir -p "$TARGET_DIR"
 

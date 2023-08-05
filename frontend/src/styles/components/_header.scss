@@ -63,13 +63,13 @@ header {
             }
         }
 
-        @media (max-width: $tablet-breakpoint) {
+        @media (max-width: $xs-breakpoint) {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: flex-end;
         }
     }
 
-    @media (max-width: $phone-breakpoint) {
+    @media (max-width: $s-breakpoint) {
         flex-direction: column;
         align-items: flex-start;
 

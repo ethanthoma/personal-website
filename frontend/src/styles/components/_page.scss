@@ -5,7 +5,7 @@
     margin: 0 auto;
 }
 
-@media all and (max-width: $laptop-breakpoint) {
+@media all and (max-width: $l-breakpoint) {
     .page {
         padding: 25px 5vw;
     }

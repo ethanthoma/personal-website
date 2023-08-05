@@ -5,7 +5,7 @@ config:
   bucket:name: bucket
   bucket:bucketPolicyName: bucket_policy
   distribution:distributionName: distribution
-  distribution:functionCodeFilePath: ./functions/cloudfront/redirect.js
+  distribution:functionCodeFilePath: ./redirect.js
   distribution:functionName: redirect_function
   distribution:originAccessControlName: OAC
   records:certificateRecordName: certificate_record

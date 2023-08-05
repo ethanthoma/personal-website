@@ -1,8 +1,11 @@
 # .gitignore
 
+# libraries
+frontend/vendor/*
+
 # build results
-vendor/
 dist/
 
 # env files
 *.env
+

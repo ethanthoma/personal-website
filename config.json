@@ -1,6 +1,6 @@
 {
 	"main": "html/index.html",
-	"root": ".",
+	"root": "./frontend/",
 	"scripts": {
 		"install": "./bin/install",
 		"build": "./bin/build",
@@ -19,3 +19,4 @@
 	"exclude": [
 	]
 }
+
