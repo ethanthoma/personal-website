@@ -1,23 +1,26 @@
 #!/bin/bash
 
-declare -a SOURCE_URLS=(
-	"https://unpkg.com/htmx.org@1.9.3/dist/htmx.min.js"
-)
-
 # Define the target directory where the file will be saved
 TARGET_DIR="../frontend/vendors"
 
 mkdir -p "$TARGET_DIR"
 
-# Loop through each URL in the array
-for url in "${SOURCE_URLS[@]}"; do
-  filename=$(basename "$url")
-  curl -L "$url" -o "$TARGET_DIR/$filename"
+# Determine the directory where the script is located
+script_dir=$(pwd)
 
-  # Verify if the download was successful
-  if [ $? -eq 0 ]; then
-    echo "Installed $filename from $url successfully"
-  else
-    echo "Failed to download$filename from $url"
-  fi
+# Load parameters from config.json in the current directory
+config=$(cat "$script_dir/config.json")
+
+echo "$config" | jq -r '.libs[]' | while read -r url; do
+    filename=$(basename "$url")
+    echo "Downloading $filename from $url"
+    curl -L "$url" -o "$TARGET_DIR/$filename"
+
+    # Verify if the download was successful
+    if [ $? -eq 0 ]; then
+        echo "Installed $filename successfully"
+    else
+        echo "Failed to download $filename from $url"
+    fi
 done
+

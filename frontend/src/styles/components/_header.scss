@@ -1,10 +1,14 @@
 @use "../abstract" as *;
 
 header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
     flex-direction: row;
     margin: 4em 0 2em;
     justify-content: space-between;
+    align-items: center;
 
     h1 {
         font-size: 1.5em;
@@ -13,6 +17,8 @@ header {
         position: relative;
         cursor: pointer;
         transition: transform .3s ease-in-out;
+        align-items: center;
+        height: 1.5em;
 
         &::before {
             content: '';
@@ -37,8 +43,12 @@ header {
             transform: scaleX(1);
         }
     }
+    
+    .hamburger-button {
+        display: none;
+    }
 
-    nav {
+    .nav-links {
         display: flex;
         gap: 20px;
 
@@ -47,6 +57,7 @@ header {
             cursor: pointer;
             padding: 0.5em 0.5em;
             transition: color 0.3s;
+            text-align: center;
 
             &:hover {
                 background-color: get-color(overlay);
@@ -69,12 +80,74 @@ header {
         }
     }
 
+    .hamburger-button {
+        display: none;
+
+        @media (max-width: $xs-breakpoint) {
+            display: block;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            transition: opacity 0.3s;
+
+            &:focus {
+                outline: none;
+            }
+
+            &.active {
+                .icon {
+                    transform: rotate(90deg);
+                }
+            }
+
+            .icon {
+                width: 3em;
+                height: 3em;
+                stroke: get-color(pine);
+                stroke-width: 3px;
+                transition: transform 0.3s;
+            }
+        }
+    }
+
     @media (max-width: $s-breakpoint) {
         flex-direction: column;
         align-items: flex-start;
 
-        nav {
+        .nav-links {
             margin: 1em 0 0 auto;
+        }
+    }
+
+    @media (max-width: $xs-breakpoint) {
+        align-items: center;
+        flex-direction: row;
+
+        .nav-links {
+            display: none;
+        }
+
+        .hamburger-button.active ~ nav {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: get-color(surface);
+            z-index: 10;
+            gap: 0;
+
+            a {
+                width: 100%;
+                padding-top: 1em;
+
+                &:hover {
+                    color: get-color(highlight-low);
+                    background-color: get-color(love);
+                }
+            }
         }
     }
 }

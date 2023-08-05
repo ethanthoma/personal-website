@@ -3,6 +3,8 @@
 .page {
     padding: 4em 30vw;
     margin: 0 auto;
+    box-sizing: content-box;
+    overflow: hidden;
 }
 
 @media all and (max-width: $l-breakpoint) {

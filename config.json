@@ -17,6 +17,11 @@
 		"vendor"
 	],
 	"exclude": [
-	]
+	],
+    "libs": [
+        "https://unpkg.com/htmx.org@1.9.3/dist/htmx.min.js",
+        "https://unpkg.com/htmx.org/dist/ext/class-tools.js",
+        "https://unpkg.com/hyperscript.org@0.9.9"
+    ]
 }
 
