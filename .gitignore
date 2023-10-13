@@ -1,11 +1,10 @@
 # .gitignore
 
-# libraries
-frontend/vendor/*
+# flake install results
+.cache/
+go/
 
 # build results
 dist/
-
-# env files
-*.env
+bazel-*
 

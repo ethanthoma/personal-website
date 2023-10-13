@@ -1,4 +1,4 @@
-module website
+module github.com/ethanthoma/personal-website/deploy
 
 go 1.17
 
