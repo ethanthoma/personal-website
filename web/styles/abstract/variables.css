@@ -1,0 +1,31 @@
+:root {
+    --clr-base:     hsl(0, 0%, 90%);
+    --clr-text:     hsl(0, 0%, 0%);
+    --blue:         hsl(221, 51%, 16%);
+    --yellow:       hsl(37, 98%, 53%);
+}
+
+[theme="rose-pine-dawn] {
+    --clr-base:     hsl(32deg, 57%, 95%);
+    --clr-overlay:  hsl(33deg, 43%, 91%);
+    --clr-text:     hsl(248deg, 19%, 40%);
+
+    /*
+    base: hsl(32deg, 57%, 95%),
+    surface: hsl(35deg, 100%, 98%),
+    overlay: hsl(33deg, 43%, 91%),
+    muted: hsl(257deg, 9%, 61%),
+    subtle: hsl(248deg, 12%, 52%),
+    text: hsl(248deg, 19%, 40%),
+    love: hsl(343deg, 35%, 55%),
+    gold: hsl(35deg, 81%, 56%),
+    rose: hsl(3deg, 53%, 67%),
+    pine: hsl(197deg, 53%, 34%),
+    foam: hsl(189deg, 30%, 48%),
+    iris: hsl(268deg, 21%, 57%),
+    highlight-low: hsl(25deg, 35%, 93%),
+    highlight-med: hsl(10deg, 9%, 86%),
+    highlight-high: hsl(315deg, 4%, 80%),
+    */
+}
+

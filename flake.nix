@@ -9,6 +9,7 @@
             buildInputs = [
                 bazel
                 pulumi
+                simplehttp2server
             ];
 
             shellHook = ''

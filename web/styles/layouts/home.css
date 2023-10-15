@@ -1,0 +1,11 @@
+body {
+    background: var(--clr-base);
+    color: var(--clr-text);
+}
+
+article {
+    max-width: 40rem;
+    margin: 0 auto;
+    line-height: 1.5em;
+}
+
