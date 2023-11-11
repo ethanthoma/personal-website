@@ -1,0 +1,30 @@
+header {
+    padding-block: var(--space-m);
+    padding-inline: var(--space-s);
+    
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    background: var(--clr-white);
+
+    & * {
+        font-weight: 400;
+        font-family: var(--ff-heading);
+        font-size: var(--fs-400);
+    }
+
+    & a {
+        color: inherit;
+    }
+
+    & ul {
+        display: flex;
+        gap: var(--space-xs-s);
+        flex-wrap: wrap;
+        justify-content: center;
+
+        list-style: none;
+    }
+}
+

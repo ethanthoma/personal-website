@@ -1,6 +1,0 @@
-@use 'functions' as *;
-
-@mixin color-scheme() {
-	background-color: get-color(base);
-	color: get-color(text);
-}

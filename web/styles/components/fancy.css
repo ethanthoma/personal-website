@@ -1,0 +1,36 @@
+.fancy {
+    --_clr-1: var(--clr-dark-purple, darkviolet);
+    --_clr-2: var(--clr-blue, steelblue);
+    --_clr-3: var(--clr-aqua, darkcyan);
+    --_clr-4: var(--clr-turq, mediumaquamarine);
+    white-space: nowrap;
+
+    /* bg gradient */
+    background: linear-gradient(
+        to right,
+        var(--_clr-1),
+        var(--_clr-2),
+        var(--_clr-3),
+        var(--_clr-4),
+        var(--_clr-3),
+        var(--_clr-2),
+        var(--_clr-1)
+    );
+    background-size: 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    /* animation */
+    animation: background-pan 3s linear infinite;
+}
+
+@keyframes background-pan {
+    from {
+        background-position: 0% center;
+    }
+
+    to {
+        background-position: -200% center;
+    }
+}
+

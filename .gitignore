@@ -1,11 +1,4 @@
-# .gitignore
-
-# libraries
-frontend/vendor/*
-
-# build results
-dist/
-
-# env files
-*.env
+# direnv
+.envrc
+.direnv/
 
