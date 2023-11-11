@@ -1,10 +1,4 @@
-# .gitignore
-
-# flake install results
-.cache/
-go/
-
-# build results
-dist/
-bazel-*
+# direnv
+.envrc
+.direnv/
 

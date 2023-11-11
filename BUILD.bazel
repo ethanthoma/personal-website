@@ -1,7 +1,0 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
-
-# gazelle:prefix github.com/ethanthoma/personal-website/deploy
-gazelle(
-    name = "gazelle-deploy",
-    prefix = "github.com/ethanthoma/personal-website/deploy",
-)

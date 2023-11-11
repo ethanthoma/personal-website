@@ -1,23 +1,27 @@
 {
-    description = "A flake for building and testing a Bazel project";
+    description = "Dev env for building, testing, and deploying my website";
 
-    inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    outputs = { self, nixpkgs }: {
-
-        devShell.x86_64-linux = with nixpkgs.legacyPackages.x86_64-linux; mkShell {
-            buildInputs = [
-                bazel
-                pulumi
-                simplehttp2server
-            ];
-
-            shellHook = ''
-#                export TEST_SRCDIR=$PWD
-#                export TEST_TMPDIR=/tmp
-                export HOME=$PWD
-            '';
-        };
+    inputs = {
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+        flake-utils.url = "github:numtide/flake-utils";
     };
+
+    outputs = { self, nixpkgs, flake-utils }:
+
+    flake-utils.lib.eachDefaultSystem (system:
+        let
+            pkgs = import nixpkgs {
+                inherit system;
+            };
+        in {
+            devShell = pkgs.mkShell {
+                buildInputs = [
+                    pkgs.pulumi
+                ];
+
+                shellHook = '' '';
+            };
+        }
+    );
 }
 
