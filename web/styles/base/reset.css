@@ -31,12 +31,17 @@ html:focus-within {
     scroll-behavior: smooth;
 }
 
-html, body {
+html {
     height: 100%;
 }
 
 /* Set core body defaults */
 body {
+    min-height: 100%;
+    width: 100vw;
+    max-width: 100%;
+    box-sizing: border-box;
+    position: relative;
     text-rendering: optimizeSpeed;
     line-height: 1.5;
 }

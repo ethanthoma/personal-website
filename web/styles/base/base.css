@@ -1,0 +1,53 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background:     var(--clr-base);
+    color:          var(--clr-text);
+    font-family:    var(--ff-body);
+    font-size:      var(--fs-400);
+    line-height:    1.5;
+}
+
+h1, h2, h3 {
+    font-family:    var(--ff-heading);
+    font-size:      var(--fs-700);
+    letter-spacing: -0.01em;
+    line-height:    1.2;
+}
+
+.visually-hidden {
+    clip:           rect(0 0 0 0);
+    clip-path:      inset(50%);
+    height:         0px;
+    overflow:       hidden;
+    position:       absolute;
+    white-space:    nowrap;
+    width:          0px;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.bold {
+    font-weight:    600;
+    font-style:     normal;
+}
+
+.accent {
+    padding-block:  var(--space-3xs-2xs);
+    padding-inline: var(--space-l-xl);
+
+    font-family:        var(--ff-heading);
+    font-size:          var(--fs-400);
+    font-weight:        500;
+    letter-spacing:     -0.01em;
+    text-decoration:    none;
+
+    color:          var(--clr-base);
+    background:     var(--clr-accent);
+    border-radius:  var(--space-2xs-xs);
+}
+

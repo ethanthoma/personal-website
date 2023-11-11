@@ -1,11 +1,106 @@
-body {
-    background: var(--clr-base);
-    color: var(--clr-text);
+main {
+    overflow: hidden;
+
+    display:                grid;
+    grid-template-columns:  repeat(12, 1fr);
+    column-gap:             var(--space-s-l);
+
+    /* default */
+    & > *, & > full-width {
+        grid-column: 1 / -1;
+    }
+
+    & > .breakout {
+        grid-column: 2 / -2;
+    }
+
+    & > .content {
+        grid-column: 3 / -3;
+    }
 }
 
-article {
-    max-width: 40rem;
-    margin: 0 auto;
-    line-height: 1.5em;
+main > section {
+    display:                grid;
+    column-gap:             inherit;
+    grid-template-columns:  inherit;
+    grid-template-rows:     auto;
+
+    padding-block:  var(--space-3xs);
+
+
+    /* easy column utils */
+    & > .full-width {
+        grid-column: 1 / -1;
+    }
+
+    & > .breakout {
+        grid-column: 2 / -2;
+    }
+
+    /* default */
+    & > *, & > content {
+        grid-column: 3 / -3;
+    }
+
+
+
+    /* margin spacing */
+    & > * + * {
+        --_margin-top:  var(--space-xs-s);
+
+        margin-top:     var(--_margin-top);
+    }
+
+    & > * + button {
+        --_margin-top:  var(--space-l-xl);
+    }
+
+    & > * + h1,
+    & > * + h2,
+    & > * + h3 {
+        --_margin-top:  var(--space-m-l);
+    }
 }
+
+#hero-section {
+    background:     var(--clr-white);
+    padding-top:    var(--space-3xl);
+
+    justify-items:  center;
+    text-align:     center;
+
+    & > h1 {
+        font-size:      var(--fs-700);
+        font-weight:    700;
+    }
+}
+
+main > .section-divider {
+    padding-block:  var(--space-3xl);
+    padding-inline: var(--space-s-m);
+
+    font-size:      var(--fs-300);
+
+    color:          var(--clr-primary);
+}
+
+#footer-divider {
+    display: block;
+
+    aspect-ratio: 960/100;
+    margin-bottom: -1px;
+
+    background-image:       url('../../images/layered-waves.svg');
+    background-size:        cover;
+}
+
+footer {
+    padding-block: var(--space-3xl);
+
+    color: var(--clr-base);
+    background: var(--clr-secondary);
+}
+
+
+
 
