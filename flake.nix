@@ -17,6 +17,7 @@
             devShell = pkgs.mkShell {
                 buildInputs = [
                     pkgs.pulumi
+                    pkgs.awscli2
                 ];
 
                 shellHook = '' '';
