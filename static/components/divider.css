@@ -1,0 +1,4 @@
+.divider {
+    border-block-start: 2px dashed black;
+    width: 100%;
+}

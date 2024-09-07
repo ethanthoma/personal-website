@@ -1,0 +1,11 @@
+.blog_post {
+    display: flex;
+
+    & a {
+        align-self: center;
+
+        & h2 {
+            font-size: var(--fs-300);
+        }
+    }
+}

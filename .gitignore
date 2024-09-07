@@ -1,0 +1,6 @@
+.direnv/
+bin/
+.env
+.envrc
+result
+tmp/

@@ -1,0 +1,48 @@
+@import "variables.css";
+@import "reset.css";
+
+body {
+    align-items: center;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    font-size: var(--fs-300);
+    line-height: 1.5;
+    max-width: 100svw;
+    overflow-x: hidden;
+
+    --max-width: 640px;
+    --min-width: 320px;
+
+    & main {
+        flex: 1 1 auto;
+    }
+
+    & main,
+    & header {
+        width: clamp(var(--min-width), 100%, var(--max-width));
+        margin-inline: auto;
+        padding-inline: var(--space-xl);
+    }
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--ff-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+h1 {
+    font-size: var(--fs-600);
+}
+
+h2 {
+    font-size: var(--fs-500);
+}
+
+h3 {
+    font-size: var(--fs-400);
+}

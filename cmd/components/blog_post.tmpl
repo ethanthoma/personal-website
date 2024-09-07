@@ -1,0 +1,12 @@
+{{ define "blog_post" }}
+    <article class="blog_post">
+        <time>{{formatDate .Date }}</time>
+        <span>-</span>
+        <a
+            href="/post/{{ .Slug }}"
+            hx-get="/{{ .Slug }}/content"
+            hx-target="main"
+            hx-push-url="/{{ .Slug }}"
+        ><h2>{{ .Title }}</h2></a>
+    </article>
+{{ end }}

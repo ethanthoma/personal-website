@@ -1,0 +1,34 @@
+{{ define "nav-links" }}
+    {{ range $name := newRange "home" "releases" "blog" }}
+        <li><a 
+            class="
+            select-nav
+            {{ if eq $.CurrentPage $name }}selected{{ end }}
+            "
+            href="/{{ $name }}"
+            hx-get="/{{ $name }}/content"
+            hx-target="main"
+            hx-push-url="/{{ $name }}"
+            _="
+            on click 
+                trigger newSelect on .select-nav then 
+                add .selected on me 
+            end
+            on newSelect
+                remove .selected on me
+            end
+            "
+        >{{ title $name }}</a></li>
+    {{ end }}
+{{ end }}
+
+{{ define "header" }}
+    <header>
+        <nav>
+            <ul>
+                {{ template "nav-links" . }}
+            </ul>
+        </nav>
+        <div class="divider"></div>
+    </header>
+{{ end }}

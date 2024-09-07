@@ -1,0 +1,30 @@
+header {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    margin-block-end: var(--space-s-l);
+    padding-block-start: calc(var(--space-xs-s) + var(--space-s-l));
+    padding-block-end: var(--space-xs-s);
+
+    & nav {
+        width: 100%;
+
+        & a.selected {
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        & ul {
+            align-items: center;
+            display: flex;
+            justify-content: space-evenly;
+            list-style-type: none;
+
+            & a {
+                display: block;
+                padding-block: var(--space-2xs);
+                padding-inline: var(--space-xs);
+            }
+        }
+    }
+}
