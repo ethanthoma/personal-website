@@ -4,9 +4,9 @@
         <span>-</span>
         <a
             href="/post/{{ .Slug }}"
-            hx-get="/{{ .Slug }}/content"
+            hx-get="/post/{{ .Slug }}/content"
             hx-target="main"
-            hx-push-url="/{{ .Slug }}"
+            hx-push-url="/post/{{ .Slug }}"
         ><h2>{{ .Title }}</h2></a>
     </article>
 {{ end }}
