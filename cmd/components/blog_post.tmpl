@@ -1,7 +1,7 @@
 {{ define "blog_post" }}
     <article class="blog_post">
         <time>{{formatDate .Date }}</time>
-        <span>-</span>
+        <span style="padding-inline: var(--space-2xs)">-</span>
         <a
             href="/post/{{ .Slug }}"
             hx-get="/post/{{ .Slug }}/content"

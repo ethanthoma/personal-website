@@ -1,4 +1,4 @@
-.post_content {
+.content {
 
     &>*+* {
         margin-block-start: var(--space-2xs-xs);
