@@ -18,16 +18,40 @@
             (system:
                 let
                     pname = "cmd";
+                    version = "0.1";
+
                     pkgs = nixpkgs.legacyPackages.${system};
 
                     # The current default sdk for macOS fails to compile go projects, so we use a newer one for now.
                     # This has no effect on other platforms.
                     callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
                 in
-                    {
+                    rec {
                     packages.default = callPackage ./nix {
-                        inherit pname;
+                        inherit pname version;
                         inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
+                    };
+
+                    packages.container = pkgs.dockerTools.buildImage {
+                        name = pname;   
+                        tag = version;
+                        created = "now";
+                        copyToRoot = pkgs.buildEnv {
+                            name = "image-root";
+                            paths = [ packages.default  ];
+                            pathsToLink = [ "/bin" "/cmd/components" "/cmd/pages" "/static" ];
+                        };
+                        config = {
+                            Cmd = [ 
+                                "${packages.default}/bin/${pname}" 
+                            ];
+                            Env = [
+                                "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
+                            ];
+                            ExposedPorts = {
+                                "8080/tcp" = {};
+                            };
+                        };
                     };
 
                     devShells.default = callPackage ./nix/shell.nix {

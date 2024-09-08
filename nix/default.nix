@@ -1,5 +1,6 @@
 { 
 pname, 
+version,
 pkgs ? (
     let
         inherit (builtins) fetchTree fromJSON readFile;
@@ -15,10 +16,15 @@ pkgs ? (
 }:
 
 buildGoApplication {
-    inherit pname;
-    version = "0.1";
+    inherit pname version;
     src = ../.;
     pwd = ../.;
     modules = ../gomod2nix.toml;
     submodule = [ pname ];
+    postInstall = ''
+        cp -rf $src/static $out/static
+        mkdir -p $out/cmd
+        cp -rf $src/cmd/pages $out/cmd/pages
+        cp -rf $src/cmd/components $out/cmd/components
+    '';
 }
