@@ -16,6 +16,10 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 func main() {
 	log.Println("Starting server...")
 
+	http.HandleFunc("GET /healthy", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	})
+
 	http.HandleFunc("GET /", homeHandler)
 	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /home/content", homeHandler)
