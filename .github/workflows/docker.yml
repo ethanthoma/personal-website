@@ -1,0 +1,41 @@
+name: Build and Deploy Docker Image
+
+on:
+  push:
+    branches: [ main ]
+    pull_request:
+      branches: [ main ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v22
+        with:
+        nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Build Docker Image
+        run: | 
+          nix build .#container
+          docker load < $(nix path-info .#container)
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository }}/webserver:latest
+          docker tag $(docker images --format "{{.Repository}}:{{.Tag}}" | head -n 1) $IMAGE_ID
+          docker push $IMAGE_ID
