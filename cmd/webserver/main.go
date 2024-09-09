@@ -23,16 +23,13 @@ func main() {
 	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /home/content", homeHandler)
 
-	http.HandleFunc("GET /releases", releasesHandler)
-	http.HandleFunc("GET /releases/content", releasesHandler)
-
 	http.HandleFunc("GET /blog", blogHandler)
 	http.HandleFunc("GET /blog/content", blogHandler)
 
 	http.HandleFunc("GET /post/{slug}", postHandler)
 	http.HandleFunc("GET /post/{slug}/content", postHandler)
 
-	http.Handle("GET /static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	http.Handle("GET /static/", http.StripPrefix("/static/", staticHandler(http.Dir("static"))))
 
 	log.Fatal(http.ListenAndServe(":8080", logRequests))
 }

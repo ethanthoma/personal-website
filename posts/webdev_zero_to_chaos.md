@@ -1,6 +1,6 @@
 # Webdev: Zero to Chaos
 
-> I am not a webdev. I started at zero (relative). It only goes down from there. 
+> "I am not a webdev. I started at zero (relative). It only goes down from there."
 
 ## Attempt One: Static Site, Labyrinth Infra
 
@@ -84,10 +84,10 @@ AFTER IMPLEMENTING THE SEVENTH 3RD PARTY DEPENDENCY TOOL OF DOOM!!! JUST THINK.
 
 But yeah, keep it simple. Please.
 
-## Take Two: Climbing a Dune
+## Attempt Two: Climbing a Dune
 
-> Surmounting obstacles is a good thing if you are heading in the right 
-direction...
+> "Surmounting obstacles is a good thing if you are heading in the right 
+direction..."
 
 A couple months post the first tragedy (much like the world wars, it wasn't 
 called the first at this point), my friend decided to make their own website 
@@ -154,7 +154,7 @@ once the linking worked.
 
 ## Attempt Three: GO-d's chosen Language
 
-> If you already use Go for one thing, why not both
+> "If you already use Go for one thing, why not both"
 
 When I moved from WSL to Nixos on my surface, my ocaml-webserver would no longer 
 build. Why? Some platform specific mirage crap in opam-nix that I was too lazy 

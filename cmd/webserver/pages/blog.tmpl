@@ -2,7 +2,7 @@
     <title>Ethan Thoma \ Blog</title>
 {{ end }}
 
-{{ define "content" }}
+{{ define "shared-content" }}
     {{ template "title" . }}
     <h1>Blog</h1>
     <ul class="posts">
@@ -12,6 +12,12 @@
     </ul>
 {{ end }}
 
+{{ define "content" }}
+    {{ template "shared-content" . }}
+
+    {{ template "nav" . }}
+{{ end }}
+
 {{ define "page" }}
     <!DOCTYPE html>
     <html lang="en">
@@ -19,7 +25,7 @@
     <body>
         {{ template "header" . }}
         <main>
-            {{ template "content" . }}
+            {{ template "shared-content" . }}
         </main>
         {{ template "footer" . }}
     </body>

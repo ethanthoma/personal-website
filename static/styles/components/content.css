@@ -34,7 +34,7 @@
     }
 
     & blockquote {
-        border-inline-start: var(--space-3xs) solid var(--clr-high);
+        border-inline-start: var(--space-3xs) solid gray;
         padding-inline-start: var(--space-3xs);
     }
 }

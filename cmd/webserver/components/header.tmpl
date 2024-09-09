@@ -9,26 +9,21 @@
             hx-get="/{{ $name }}/content"
             hx-target="main"
             hx-push-url="/{{ $name }}"
-            _="
-            on click 
-                trigger newSelect on .select-nav then 
-                add .selected on me 
-            end
-            on newSelect
-                remove .selected on me
-            end
-            "
         >{{ title $name }}</a></li>
     {{ end }}
 {{ end }}
 
+{{ define "nav" }}
+    <nav id="nav" hx-swap-oob="true">
+        <ul>
+            {{ template "nav-links" . }}
+        </ul>
+    </nav>
+{{ end }}
+
 {{ define "header" }}
     <header>
-        <nav>
-            <ul>
-                {{ template "nav-links" . }}
-            </ul>
-        </nav>
+        {{ template "nav" . }}
         <div class="divider"></div>
     </header>
 {{ end }}

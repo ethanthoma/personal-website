@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,22 +23,6 @@ func router(urlPath string) func(http.ResponseWriter, int, string, interface{}) 
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	name := "home"
-
-	data := struct {
-		CurrentPage string
-	}{
-		CurrentPage: name,
-	}
-
-	err := router(r.URL.Path)(w, http.StatusOK, name, data)
-	if err != nil {
-		log.Printf("Error rendering %s: %v", name, err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-	}
-}
-
-func releasesHandler(w http.ResponseWriter, r *http.Request) {
-	name := "releases"
 
 	data := struct {
 		CurrentPage string
@@ -109,16 +94,38 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		CurrentPage string
 		Post        Post
 	}{
-		CurrentPage: "post",
+		CurrentPage: "blog",
 		Post: Post{
 			Title:   post.Title,
 			Content: template.HTML(buf.String()),
 		},
 	}
 
+	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
 	err = handler(w, http.StatusOK, "post", data)
 	if err != nil {
 		log.Printf("Error rendering post %s: %v", slug, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func staticHandler(root http.FileSystem) http.HandlerFunc {
+	fileServer := http.FileServer(root)
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		ext := strings.ToLower(filepath.Ext(r.URL.Path))
+
+		switch ext {
+		case ".css":
+			w.Header().Set("Cache-Control", "public, max-age=1800, immutable")
+		case ".js":
+			w.Header().Set("Cache-Control", "public, max-age=604800, immutable")
+		case ".jpg", ".jpeg", ".png", ".gif", ".ico":
+			w.Header().Set("Cache-Control", "public, max-age=2592000, immutable")
+		default:
+			w.Header().Set("Cache-Control", "max-age=0")
+		}
+
+		fileServer.ServeHTTP(w, r)
 	}
 }

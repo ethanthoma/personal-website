@@ -2,8 +2,14 @@
     <title>Ethan Thoma \ Releases</title>
 {{ end }}
 
-{{ define "content" }}
+{{ define "shared-content" }}
     {{ template "title" . }}
+{{ end }}
+
+{{ define "content" }}
+    {{ template "shared-content" . }}
+
+    {{ template "nav" . }}
 {{ end }}
 
 {{ define "page" }}
@@ -13,7 +19,7 @@
     <body>
         {{ template "header" . }}
         <main>
-            {{ template "content" . }}
+            {{ template "shared-content" . }}
         </main>
         {{ template "footer" . }}
     </body>
