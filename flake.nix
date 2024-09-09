@@ -17,9 +17,6 @@
         (flake-utils.lib.eachDefaultSystem
             (system:
                 let
-                    pname = "cmd";
-                    version = "0.1";
-
                     pkgs = nixpkgs.legacyPackages.${system};
 
                     # The current default sdk for macOS fails to compile go projects, so we use a newer one for now.
@@ -27,35 +24,26 @@
                     callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
                 in
                     rec {
-                    packages.default = callPackage ./nix {
-                        inherit pname version;
+                    packages.default = callPackage ./nix/webserver.nix {
+                        pname = "webserver";
+                        version = "0.1";
                         inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
                     };
 
-                    packages.container = pkgs.dockerTools.buildImage {
-                        name = pname;   
-                        tag = version;
-                        created = "now";
-                        copyToRoot = pkgs.buildEnv {
-                            name = "image-root";
-                            paths = [ packages.default  ];
-                            pathsToLink = [ "/bin" "/cmd/components" "/cmd/pages" "/static" ];
-                        };
-                        config = {
-                            Cmd = [ 
-                                "${packages.default}/bin/${pname}" 
-                            ];
-                            Env = [
-                                "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt"
-                            ];
-                            ExposedPorts = {
-                                "8080/tcp" = {};
-                            };
-                        };
+                    packages.uploader = callPackage ./nix/uploader.nix {
+                        pname = "uploader";
+                        version = "0.1";
+                        inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
+                    };
+
+                    packages.container = callPackage ./nix/container.nix {
+                        derivation = packages.default;
+                        inherit pkgs;
                     };
 
                     devShells.default = callPackage ./nix/shell.nix {
                         env.GOFLAGS = "-mod=vendor";
+                        uploader = packages.uploader;
                         inherit (gomod2nix.legacyPackages.${system}) mkGoEnv gomod2nix;
                     };
                 })

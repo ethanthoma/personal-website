@@ -3,10 +3,9 @@ package main
 import (
 	"log"
 	"net/http"
-	"webserver/internal"
 )
 
-var c = internal.NewRenderer("cmd/components", "cmd/pages")
+var c = NewRenderer("cmd/webserver/components", "cmd/webserver/pages")
 
 var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 	log.Printf("%s %s\n", req.Method, req.URL)

@@ -5,9 +5,9 @@
 {{ define "content" }}
     {{ template "title" . }}
     <h1>Blog</h1>
-    <ul class="blog_posts">
-        {{ range $post := .Blogs }}
-           {{ template "blog_post" $post }}
+    <ul class="posts">
+        {{ range $post := .Posts }}
+           {{ template "post" $post }}
         {{ end }}
     </ul>
 {{ end }}

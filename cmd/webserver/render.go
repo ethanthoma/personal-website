@@ -1,4 +1,4 @@
-package internal
+package main
 
 import (
 	"html/template"
@@ -38,7 +38,7 @@ func (t *Renderer) Content(w http.ResponseWriter, statusCode int, name string, d
 	if err != nil {
 		log.Println("Failed to clone Renderer template")
 	}
-	tmpl.ParseGlob(t.pagesDir + "/" + name + ".tmpl")
+	tmpl.ParseFiles(t.pagesDir + "/" + name + ".tmpl")
 
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)

@@ -6,7 +6,6 @@ import (
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
 	"log"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -24,86 +23,76 @@ var DB = func() *sql.DB {
 	return db
 }()
 
-type Blog struct {
-	Slug        string
-	Title       string
-	Description string
-	Content     string
-	Date        time.Time
-	Tags        []string
+type Post struct {
+	Slug    string
+	Title   string
+	Content string
+	Date    time.Time
 }
 
-func GetBlogTable() ([]Blog, error) {
+func GetPosts() ([]Post, error) {
 	rows, err := DB.Query(`
         SELECT
             *
         FROM
-            blogs
+            posts
         ORDER BY
             date
         DESC;
     `)
 	if err != nil {
-		log.Printf("Turso Database: failed to get blog table: %s", err)
+		log.Printf("Turso Database: failed to get post table: %s", err)
 		return nil, err
 	}
 	defer rows.Close()
 
-	return rowsToBlogs(rows)
+	return rowsToPosts(rows)
 }
 
-func GetBlogBySlug(slug string) (Blog, error) {
+func GetPost(slug string) (Post, error) {
 	rows, err := DB.Query(fmt.Sprint(`
         SELECT 
             *
         FROM 
-            blogs
+            posts
         WHERE
             slug = '`, slug, `'
-        LIMIT 
-            1
         ;
     `))
 	if err != nil {
-		return Blog{}, err
+		return Post{}, err
 	}
 	defer rows.Close()
 
-	blogs, err := rowsToBlogs(rows)
+	posts, err := rowsToPosts(rows)
 	if err != nil {
-		return Blog{}, err
+		return Post{}, err
 	}
 
-	if len(blogs) == 0 {
-		return Blog{}, err
+	if len(posts) == 0 {
+		return Post{}, err
 	}
 
-	return blogs[0], nil
+	return posts[0], nil
 }
 
-func rowsToBlogs(rows *sql.Rows) ([]Blog, error) {
-	var blogs []Blog
+func rowsToPosts(rows *sql.Rows) ([]Post, error) {
+	var posts []Post
 
 	for rows.Next() {
-		var blog Blog
-
-		var tags string
+		var post Post
 
 		if err := rows.Scan(
-			&blog.Slug,
-			&blog.Title,
-			&blog.Description,
-			&blog.Content,
-			&blog.Date,
-			&tags,
+			&post.Slug,
+			&post.Title,
+			&post.Content,
+			&post.Date,
 		); err != nil {
 			log.Printf("Turso Database: error scanning row: %s", err)
 			return nil, err
 		}
 
-		blog.Tags = strings.Split(tags, ",")
-
-		blogs = append(blogs, blog)
+		posts = append(posts, post)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -111,5 +100,5 @@ func rowsToBlogs(rows *sql.Rows) ([]Blog, error) {
 		return nil, err
 	}
 
-	return blogs, nil
+	return posts, nil
 }

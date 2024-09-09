@@ -55,18 +55,18 @@ func releasesHandler(w http.ResponseWriter, r *http.Request) {
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 	name := "blog"
 
-	blogs, err := GetBlogTable()
+	posts, err := GetPosts()
 	if err != nil {
-		log.Printf("Error failed to get blogs: %v", err)
+		log.Printf("Error failed to get posts: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
 	data := struct {
 		CurrentPage string
-		Blogs       []Blog
+		Posts       []Post
 	}{
 		CurrentPage: name,
-		Blogs:       blogs,
+		Posts:       posts,
 	}
 
 	err = router(r.URL.Path)(w, http.StatusOK, name, data)
@@ -81,9 +81,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	handler := router(r.URL.Path)
 
-	blog, err := GetBlogBySlug(slug)
+	post, err := GetPost(slug)
 	if err != nil {
-		log.Printf("Error getting blog %s: %v", slug, err)
+		log.Printf("Error getting post %s: %v", slug, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
@@ -94,9 +94,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	)
 
 	var buf bytes.Buffer
-	err = mdRenderer.Convert([]byte(blog.Content), &buf)
+	err = mdRenderer.Convert([]byte(post.Content), &buf)
 	if err != nil {
-		log.Printf("Error parsing blog %s to markdown: %v", slug, err)
+		log.Printf("Error parsing post %s to markdown: %v", slug, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
@@ -109,16 +109,16 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		CurrentPage string
 		Post        Post
 	}{
-		CurrentPage: "blog",
+		CurrentPage: "post",
 		Post: Post{
-			Title:   blog.Title,
+			Title:   post.Title,
 			Content: template.HTML(buf.String()),
 		},
 	}
 
 	err = handler(w, http.StatusOK, "post", data)
 	if err != nil {
-		log.Printf("Error rendering blog %s: %v", slug, err)
+		log.Printf("Error rendering post %s: %v", slug, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
