@@ -17,9 +17,10 @@ var DB = func() *sql.DB {
 
 	db, err := sql.Open("libsql", url)
 	if err != nil {
-		log.Fatalf("Failed to open Turso database %s: %s", turso_database_url, err)
+		log.Fatalf("Turso Database: Failed to open database %s: %s", turso_database_url, err)
 	}
 
+	log.Printf("Turso Database: Connected to %s", turso_database_url)
 	return db
 }()
 
@@ -31,6 +32,8 @@ type Post struct {
 }
 
 func GetPosts() ([]Post, error) {
+	log.Println("Turso Database: getting posts...")
+
 	rows, err := DB.Query(`
         SELECT
             *
@@ -45,11 +48,14 @@ func GetPosts() ([]Post, error) {
 		return nil, err
 	}
 	defer rows.Close()
+	log.Println("Turso Database: fetched posts")
 
 	return rowsToPosts(rows)
 }
 
 func GetPost(slug string) (Post, error) {
+	log.Printf("Turso Database: fetching post %s...", slug)
+
 	rows, err := DB.Query(fmt.Sprint(`
         SELECT 
             *
@@ -73,10 +79,13 @@ func GetPost(slug string) (Post, error) {
 		return Post{}, err
 	}
 
+	log.Printf("Turso Database: fetched post %s", slug)
 	return posts[0], nil
 }
 
 func rowsToPosts(rows *sql.Rows) ([]Post, error) {
+	log.Println("Turso Database: parsing SQL rows to posts...")
+
 	var posts []Post
 
 	for rows.Next() {
@@ -99,6 +108,8 @@ func rowsToPosts(rows *sql.Rows) ([]Post, error) {
 		log.Printf("Turso Database: error during rows iteration: %s", err)
 		return nil, err
 	}
+
+	log.Println("Turso Database: parsed SQL rows to posts")
 
 	return posts, nil
 }

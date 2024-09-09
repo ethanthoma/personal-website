@@ -27,6 +27,7 @@
                     packages.default = callPackage ./nix/webserver.nix {
                         pname = "webserver";
                         version = "0.1";
+                        inherit pkgs;
                         inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
                     };
 

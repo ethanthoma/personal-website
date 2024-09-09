@@ -7,7 +7,7 @@
     <h1>Blog</h1>
     <ul class="posts">
         {{ range $post := .Posts }}
-           {{ template "post" $post }}
+           <ul>{{ template "post" $post }}</ul>
         {{ end }}
     </ul>
 {{ end }}

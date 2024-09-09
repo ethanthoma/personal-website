@@ -40,7 +40,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 	name := "blog"
 
-	posts, err := GetPosts()
+	posts, err := Cache.GetPosts()
 	if err != nil {
 		log.Printf("Error failed to get posts: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -66,7 +66,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	handler := router(r.URL.Path)
 
-	post, err := GetPost(slug)
+	post, err := Cache.GetPost(slug)
 	if err != nil {
 		log.Printf("Error getting post %s: %v", slug, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)

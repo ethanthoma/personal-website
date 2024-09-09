@@ -15,6 +15,8 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 func main() {
 	log.Println("Starting server...")
 
+	InitCache()
+
 	http.HandleFunc("GET /healthy", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
