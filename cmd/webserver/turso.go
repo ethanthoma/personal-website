@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/tursodatabase/libsql-client-go/libsql"
+	"html/template"
 	"log"
 	"os"
 	"time"
@@ -19,6 +20,7 @@ type Post struct {
 	Title   string
 	Content string
 	Date    time.Time
+	HTML    template.HTML
 }
 
 func GetPosts() ([]Post, error) {

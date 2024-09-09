@@ -2,13 +2,15 @@ package main
 
 import (
 	"bytes"
-	"github.com/yuin/goldmark"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 )
 
 func router(urlPath string) func(http.ResponseWriter, int, string, interface{}) error {
@@ -21,14 +23,37 @@ func router(urlPath string) func(http.ResponseWriter, int, string, interface{}) 
 	}
 }
 
+type Context = struct {
+	Ascii       [][]string
+	CurrentPage string
+	Post        Post
+	Posts       []Post
+}
+
+var data = Context{
+	Ascii: func() [][]string {
+		fileBuffer, err := os.ReadFile("static/images/ascii.txt")
+		if err != nil {
+			log.Fatalf("Error reading ascii: %v", err)
+		}
+
+		lines := strings.Split(string(fileBuffer), "\n")
+
+		asciiChars := make([][]string, len(lines))
+
+		for i, line := range lines {
+			chars := strings.Split(line, "")
+			asciiChars[i] = chars
+		}
+
+		return asciiChars
+	}(),
+}
+
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	name := "home"
 
-	data := struct {
-		CurrentPage string
-	}{
-		CurrentPage: name,
-	}
+	data.CurrentPage = name
 
 	err := router(r.URL.Path)(w, http.StatusOK, name, data)
 	if err != nil {
@@ -40,19 +65,14 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 	name := "blog"
 
+	data.CurrentPage = name
+
 	posts, err := Cache.GetPosts()
 	if err != nil {
 		log.Printf("Error failed to get posts: %v", err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
-	data := struct {
-		CurrentPage string
-		Posts       []Post
-	}{
-		CurrentPage: name,
-		Posts:       posts,
-	}
+	data.Posts = posts
 
 	err = router(r.URL.Path)(w, http.StatusOK, name, data)
 	if err != nil {
@@ -85,21 +105,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
-	type Post = struct {
-		Title   string
-		Content template.HTML
-	}
+	post.HTML = template.HTML(buf.String())
 
-	data := struct {
-		CurrentPage string
-		Post        Post
-	}{
-		CurrentPage: "blog",
-		Post: Post{
-			Title:   post.Title,
-			Content: template.HTML(buf.String()),
-		},
-	}
+	data.Post = post
 
 	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
 	err = handler(w, http.StatusOK, "post", data)

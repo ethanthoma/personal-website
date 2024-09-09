@@ -1,5 +1,6 @@
-@import "post.css";
+@import "ascii.css";
+@import "content.css";
 @import "divider.css";
 @import "footer.css";
 @import "header.css";
-@import "content.css";
+@import "post.css";

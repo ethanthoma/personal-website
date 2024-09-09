@@ -1,0 +1,14 @@
+.ascii {
+    display: block;
+    width: 100%;
+    line-height: 0;
+    text-wrap: nowrap;
+    white-space-collapse: preserve;
+    text-align: center;
+}
+
+.ascii-char {
+    display: inline-block;
+    font-size: 5px;
+    width: 3px;
+}

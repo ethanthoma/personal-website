@@ -3,8 +3,7 @@ header {
     display: flex;
     flex-direction: column;
     margin-block-end: var(--space-s-l);
-    padding-block-start: calc(var(--space-xs-s) + var(--space-s-l));
-    padding-block-end: var(--space-xs-s);
+    padding-block: var(--space-xs-s);
 
     & nav {
         width: 100%;
