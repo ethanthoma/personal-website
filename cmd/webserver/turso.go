@@ -12,17 +12,7 @@ import (
 var turso_database_url = os.Getenv("TURSO_DATABASE_URL")
 var turso_auth_token = os.Getenv("TURSO_AUTH_TOKEN")
 
-var DB = func() *sql.DB {
-	url := fmt.Sprintf("%s?authToken=%s", turso_database_url, turso_auth_token)
-
-	db, err := sql.Open("libsql", url)
-	if err != nil {
-		log.Fatalf("Turso Database: Failed to open database %s: %s", turso_database_url, err)
-	}
-
-	log.Printf("Turso Database: Connected to %s", turso_database_url)
-	return db
-}()
+var url = fmt.Sprintf("%s?authToken=%s", turso_database_url, turso_auth_token)
 
 type Post struct {
 	Slug    string
@@ -34,7 +24,13 @@ type Post struct {
 func GetPosts() ([]Post, error) {
 	log.Println("Turso Database: getting posts...")
 
-	rows, err := DB.Query(`
+	db, err := sql.Open("libsql", url)
+	if err != nil {
+		log.Printf("Turso Database: Failed to open database %s: %v", turso_database_url, err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query(`
         SELECT
             *
         FROM
@@ -44,7 +40,7 @@ func GetPosts() ([]Post, error) {
         DESC;
     `)
 	if err != nil {
-		log.Printf("Turso Database: failed to get post table: %s", err)
+		log.Printf("Turso Database: failed to get post table: %v", err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -56,7 +52,13 @@ func GetPosts() ([]Post, error) {
 func GetPost(slug string) (Post, error) {
 	log.Printf("Turso Database: fetching post %s...", slug)
 
-	rows, err := DB.Query(fmt.Sprint(`
+	db, err := sql.Open("libsql", url)
+	if err != nil {
+		log.Printf("Turso Database: Failed to open database %s: %v", turso_database_url, err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query(fmt.Sprint(`
         SELECT 
             *
         FROM 
@@ -97,7 +99,7 @@ func rowsToPosts(rows *sql.Rows) ([]Post, error) {
 			&post.Content,
 			&post.Date,
 		); err != nil {
-			log.Printf("Turso Database: error scanning row: %s", err)
+			log.Printf("Turso Database: error scanning row: %v", err)
 			return nil, err
 		}
 
@@ -105,7 +107,7 @@ func rowsToPosts(rows *sql.Rows) ([]Post, error) {
 	}
 
 	if err := rows.Err(); err != nil {
-		log.Printf("Turso Database: error during rows iteration: %s", err)
+		log.Printf("Turso Database: error during rows iteration: %v", err)
 		return nil, err
 	}
 
