@@ -154,7 +154,7 @@ once the linking worked.
 
 ## Attempt Three: GO-d's chosen Language
 
-> "If you already use Go for one thing, why not both"
+> "If you already use Go for one thing, why not both."
 
 When I moved from WSL to Nixos on my surface, my ocaml-webserver would no longer 
 build. Why? Some platform specific mirage crap in opam-nix that I was too lazy 

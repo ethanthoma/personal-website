@@ -21,6 +21,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	http.HandleFunc("GET /robots.txt", staticHandler(http.Dir("static/seo")))
+
 	http.HandleFunc("GET /", homeHandler)
 	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /home/content", homeHandler)
