@@ -48,9 +48,8 @@ func insertOrUpdatePost(db *sql.DB, slug, title, content string) error {
         VALUES (?, ?, ?, ?)
         ON CONFLICT(slug) DO UPDATE SET
             title = excluded.title,
-            content = excluded.content,
-            date = ?
-	`, slug, title, content, date, date)
+            content = excluded.content
+	`, slug, title, content, date)
 
 	if err == nil {
 		log.Printf("Upserted post: %s\n", slug)

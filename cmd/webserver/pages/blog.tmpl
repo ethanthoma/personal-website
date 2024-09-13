@@ -5,9 +5,18 @@
 {{ define "shared-content" }}
     {{ template "title" . }}
     <h1>Blog</h1>
-    <ul class="posts">
+    <ul class="posts" style="margin-block-start: var(--space-2xs-xs);">
         {{ range $post := .Posts }}
-           <ul>{{ template "post" $post }}</ul>
+           <ul class="post">
+               <time>{{formatDate .Date }}</time>
+               <span class="spacer">-</span>
+               <a
+                   href="/post/{{ .Slug }}"
+                   hx-get="/post/{{ .Slug }}/content"
+                   hx-target="main"
+                   hx-push-url="/post/{{ .Slug }}"
+               ><h2>{{ .Title }}</h2></a>
+           </ul>
         {{ end }}
     </ul>
 {{ end }}

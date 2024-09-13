@@ -14,15 +14,19 @@ header {
         }
 
         & ul {
-            align-items: center;
             display: flex;
             justify-content: space-evenly;
             list-style-type: none;
+            text-align: center;
 
-            & a {
-                display: block;
-                padding-block: var(--space-2xs);
-                padding-inline: var(--space-xs);
+            & li {
+                flex: 1;
+
+                & a {
+                    display: block;
+                    padding-block: var(--space-2xs);
+                    padding-inline: var(--space-xs);
+                }
             }
         }
     }

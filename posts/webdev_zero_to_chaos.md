@@ -134,9 +134,9 @@ goodies so seems like a win to me.
 Turso doesn't have an Ocaml SDK.
  
 In fact, there isn't even an SDK for SQLite. But, there is a Go SDK...which you 
-compile to C...which Ocaml can read...
+can compile to C...which Ocaml can read...
 
-And so my taks is now to
+And so now my tasks are to
 - get Dune to compile my Go code to C
 - get Dune to link my C code
 - call the linked C code from Ocaml

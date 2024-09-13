@@ -33,6 +33,9 @@ func main() {
 	http.HandleFunc("GET /post/{slug}", postHandler)
 	http.HandleFunc("GET /post/{slug}/content", postHandler)
 
+	http.HandleFunc("GET /projects", projectsHandler)
+	http.HandleFunc("GET /projects/content", projectsHandler)
+
 	http.Handle("GET /static/", http.StripPrefix("/static/", staticHandler(http.Dir("static"))))
 
 	log.Fatal(http.ListenAndServe(":8080", logRequests))

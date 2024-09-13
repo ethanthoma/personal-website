@@ -82,6 +82,8 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
+	data.CurrentPage = "blog"
+
 	slug := r.PathValue("slug")
 
 	handler := router(r.URL.Path)
@@ -113,6 +115,18 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 	err = handler(w, http.StatusOK, "post", data)
 	if err != nil {
 		log.Printf("Error rendering post %s: %v", slug, err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+}
+
+func projectsHandler(w http.ResponseWriter, r *http.Request) {
+	name := "projects"
+
+	data.CurrentPage = name
+
+	err := router(r.URL.Path)(w, http.StatusOK, name, data)
+	if err != nil {
+		log.Printf("Error rendering %s: %v", name, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
 }

@@ -1,8 +1,7 @@
 {{ define "nav-links" }}
-    {{ range $name := newRange "home" "blog" }}
+    {{ range $name := newRange "home" "blog" "projects" }}
         <li><a 
             class="
-            select-nav
             {{ if eq $.CurrentPage $name }}selected{{ end }}
             "
             href="/{{ $name }}"
