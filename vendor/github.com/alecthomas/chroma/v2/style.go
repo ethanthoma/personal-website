@@ -1,7 +1,10 @@
 package chroma
 
 import (
+	"encoding/xml"
 	"fmt"
+	"io"
+	"sort"
 	"strings"
 )
 
@@ -47,6 +50,10 @@ type StyleEntry struct {
 	Italic    Trilean
 	Underline Trilean
 	NoInherit bool
+}
+
+func (s StyleEntry) MarshalText() ([]byte, error) {
+	return []byte(s.String()), nil
 }
 
 func (s StyleEntry) String() string {
@@ -157,9 +164,12 @@ func (s *StyleBuilder) AddAll(entries StyleEntries) *StyleBuilder {
 }
 
 func (s *StyleBuilder) Get(ttype TokenType) StyleEntry {
-	// This is less than ideal, but it's the price for having to check errors on each Add().
+	// This is less than ideal, but it's the price for not having to check errors on each Add().
 	entry, _ := ParseStyleEntry(s.entries[ttype])
-	return entry.Inherit(s.parent.Get(ttype))
+	if s.parent != nil {
+		entry = entry.Inherit(s.parent.Get(ttype))
+	}
+	return entry
 }
 
 // Add an entry to the Style map.
@@ -172,6 +182,25 @@ func (s *StyleBuilder) Add(ttype TokenType, entry string) *StyleBuilder { // nol
 
 func (s *StyleBuilder) AddEntry(ttype TokenType, entry StyleEntry) *StyleBuilder {
 	s.entries[ttype] = entry.String()
+	return s
+}
+
+// Transform passes each style entry currently defined in the builder to the supplied
+// function and saves the returned value. This can be used to adjust a style's colours;
+// see Colour's ClampBrightness function, for example.
+func (s *StyleBuilder) Transform(transform func(StyleEntry) StyleEntry) *StyleBuilder {
+	types := make(map[TokenType]struct{})
+	for tt := range s.entries {
+		types[tt] = struct{}{}
+	}
+	if s.parent != nil {
+		for _, tt := range s.parent.Types() {
+			types[tt] = struct{}{}
+		}
+	}
+	for tt := range types {
+		s.AddEntry(tt, transform(s.Get(tt)))
+	}
 	return s
 }
 
@@ -194,6 +223,22 @@ func (s *StyleBuilder) Build() (*Style, error) {
 // StyleEntries mapping TokenType to colour definition.
 type StyleEntries map[TokenType]string
 
+// NewXMLStyle parses an XML style definition.
+func NewXMLStyle(r io.Reader) (*Style, error) {
+	dec := xml.NewDecoder(r)
+	style := &Style{}
+	return style, dec.Decode(style)
+}
+
+// MustNewXMLStyle is like NewXMLStyle but panics on error.
+func MustNewXMLStyle(r io.Reader) *Style {
+	style, err := NewXMLStyle(r)
+	if err != nil {
+		panic(err)
+	}
+	return style
+}
+
 // NewStyle creates a new style definition.
 func NewStyle(name string, entries StyleEntries) (*Style, error) {
 	return NewStyleBuilder(name).AddAll(entries).Build()
@@ -215,6 +260,89 @@ type Style struct {
 	Name    string
 	entries map[TokenType]StyleEntry
 	parent  *Style
+}
+
+func (s *Style) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	if s.parent != nil {
+		return fmt.Errorf("cannot marshal style with parent")
+	}
+	start.Name = xml.Name{Local: "style"}
+	start.Attr = []xml.Attr{{Name: xml.Name{Local: "name"}, Value: s.Name}}
+	if err := e.EncodeToken(start); err != nil {
+		return err
+	}
+	sorted := make([]TokenType, 0, len(s.entries))
+	for ttype := range s.entries {
+		sorted = append(sorted, ttype)
+	}
+	sort.Slice(sorted, func(i, j int) bool { return sorted[i] < sorted[j] })
+	for _, ttype := range sorted {
+		entry := s.entries[ttype]
+		el := xml.StartElement{Name: xml.Name{Local: "entry"}}
+		el.Attr = []xml.Attr{
+			{Name: xml.Name{Local: "type"}, Value: ttype.String()},
+			{Name: xml.Name{Local: "style"}, Value: entry.String()},
+		}
+		if err := e.EncodeToken(el); err != nil {
+			return err
+		}
+		if err := e.EncodeToken(xml.EndElement{Name: el.Name}); err != nil {
+			return err
+		}
+	}
+	return e.EncodeToken(xml.EndElement{Name: start.Name})
+}
+
+func (s *Style) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
+	for _, attr := range start.Attr {
+		if attr.Name.Local == "name" {
+			s.Name = attr.Value
+		} else {
+			return fmt.Errorf("unexpected attribute %s", attr.Name.Local)
+		}
+	}
+	if s.Name == "" {
+		return fmt.Errorf("missing style name attribute")
+	}
+	s.entries = map[TokenType]StyleEntry{}
+	for {
+		tok, err := d.Token()
+		if err != nil {
+			return err
+		}
+		switch el := tok.(type) {
+		case xml.StartElement:
+			if el.Name.Local != "entry" {
+				return fmt.Errorf("unexpected element %s", el.Name.Local)
+			}
+			var ttype TokenType
+			var entry StyleEntry
+			for _, attr := range el.Attr {
+				switch attr.Name.Local {
+				case "type":
+					ttype, err = TokenTypeString(attr.Value)
+					if err != nil {
+						return err
+					}
+
+				case "style":
+					entry, err = ParseStyleEntry(attr.Value)
+					if err != nil {
+						return err
+					}
+
+				default:
+					return fmt.Errorf("unexpected attribute %s", attr.Name.Local)
+				}
+			}
+			s.entries[ttype] = entry
+
+		case xml.EndElement:
+			if el.Name.Local == start.Name.Local {
+				return nil
+			}
+		}
+	}
 }
 
 // Types that are styled.
@@ -295,6 +423,15 @@ func (s *Style) synthesise(ttype TokenType) StyleEntry {
 
 func (s *Style) synthesisable(ttype TokenType) bool {
 	return ttype == LineHighlight || ttype == LineNumbers || ttype == LineNumbersTable
+}
+
+// MustParseStyleEntry parses a Pygments style entry or panics.
+func MustParseStyleEntry(entry string) StyleEntry {
+	out, err := ParseStyleEntry(entry)
+	if err != nil {
+		panic(err)
+	}
+	return out
 }
 
 // ParseStyleEntry parses a Pygments style entry.

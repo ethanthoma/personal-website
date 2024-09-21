@@ -2,8 +2,8 @@ schema = 3
 
 [mod]
   [mod."github.com/alecthomas/chroma/v2"]
-    version = "v2.2.0"
-    hash = "sha256-sTFJK779C6R6RkB3dTst6g+ELUbXAZuMCNud6Yc9xN8="
+    version = "v2.9.1"
+    hash = "sha256-rqRjAGKEBtCzoNe3zS9x+J3CM2EwzQAQli5/DWEGtJo="
   [mod."github.com/antlr4-go/antlr/v4"]
     version = "v4.13.0"
     hash = "sha256-98nKVlsgv1S7vMvGuKOQINOKkiEvrlX5DCSmyr6Mr+A="
@@ -11,8 +11,8 @@ schema = 3
     version = "v1.8.12"
     hash = "sha256-jEaJSKcwmKtXFkvtxwpEdFMdazXZM6bY2u5TGBimklI="
   [mod."github.com/dlclark/regexp2"]
-    version = "v1.7.0"
-    hash = "sha256-Z/M62esiZ0fVwvueVQhwz18z0eS22LZ3DJ4O8FKp3AY="
+    version = "v1.10.0"
+    hash = "sha256-Jxzj/O/Q9tIWBOOgCkCibhrgJBzzfVIxYDsabt7O8ow="
   [mod."github.com/tursodatabase/libsql-client-go"]
     version = "v0.0.0-20240902231107-85af5b9d094d"
     hash = "sha256-Cu6yhSYDUb7iMi0oGrciKTMIefOXolYBUqqfiSKloUE="

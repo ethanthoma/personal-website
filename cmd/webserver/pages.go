@@ -96,7 +96,9 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	mdRenderer := goldmark.New(
 		goldmark.WithExtensions(
-			highlighting.NewHighlighting(),
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("rose-pine"),
+            ),
 		),
 	)
 

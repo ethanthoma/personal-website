@@ -1,5 +1,5 @@
-# github.com/alecthomas/chroma/v2 v2.2.0
-## explicit; go 1.17
+# github.com/alecthomas/chroma/v2 v2.9.1
+## explicit; go 1.19
 github.com/alecthomas/chroma/v2
 github.com/alecthomas/chroma/v2/formatters/html
 github.com/alecthomas/chroma/v2/lexers
@@ -16,7 +16,7 @@ github.com/coder/websocket/internal/util
 github.com/coder/websocket/internal/wsjs
 github.com/coder/websocket/internal/xsync
 github.com/coder/websocket/wsjson
-# github.com/dlclark/regexp2 v1.7.0
+# github.com/dlclark/regexp2 v1.10.0
 ## explicit; go 1.13
 github.com/dlclark/regexp2
 github.com/dlclark/regexp2/syntax
