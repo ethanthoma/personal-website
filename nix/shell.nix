@@ -1,20 +1,20 @@
-{ pkgs 
+{ pkgs
 , mkGoEnv
 , gomod2nix
 , uploader
-, env ? {}
+, env ? { }
 }:
 
 let
-    goEnv = mkGoEnv { pwd = ../.; };
+  goEnv = mkGoEnv { pwd = ../.; };
 in
-    pkgs.mkShell {
-        inherit env;
-        packages = [
-            goEnv
-            gomod2nix
-            pkgs.air
-            pkgs.turso-cli
-            uploader
-        ];
-    }
+pkgs.mkShell {
+  inherit env;
+  packages = [
+    goEnv
+    gomod2nix
+    pkgs.air
+    pkgs.turso-cli
+    uploader
+  ];
+}
