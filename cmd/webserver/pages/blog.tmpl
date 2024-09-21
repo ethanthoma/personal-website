@@ -7,7 +7,7 @@
     <h1>Blog</h1>
     <ul class="posts" style="margin-block-start: var(--space-2xs-xs);">
         {{ range $post := .Posts }}
-           <ul class="post">
+           <li class="post">
                <time>{{formatDate .Date }}</time>
                <span class="spacer">-</span>
                <a
@@ -16,7 +16,7 @@
                    hx-target="main"
                    hx-push-url="/post/{{ .Slug }}"
                ><h2>{{ .Title }}</h2></a>
-           </ul>
+           </li>
         {{ end }}
     </ul>
 {{ end }}

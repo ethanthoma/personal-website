@@ -40,4 +40,10 @@
     --space-m-xl: clamp(1.6875rem, 1rem + 3.4375vi, 3.75rem);
     --space-l-2xl: clamp(2.25rem, 1.3333rem + 4.5833vi, 5rem);
     --space-xl-3xl: clamp(3.375rem, 2rem + 6.875vi, 7.5rem);
+
+    /* Colors */
+    --clr-base: #faf4ed;
+    --clr-text: #575279;
+    --clr-link: #907aa9;
+    --clr-high: #cecacd;
 }

@@ -1,4 +1,4 @@
 .divider {
-    border-block-start: 2px dashed black;
+    border-block-start: var(--space-3xs) solid var(--clr-high);
     width: 100%;
 }

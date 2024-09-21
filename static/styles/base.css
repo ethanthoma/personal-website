@@ -3,7 +3,8 @@
 
 body {
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: var(--clr-base);
+    color: var(--clr-text);
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif;
@@ -12,7 +13,7 @@ body {
     max-width: 100svw;
     overflow-x: hidden;
 
-    --max-width: 640px;
+    --max-width: 760px;
     --min-width: 320px;
 
     & main {
@@ -21,9 +22,10 @@ body {
 
     & main,
     & header {
-        width: clamp(var(--min-width), 100%, var(--max-width));
+        display: block;
+        width: clamp(var(--min-width), 75%, var(--max-width));
         margin-inline: auto;
-        padding-inline: var(--space-xl);
+        padding-inline: var(--space-m-xl);
     }
 }
 
@@ -45,4 +47,8 @@ h2 {
 
 h3 {
     font-size: var(--fs-400);
+}
+
+a {
+    color: var(--clr-link);
 }
