@@ -13,7 +13,7 @@ body {
     max-width: 100svw;
     overflow-x: hidden;
 
-    --max-width: 760px;
+    --max-width: 640px;
     --min-width: 320px;
 
     & main {
@@ -25,7 +25,7 @@ body {
         display: block;
         width: clamp(var(--min-width), 75%, var(--max-width));
         margin-inline: auto;
-        padding-inline: var(--space-m-xl);
+        padding-inline: var(--space-2xs-s);
     }
 }
 
