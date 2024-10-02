@@ -19,15 +19,18 @@
         let
           pkgs = nixpkgs.legacyPackages.${system};
 
-          # The current default sdk for macOS fails to compile go projects, so we use a newer one for now.
-          # This has no effect on other platforms.
           callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
+
+          odin = callPackage ./nix/odin.nix {
+            MacOSX-SDK = pkgs.darwin.apple_sdk;
+            inherit (pkgs.darwin) Security;
+          };
         in
         rec {
           packages.default = callPackage ./nix/webserver.nix {
             pname = "webserver";
             version = "0.1";
-            inherit pkgs;
+            inherit pkgs odin;
             inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
           };
 
@@ -39,12 +42,14 @@
 
           packages.container = callPackage ./nix/container.nix {
             derivation = packages.default;
+
             inherit pkgs;
           };
 
           devShells.default = callPackage ./nix/shell.nix {
-            env.GOFLAGS = "-mod=vendor";
             uploader = packages.uploader;
+
+            inherit odin;
             inherit (gomod2nix.legacyPackages.${system}) mkGoEnv gomod2nix;
           };
         })

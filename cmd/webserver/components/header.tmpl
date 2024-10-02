@@ -1,9 +1,8 @@
 {{ define "nav-links" }}
     {{ range $name := newRange "home" "blog" "projects" }}
         <li><a 
-            class="
-            {{ if eq $.CurrentPage $name }}selected{{ end }}
-            "
+            id="nav-link-{{$name}}"
+            class="{{ if eq $.CurrentPage $name }}selected{{ end }}"
             href="/{{ $name }}"
             hx-get="/{{ $name }}/content"
             hx-target="main"
@@ -18,6 +17,10 @@
             {{ template "nav-links" . }}
         </ul>
     </nav>
+{{ end }}
+
+{{ define "nav-links-updater" }}
+    {{ template "nav" . }}
 {{ end }}
 
 {{ define "header" }}

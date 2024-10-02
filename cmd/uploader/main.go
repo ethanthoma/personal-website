@@ -10,7 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
+
+	"personal-website/internal"
 )
 
 var turso_database_url = os.Getenv("TURSO_DATABASE_URL")
@@ -26,37 +27,6 @@ var db = func() *sql.DB {
 
 	return db
 }()
-
-func createTableIfNotExists(db *sql.DB) error {
-	_, err := db.Exec(`
-        CREATE TABLE IF NOT EXISTS posts (
-            slug    VARCHAR(255) NOT NULL UNIQUE,
-            title   VARCHAR(255) NOT NULL,
-            content TEXT NOT NULL,
-            date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (slug)
-        );
-	`)
-	return err
-}
-
-func insertOrUpdatePost(db *sql.DB, slug, title, content string) error {
-	date := time.Now()
-
-	_, err := db.Exec(`
-        INSERT INTO posts (slug, title, content, date)
-        VALUES (?, ?, ?, ?)
-        ON CONFLICT(slug) DO UPDATE SET
-            title = excluded.title,
-            content = excluded.content
-	`, slug, title, content, date)
-
-	if err == nil {
-		log.Printf("Upserted post: %s\n", slug)
-	}
-
-	return err
-}
 
 func extractTitle(content string) (string, error) {
 	scanner := bufio.NewScanner(strings.NewReader(content))
@@ -78,7 +48,7 @@ func processMarkdownFile(filePath string) error {
 	}
 	defer db.Close()
 
-	err = createTableIfNotExists(db)
+	err = internal.CreateTableIfNotExists(db)
 	if err != nil {
 		return fmt.Errorf("failed to create table: %v", err)
 	}
@@ -94,7 +64,7 @@ func processMarkdownFile(filePath string) error {
 		return fmt.Errorf("failed to extract title from file %s: %v", filePath, err)
 	}
 
-	err = insertOrUpdatePost(db, slug, title, string(content))
+	err = internal.InsertOrUpdatePost(db, slug, title, string(content))
 	if err != nil {
 		return fmt.Errorf("failed to insert/update post %s: %v", slug, err)
 	}

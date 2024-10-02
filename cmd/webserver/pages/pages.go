@@ -1,4 +1,4 @@
-package main
+package pages
 
 import (
 	"html/template"
@@ -33,35 +33,33 @@ func NewRenderer(componentsDir string, pagesDir string) *Renderer {
 	}
 }
 
-func (t *Renderer) Content(w http.ResponseWriter, statusCode int, name string, data interface{}) error {
+func (t *Renderer) page(w http.ResponseWriter, r *http.Request, statusCode int, name string, data interface{}) error {
 	tmpl, err := t.tmpl.Clone()
 	if err != nil {
 		log.Println("Failed to clone Renderer template")
+		return err
 	}
 	tmpl.ParseFiles(t.pagesDir + "/" + name + ".tmpl")
 
 	if statusCode != http.StatusOK {
 		w.WriteHeader(statusCode)
 	}
-	return tmpl.ExecuteTemplate(w, "content", data)
-}
 
-func (t *Renderer) Page(w http.ResponseWriter, statusCode int, name string, data interface{}) error {
-	tmpl, err := t.tmpl.Clone()
-	if err != nil {
-		log.Println("Failed to clone Renderer template")
-	}
-	tmpl.ParseGlob(t.pagesDir + "/" + name + ".tmpl")
+	if strings.HasSuffix(r.URL.Path, "/content") {
+		if tmpl.ExecuteTemplate(w, "content", data) != nil {
+			log.Println("Failed to render content")
+		}
 
-	if statusCode != http.StatusOK {
-		w.WriteHeader(statusCode)
-	}
-	return tmpl.ExecuteTemplate(w, "page", data)
-}
+		if tmpl.ExecuteTemplate(w, "oob", data) != nil {
+			log.Println("Failed to render oob")
+		}
+	} else {
+		tmpl.ParseGlob(t.pagesDir + "/" + name + ".tmpl")
 
-func (t *Renderer) Component(w http.ResponseWriter, statusCode int, name string, data interface{}) error {
-	if statusCode != http.StatusOK {
-		w.WriteHeader(statusCode)
+		if tmpl.ExecuteTemplate(w, "base", data) != nil {
+			log.Println("Failed to render base")
+		}
 	}
-	return t.tmpl.ExecuteTemplate(w, name, data)
+
+	return err
 }

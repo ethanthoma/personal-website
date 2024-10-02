@@ -2,29 +2,14 @@
     <title>Ethan Thoma \ {{ .Post.Title }}</title>
 {{ end }}
 
-{{ define "shared-content" }}
+{{ define "content" }}
     {{ template "title" . }}
+
     <article class="content">
         {{ .Post.HTML }}
     </article>
 {{ end }}
 
-{{ define "content" }}
-    {{ template "shared-content" . }}
-
-    {{ template "nav" . }}
-{{ end }}
-
-{{ define "page" }}
-    <!DOCTYPE html>
-    <html lang="en">
-    {{ template "head" . }}
-    <body>
-        {{ template "header" . }}
-        <main>
-            {{ template "shared-content" . }}
-        </main>
-        {{ template "footer" . }}
-    </body>
-    </html>
+{{ define "oob" }}
+    {{ template "nav-links-updater" . }}
 {{ end }}

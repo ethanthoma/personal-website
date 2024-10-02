@@ -1,27 +1,36 @@
-package main
+package pages
 
 import (
 	"fmt"
 	"log"
 	"sync"
 	"time"
+
+	"personal-website/internal"
 )
 
 type PostCache struct {
-	posts     map[string]Post
-	allPosts  []Post
+	posts     map[string]internal.Post
+	allPosts  []internal.Post
 	mutex     sync.RWMutex
 	lastFetch time.Time
 }
 
 var Cache = &PostCache{
-	posts:    make(map[string]Post),
-	allPosts: []Post{},
+	posts:    make(map[string]internal.Post),
+	allPosts: []internal.Post{},
 }
 
 func (c *PostCache) updateCache() error {
 	log.Println("Cache: Updating...")
-	posts, err := GetPosts()
+
+	db, err := internal.CreateConnection()
+	defer db.Close()
+	if err != nil {
+		return err
+	}
+
+	posts, err := internal.GetPosts(db)
 	if err != nil {
 		return err
 	}
@@ -30,7 +39,7 @@ func (c *PostCache) updateCache() error {
 	defer c.mutex.Unlock()
 
 	c.allPosts = posts
-	c.posts = make(map[string]Post)
+	c.posts = make(map[string]internal.Post)
 	for _, post := range posts {
 		c.posts[post.Slug] = post
 	}
@@ -40,7 +49,7 @@ func (c *PostCache) updateCache() error {
 	return nil
 }
 
-func (c *PostCache) GetPosts() ([]Post, error) {
+func (c *PostCache) GetPosts() ([]internal.Post, error) {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 
@@ -51,7 +60,7 @@ func (c *PostCache) GetPosts() ([]Post, error) {
 	return c.allPosts, nil
 }
 
-func (c *PostCache) GetPost(slug string) (Post, error) {
+func (c *PostCache) GetPost(slug string) (internal.Post, error) {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 
@@ -61,7 +70,7 @@ func (c *PostCache) GetPost(slug string) (Post, error) {
 
 	post, ok := c.posts[slug]
 	if !ok {
-		return Post{}, fmt.Errorf("Cache: post not found")
+		return internal.Post{}, fmt.Errorf("Cache: post not found")
 	}
 
 	return post, nil

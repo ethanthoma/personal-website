@@ -1,8 +1,6 @@
 { pkgs
-, mkGoEnv
-, gomod2nix
-, uploader
 , odin
+,
 }:
 
 let
@@ -10,17 +8,10 @@ let
     buildInputs = [ odin ];
     env.ODIN_ROOT = "${odin}/share";
   });
-
-  goEnv = mkGoEnv { pwd = ../.; };
 in
-pkgs.mkShell {
+pkgs.mkShell
+{
   packages = [
-    goEnv
-    gomod2nix
-    pkgs.air
-    pkgs.turso-cli
-    uploader
-
     odin
     ols
   ];
