@@ -12,9 +12,10 @@ rec {
 
   buildPhase = ''
     mkdir -p $out/wasm
-    odin build $src -show-timings -out:$out/wasm/${pname}.wasm -no-bounds-check -o:speed -target:js_wasm32
+    odin build $src -show-timings -out:$out/wasm/${pname}.wasm -no-bounds-check -o:size -target:js_wasm32 -extra-linker-flags:"--export-table"
 
     mkdir -p $out/js
+    cp ${odin.src}/vendor/wgpu/wgpu.js $out/js
     cp ${odin.src}/vendor/wasm/js/runtime.js $out/js
 
     touch $out/bin
