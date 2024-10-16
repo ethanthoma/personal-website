@@ -1,0 +1,11 @@
+{{ define "header" }}
+   <header>
+        {{ template "ascii" . }}
+        {{ template "nav" . }}
+        <div class="divider"></div>
+    </header> 
+{{ end }}
+
+{{ define "header-oob" }}
+    {{ template "nav-oob" . }}
+{{ end }}

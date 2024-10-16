@@ -1,5 +1,4 @@
 .content {
-
     &>*+* {
         margin-block-start: var(--space-2xs-xs);
     }
@@ -10,7 +9,7 @@
     }
 
     & pre {
-        background: lightgrey;
+        background: --var(--clr-high);
         font-size: var(--fs-200);
         overflow-x: auto;
         padding: var(--space-xs);
@@ -34,7 +33,7 @@
     }
 
     & blockquote {
-        border-inline-start: var(--space-3xs) solid gray;
+        border-inline-start: var(--space-3xs) solid var(--clr-high);
         padding-inline-start: var(--space-3xs);
     }
 }

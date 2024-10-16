@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"personal-website/cmd/webserver/cache"
 	"personal-website/cmd/webserver/pages"
 )
 
@@ -18,7 +19,7 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 func main() {
 	log.Println("Starting server...")
 
-	pages.InitCache()
+	cache.InitCache()
 
 	http.HandleFunc("GET /healthy", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -26,31 +27,28 @@ func main() {
 
 	http.HandleFunc("GET /robots.txt", staticHandler(http.Dir("static/seo")))
 
-	renderer := pages.NewRenderer("cmd/webserver/components", "cmd/webserver/pages")
 	ascii := createAscii()
 
-	pageHome := &pages.Home{Renderer: renderer, Ascii: ascii}
+	pageHome := &pages.Home{Pages: []string{"home", "blog", "projects"}, Ascii: ascii}
 	http.Handle("GET /", pageHome)
 	http.Handle("GET /home", pageHome)
 	http.Handle("GET /home/content", pageHome)
 
-	pageBlog := &pages.Blog{Renderer: renderer, Ascii: ascii}
+	pageBlog := &pages.Blog{Pages: []string{"home", "blog", "projects"}, Ascii: ascii}
 	http.Handle("GET /blog", pageBlog)
 	http.Handle("GET /blog/content", pageBlog)
 
-	pagePost := &pages.Post{Renderer: renderer, Ascii: ascii}
+	pagePost := &pages.Post{Pages: []string{"home", "blog", "projects"}, Ascii: ascii}
 	http.Handle("GET /post/{slug}", pagePost)
 	http.Handle("GET /post/{slug}/content", pagePost)
 
-	pageProject := &pages.Project{Renderer: renderer, Ascii: ascii}
-	http.Handle("GET /projects", pageProject)
-	http.Handle("GET /projects/content", pageProject)
-
-	pageWasm := &pages.Wasm{Renderer: renderer, Ascii: ascii}
-	http.Handle("GET /wasm", pageWasm)
-	http.Handle("GET /wasm/content", pageWasm)
+	pageProjects := &pages.Projects{Pages: []string{"home", "blog", "projects"}, Ascii: ascii}
+	http.Handle("GET /projects", pageProjects)
+	http.Handle("GET /projects/content", pageProjects)
 
 	http.Handle("GET /static/", http.StripPrefix("/static/", staticHandler(http.Dir("static"))))
+
+	//http.Handle("GET /cmd/webserver/components/", http.StripPrefix("/cmd/webserver/components", staticHandler(http.Dir("cmd/webserver/components"))))
 
 	log.Fatal(http.ListenAndServe(":8080", logRequests))
 }
@@ -58,7 +56,7 @@ func main() {
 func createAscii() [][]string {
 	fileBuffer, err := os.ReadFile("static/images/ascii.txt")
 	if err != nil {
-		log.Fatalf("Error reading ascii: %v", err)
+		log.Printf("main: reading ascii (%v)", err)
 	}
 
 	lines := strings.Split(string(fileBuffer), "\n")

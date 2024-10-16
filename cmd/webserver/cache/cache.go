@@ -1,4 +1,4 @@
-package pages
+package cache
 
 import (
 	"fmt"

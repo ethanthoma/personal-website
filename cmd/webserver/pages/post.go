@@ -5,47 +5,84 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
+	"time"
 
 	"github.com/yuin/goldmark"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 
+	"personal-website/cmd/webserver/cache"
+	"personal-website/cmd/webserver/layouts"
 	"personal-website/internal"
 )
 
 type Post struct {
-	Renderer *Renderer
-	Ascii    [][]string
+	Ascii       [][]string
+	PageCurrent string
+	Pages       []string
+	Post        internal.Post
 }
 
 func (p *Post) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	type data struct {
-		Ascii       [][]string
-		CurrentPage string
-		Post        internal.Post
-	}
+	name := "post"
 
-	d := data{
-		Ascii:       p.Ascii,
-		CurrentPage: "blog",
-	}
+	// Page props
+	p.PageCurrent = "blog"
 
 	slug := r.PathValue("slug")
 	post, err := getPost(slug)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	d.Post = post
+	p.Post = post
 
-	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
-	err = p.Renderer.page(w, r, http.StatusOK, "post", d)
+	// Page Template
+	t, err := template.New("").Funcs(template.FuncMap{
+		"formatDate": func(date time.Time) string {
+			return date.Format("20060102")
+		},
+	}).ParseFiles("cmd/webserver/pages/" + name + ".tmpl")
 	if err != nil {
-		log.Printf("Error rendering post %s: %v", slug, err)
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		log.Printf(name+": failed to parse tmpl file (%v)", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Layout
+	if err = (layouts.BaseLayout{
+		Ascii:       p.Ascii,
+		PageCurrent: p.PageCurrent,
+		Pages:       p.Pages,
+	}.Layout(t)); err != nil {
+		log.Printf(name+": failed to render layout (%v)", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// Render
+	w.Header().Set("Cache-Control", "public, max-age=86400, immutable")
+
+	if strings.HasSuffix(r.URL.Path, "/content") {
+		if err = t.ExecuteTemplate(w, "content", p); err != nil {
+			log.Printf(name+": failed to render content (%v)", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if err = t.ExecuteTemplate(w, "oob", p); err != nil {
+			log.Printf(name+": failed to render oob (%v)", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	} else if err = t.ExecuteTemplate(w, "page", p); err != nil {
+		log.Printf(name+": failed to render page (%v)", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 }
 
 func getPost(slug string) (internal.Post, error) {
-	post, err := Cache.GetPost(slug)
+	post, err := cache.Cache.GetPost(slug)
 	if err != nil {
 		log.Printf("Error getting post %s: %v", slug, err)
 		return post, err

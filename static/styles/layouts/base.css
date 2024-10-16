@@ -1,6 +1,3 @@
-@import "variables.css";
-@import "reset.css";
-
 body {
     align-items: center;
     background-color: var(--clr-base);

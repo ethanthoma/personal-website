@@ -1,9 +1,9 @@
-{{ define "title" }}
-    <title>Ethan Thoma \ Projects</title>
+{{ define "page" }}
+    {{ template "base-layout" . }}
 {{ end }}
 
 {{ define "content" }}
-    {{ template "title" . }}
+    <title>Ethan Thoma \ Projects</title>
 
     <style>
         .spacer {
@@ -31,5 +31,5 @@
 {{ end }}
 
 {{ define "oob" }}
-    {{ template "nav-links-updater" . }}
+    {{ template "header-oob" . }}
 {{ end }}

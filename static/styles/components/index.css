@@ -1,7 +1,5 @@
-@import "ascii.css";
-@import "content.css";
-@import "divider.css";
-@import "footer.css";
-@import "header.css";
-@import "post.css";
-@import "spacer.css";
+@import "../../../cmd/webserver/components/ascii/ascii.css";
+@import "../../../cmd/webserver/components/footer/footer.css";
+@import "../../../cmd/webserver/components/header/header.css";
+@import "../../../cmd/webserver/components/nav/nav.css";
+@import "../../../cmd/webserver/components/spacer/spacer.css";

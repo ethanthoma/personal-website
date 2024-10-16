@@ -5,12 +5,12 @@
 # go webserver code
 !cmd/
 !internal/
-!vendor/
 !static/
 !.air.toml
 !go.mod
 !go.sum
 !gomod2nix.toml
+static/js/
 
 # blogs
 !posts/

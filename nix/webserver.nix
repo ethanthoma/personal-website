@@ -36,11 +36,14 @@ buildGoApplication {
 
     mkdir -p $out/static/styles
     lightningcss --bundle ./static/styles/main.css -t "> .5% or last 2 versions" -o $out/static/styles/main.css
- 
-    mkdir -p $out/cmd/${pname}
-    mkdir -p $out/cmd/${pname}/pages
-    mkdir -p $out/cmd/${pname}/components
-    cp -r ./cmd/${pname}/pages/*.tmpl $out/cmd/${pname}/pages
-    cp -r ./cmd/${pname}/components/*.tmpl $out/cmd/${pname}/components
+
+    find ./cmd/${pname} -name "*.tmpl" -exec sh -c '
+      for file do
+        dest="$out/cmd/${pname}/''${file#./cmd/${pname}/}"
+        echo $(dirname "$dest")
+        mkdir -p "$(dirname "$dest")"
+        cp "$file" "$dest"
+      done
+    ' sh {} +
   '';
 }

@@ -1,9 +1,9 @@
-{{ define "title" }}
-    <title>Ethan Thoma \ {{ .Post.Title }}</title>
+{{ define "page" }}
+    {{ template "base-layout" . }}
 {{ end }}
 
 {{ define "content" }}
-    {{ template "title" . }}
+    <title>Ethan Thoma \ {{ .Post.Title }}</title>
 
     <article class="content">
         {{ .Post.HTML }}
@@ -11,5 +11,5 @@
 {{ end }}
 
 {{ define "oob" }}
-    {{ template "nav-links-updater" . }}
+    {{ template "header-oob" . }}
 {{ end }}

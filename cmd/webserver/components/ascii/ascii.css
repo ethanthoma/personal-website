@@ -5,10 +5,10 @@
     text-wrap: nowrap;
     white-space-collapse: preserve;
     text-align: center;
-}
 
-.ascii-char {
-    display: inline-block;
-    font-size: 5px;
-    width: 3px;
+    & .ascii-char {
+        display: inline-block;
+        font-size: 5px;
+        width: 3px;
+    }
 }

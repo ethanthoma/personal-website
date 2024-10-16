@@ -8,7 +8,7 @@ pkgs.dockerTools.buildImage {
   copyToRoot = pkgs.buildEnv {
     name = "image-root";
     paths = [ derivation ];
-    pathsToLink = [ "/bin" "/cmd/${derivation.pname}/components" "/cmd/${derivation.pname}/pages" "/static" ];
+    pathsToLink = [ "/bin" "/cmd/${derivation.pname}" "/cmd/${derivation.pname}" "/static" ];
   };
   config = {
     Cmd = [
