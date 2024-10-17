@@ -1,6 +1,6 @@
 <h3 align="center">
     <img 
-        src="https://raw.githubusercontent.com/ethanthoma/personal-website/main/static/favicon/android-chrome-512x512.png" 
+        src="https://raw.githubusercontent.com/ethanthoma/personal-website/main/cmd/webserver/public/favicon/android-chrome-512x512.png" 
         width="100"
         alt="Logo"/>
     <br/>
