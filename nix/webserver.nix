@@ -1,9 +1,10 @@
-{ pname
-, version
-, pkgs
-, fetchurl
-, buildGoApplication
-, odin
+{
+  pname,
+  version,
+  pkgs,
+  fetchurl,
+  buildGoApplication,
+  odin,
 }:
 let
   htmxVersion = "2.0.2";
@@ -20,22 +21,22 @@ buildGoApplication {
   pwd = ../.;
   modules = ../gomod2nix.toml;
   subPackages = [ "cmd/${pname}" ];
-  nativeBuildInputs = [
-    pkgs.lightningcss
-  ];
+  nativeBuildInputs = [ pkgs.lightningcss ];
   postInstall = ''
-    mkdir -p $out/static
-    rsync -a ./static $out --exclude styles --exclude js --exclude wasm
+    static=$out/cmd/webserver/public
 
-    mkdir -p $out/static/js
-    cp ${htmx} $out/static/js/htmx.min.js
-    cp -r ${client.out}/js/* $out/static/js
+    mkdir -p $static
 
-    mkdir -p $out/static/wasm
-    cp -r ${client.out}/wasm/* $out/static/wasm
+    rsync -a ./cmd/webserver/public $out/cmd/webserver --exclude styles --exclude js --exclude wasm --exclude='*.css'
 
-    mkdir -p $out/static/styles
-    lightningcss --bundle ./static/styles/main.css -t "> .5% or last 2 versions" -o $out/static/styles/main.css
+    mkdir -p $static/js
+    cp ${htmx} $static/js/htmx.min.js
+    cp -r ${client.out}/js/* $static/js
+
+    mkdir -p $static/wasm
+    cp -r ${client.out}/wasm/* $static/wasm
+
+    lightningcss --minify --bundle ./cmd/webserver/main.css -t "> .5% or last 2 versions" -o $out/cmd/webserver/main.css
 
     find ./cmd/${pname} -name "*.tmpl" -exec sh -c '
       for file do

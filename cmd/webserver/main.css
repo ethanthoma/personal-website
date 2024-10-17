@@ -1,0 +1,8 @@
+@layer core, layouts, pages, components;
+
+@import "./public/reset.css" layer(core);
+@import "./public/variables.css" layer(core);
+
+@import "./layouts/index.css" layer(layouts);
+@import "./pages/index.css" layer(pages);
+@import "./components/index.css" layer(components);

@@ -1,16 +1,14 @@
-{ pkgs
-, odin
-,
-}:
+{ pkgs, odin }:
 
 let
-  ols = pkgs.ols.overrideAttrs (finalAttrs: previousAttrs: {
-    buildInputs = [ odin ];
-    env.ODIN_ROOT = "${odin}/share";
-  });
+  ols = pkgs.ols.overrideAttrs (
+    finalAttrs: previousAttrs: {
+      buildInputs = [ odin ];
+      env.ODIN_ROOT = "${odin}/share";
+    }
+  );
 in
-pkgs.mkShell
-{
+pkgs.mkShell {
   packages = [
     odin
     ols

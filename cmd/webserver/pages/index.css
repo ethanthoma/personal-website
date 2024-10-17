@@ -1,0 +1,5 @@
+@import "./blog/blog.css";
+@import "./home/home.css";
+@import "./post/post.css";
+@import "./projects/projects.css";
+@import "./wasm/wasm.css";

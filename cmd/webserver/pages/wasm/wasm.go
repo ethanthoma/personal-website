@@ -1,4 +1,4 @@
-package pages
+package wasm
 
 import (
 	"html/template"
@@ -7,19 +7,17 @@ import (
 	"strings"
 	"time"
 
-	"personal-website/cmd/webserver/layouts"
-
-	spacer "personal-website/cmd/webserver/components/spacer"
+	"personal-website/cmd/webserver/layouts/base"
 )
 
-type Projects struct {
+type Props struct {
 	Ascii       [][]string
 	PageCurrent string
 	Pages       []string
 }
 
-func (p *Projects) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	name := "projects"
+func (p *Props) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	name := "wasm"
 
 	// Page props
 	p.PageCurrent = name
@@ -29,7 +27,7 @@ func (p *Projects) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		"formatDate": func(date time.Time) string {
 			return date.Format("20060102")
 		},
-	}).ParseFiles("cmd/webserver/pages/" + name + ".tmpl")
+	}).ParseFiles("cmd/webserver/pages/" + name + "/" + name + ".tmpl")
 	if err != nil {
 		log.Printf(name+": failed to parse tmpl file (%v)", err)
 		w.WriteHeader(http.StatusInternalServerError)
@@ -37,19 +35,12 @@ func (p *Projects) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Layout
-	if err = (layouts.BaseLayout{
+	if err = (base.Props{
 		Ascii:       p.Ascii,
 		PageCurrent: p.PageCurrent,
 		Pages:       p.Pages,
 	}.Layout(t)); err != nil {
 		log.Printf(name+": failed to render layout (%v)", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Components
-	if err = (spacer.Props{}).Component(t); err != nil {
-		log.Printf(name+": failed to render spacer (%v)", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

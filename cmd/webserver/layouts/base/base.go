@@ -1,4 +1,4 @@
-package layouts
+package base
 
 import (
 	"html/template"
@@ -8,16 +8,16 @@ import (
 	header "personal-website/cmd/webserver/components/header"
 )
 
-type BaseLayout struct {
+type Props struct {
 	Ascii       [][]string
 	Pages       []string
 	PageCurrent string
 }
 
-func (props BaseLayout) Layout(t *template.Template) error {
+func (props Props) Layout(t *template.Template) error {
 	name := "base"
 
-	filepath := "cmd/webserver/layouts/" + name + ".tmpl"
+	filepath := "cmd/webserver/layouts/" + name + "/" + name + ".tmpl"
 
 	if _, err := t.New(name + "-layout").ParseFiles(filepath); err != nil {
 		return err

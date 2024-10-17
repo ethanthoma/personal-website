@@ -1,6 +1,7 @@
-{ pname
-, version
-, buildGoApplication
+{
+  pname,
+  version,
+  buildGoApplication,
 }:
 
 buildGoApplication {

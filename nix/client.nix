@@ -1,9 +1,5 @@
-{ pkgs
-, odin
-,
-}:
-pkgs.stdenv.mkDerivation
-rec {
+{ pkgs, odin }:
+pkgs.stdenv.mkDerivation rec {
   pname = "client";
   version = "0.1";
   src = ../client;

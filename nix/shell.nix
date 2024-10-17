@@ -1,15 +1,18 @@
-{ pkgs
-, mkGoEnv
-, gomod2nix
-, uploader
-, odin
+{
+  pkgs,
+  mkGoEnv,
+  gomod2nix,
+  uploader,
+  odin,
 }:
 
 let
-  ols = pkgs.ols.overrideAttrs (finalAttrs: previousAttrs: {
-    buildInputs = [ odin ];
-    env.ODIN_ROOT = "${odin}/share";
-  });
+  ols = pkgs.ols.overrideAttrs (
+    finalAttrs: previousAttrs: {
+      buildInputs = [ odin ];
+      env.ODIN_ROOT = "${odin}/share";
+    }
+  );
 
   goEnv = mkGoEnv { pwd = ../.; };
 in
