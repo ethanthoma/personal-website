@@ -25,6 +25,7 @@ module.exports = {
         spacing: {
             // @link https://utopia.fyi/space/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl|s-2xl&g=s,l,xl,12
 
+            '4xs': 'clamp(0.125rem, 0.1033rem + 0.1087vw, 0.1875rem)',
             '3xs': 'clamp(0.25rem, 0.2065rem + 0.2174vw, 0.375rem)',
             '2xs': 'clamp(0.5rem, 0.4348rem + 0.3261vw, 0.6875rem)',
             'xs': 'clamp(0.75rem, 0.6413rem + 0.5435vw, 1.0625rem)',

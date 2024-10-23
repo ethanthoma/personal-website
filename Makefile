@@ -10,7 +10,7 @@ run:
 docker/build:
 	nix build .#container
 
-docker: docker/build
+docker: build/docker
 	docker load < result
 	docker run \
 		--rm \
@@ -31,7 +31,6 @@ live/server:
 		--build.cmd "go build -o tmp/bin/main personal-website/services/webserver" \
 		--build.bin "tmp/bin/main" \
 		--build.delay "100" \
-		--build.include_dir "personal-website/services/webserver" \
 		--build.include_ext "go" \
 		--build.stop_on_error "false" \
 		--misc.clean_on_exit true \
@@ -40,6 +39,8 @@ live/server:
 		--proxy.app_port $(PORT)
 
 live/tailwind:
+	rsync -a ./services/webserver/public/* ./public --exclude='*.css'
+	rm -f ./public/main.css
 	tailwindcss \
 		-c ./services/webserver/tailwind.config.js \
 		-i ./services/webserver/public/main.css \
@@ -48,8 +49,6 @@ live/tailwind:
 		-w
 
 live/sync_assets:
-	rsync -a ./services/webserver/public/* ./public --exclude='*.css'
-	sleep 0.1 
 	air \
 		--build.cmd "templ generate --notify-proxy" \
 		--build.bin "true" \
@@ -62,4 +61,4 @@ live:
 	make live/templ & \
 	make live/server & \
 	make live/tailwind & \
-	make live/sync_assets
+	(sleep 0.1 && make live/sync_assets)

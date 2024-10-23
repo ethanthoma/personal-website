@@ -11,7 +11,8 @@ templ (p Nav) View() {
 			for _, name := range p.Pages {
 				<li class="flex-1">
 					<a
-						class={ "block px-2xs-xs py-2xs border-2 text-center ", templ.KV("font-extrabold", p.PageCurrent == name) }
+						class={ "block px-2xs-xs py-2xs border-2 text-center transition-[transform,box-shadow] duration-200 ease-in-out hover:translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[-4px_4px_0_0]", 
+                            templ.KV("font-extrabold", p.PageCurrent == name) }
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
 						hx-push-url={ "/" + name }

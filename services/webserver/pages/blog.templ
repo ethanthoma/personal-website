@@ -15,9 +15,9 @@ templ (p Blog) View(posts []internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ Blog",
 	}.View() {
-		<article>
-			<h1 class="text-2xl mb-m font-extrabold leading-none tracking-tight">Blog</h1>
-			<ul class="space-y-s list-inside">
+		<article class="relative border-2 p-xs">
+			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
+			<ul class="mt-m space-y-s list-inside">
 				for _, post := range posts {
 					<li class="flex">
 						<time>{ post.Date.Format("20060102") }</time>

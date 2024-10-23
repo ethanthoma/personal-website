@@ -8,15 +8,30 @@
             @apply mt-2xs-xs;
         }
 
+        @apply relative;
+        @apply border-2;
+        @apply p-xs;
+
         & h1 {
+            @apply absolute;
+            @apply -top-xs;
+            @apply bg-base;
+            @apply px-xs;
+            @apply mx-3xs;
             @apply text-2xl;
-            @apply mb-m;
             @apply font-extrabold;
             @apply leading-none;
             @apply tracking-tight;
         }
 
+        & h1+* {
+            @apply mt-xl;
+        }
+
         & h2 {
+            @apply pb-3xs-2xs;
+            @apply border-b-2;
+            @apply border-content;
             @apply text-lg;
             @apply mt-l-xl;
             @apply font-extrabold;
