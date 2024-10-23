@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha1"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -28,7 +30,7 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 })
 
 func main() {
-	log.Println("Starting server...")
+	log.Printf("Starting server on %s...", port)
 
 	cache.InitCache()
 
@@ -70,7 +72,7 @@ func main() {
 
 	// static
 	http.Handle("GET /public/", http.StripPrefix("/public/", staticHandler(http.Dir("public"))))
-	http.Handle("GET /robots.txt", staticHandler(http.Dir("static/seo")))
+	http.Handle("GET /robots.txt", staticHandler(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, logRequests))
 }
@@ -78,7 +80,7 @@ func main() {
 func slugToHTML(slug string) (internal.Post, error) {
 	post, err := cache.Cache.GetPost(slug)
 	if err != nil {
-		log.Printf("Error getting post %s: %v", slug, err)
+		log.Printf("error getting post %s (%v)", slug, err)
 		return post, err
 	}
 
@@ -93,7 +95,7 @@ func slugToHTML(slug string) (internal.Post, error) {
 	var buf bytes.Buffer
 	err = mdRenderer.Convert([]byte(post.Content), &buf)
 	if err != nil {
-		log.Printf("Error parsing post %s to markdown: %v", slug, err)
+		log.Printf("error parsing post %s to markdown (%v)", slug, err)
 		return post, err
 	}
 
@@ -105,18 +107,46 @@ func slugToHTML(slug string) (internal.Post, error) {
 func staticHandler(root http.FileSystem) http.HandlerFunc {
 	fileServer := http.FileServer(root)
 
-	return func(w http.ResponseWriter, r *http.Request) {
-		ext := strings.ToLower(filepath.Ext(r.URL.Path))
+	// Calculate ETags once at startup
+	etagCache := make(map[string]string)
+	if dir, ok := root.(http.Dir); ok {
+		if err := filepath.Walk(string(dir), func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
 
+			if !info.IsDir() {
+				content, err := os.ReadFile(path)
+				if err == nil {
+					relativePath := strings.TrimPrefix(path, string(dir))
+					hash := sha1.Sum(content)
+					etagCache[filepath.ToSlash(relativePath)[1:]] = fmt.Sprintf(`"%x"`, hash)
+				}
+			}
+			return nil
+		}); err != nil {
+			log.Fatalf("error walking %s (%v)", string(dir), err)
+		}
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Get ETag if we have one
+		if etag, ok := etagCache[r.URL.Path]; ok {
+			w.Header().Set("ETag", etag)
+
+			// Check If-None-Match
+			if match := r.Header.Get("If-None-Match"); match != "" {
+				if strings.Contains(match, etag) {
+					w.WriteHeader(http.StatusNotModified)
+					return
+				}
+			}
+		}
+
+		ext := strings.ToLower(filepath.Ext(r.URL.Path))
 		switch ext {
-		case ".css":
-			w.Header().Set("Cache-Control", "public, max-age=1800, immutable")
-		case ".js":
-			w.Header().Set("Cache-Control", "public, max-age=604800, immutable")
-		case ".jpg", ".jpeg", ".png", ".gif", ".ico":
-			w.Header().Set("Cache-Control", "public, max-age=2592000, immutable")
 		default:
-			w.Header().Set("Cache-Control", "max-age=0")
+			w.Header().Set("Cache-Control", "public, max-age=60, must-revalidate")
 		}
 
 		fileServer.ServeHTTP(w, r)

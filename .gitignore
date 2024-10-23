@@ -11,6 +11,7 @@
 
 # uploader
 !cmd/uploader
+!cmd/uploader/default.nix
 
 # nix code
 !nix/*
