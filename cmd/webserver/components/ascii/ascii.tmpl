@@ -1,7 +1,0 @@
-{{ define "ascii" }}
-    <div class="ascii">
-        {{ range .Ascii }}
-            {{ range $char := . }}<span class="ascii-char">{{ $char }}</span>{{ end }} <br>
-        {{ end }}
-    </div>
-{{ end }}

@@ -1,6 +1,6 @@
 <h3 align="center">
     <img 
-        src="https://raw.githubusercontent.com/ethanthoma/personal-website/main/cmd/webserver/public/favicon/android-chrome-512x512.png" 
+        src="https://raw.githubusercontent.com/ethanthoma/personal-website/main/service/webserver/public/favicon/android-chrome-512x512.png" 
         width="100"
         alt="Logo"/>
     <br/>
@@ -18,15 +18,34 @@
 
 | Tech  | Stack    |
 |-------|----------|
-| Go    | Backend  |
+| GO    | Backend  |
 | Htmx  | Frontend |
 | Turso | Database |
 
+We use [templ](https://github.com/a-h/templ) for templating and [tailwindcss](https://github.com/tailwindlabs/tailwindcss)
+for styles. So it is technically more like the GoTTTH stack...
+
 ## Building + Running
 
-The nix flake has three derivations:
+The nix flake has four derivations:
 - .#default: this produces the webserver binary
 - .#container: docker image containing the webserver binary
 - .#uploader: simple CLI to upload my markdown blogs
+- .#blob: a WIP blob storage service I plan to use for my images
 
-You can run it test the webserver locally with docker with `make run`. 
+## Developing
+
+The [make file](./Makefile) in root is setup for running air w/ livereload.
+It will run tailwindcss, templ, and air.
+
+> [!TIP]
+> You can also locally deply the docker image using `make docker`. 
+
+The webserver assumes the port is set to ":8080". This should be set in your dotenv.
+The dotenv file should contain:
+- TURSO_DATABASE_URL
+- TURSO_AUTH_TOKEN
+- WEBSERVER_PORT
+
+> [!NOTE]
+> WEBSERVER_PORT will probably be moved to the flake config instead

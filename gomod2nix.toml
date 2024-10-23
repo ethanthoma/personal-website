@@ -1,6 +1,9 @@
 schema = 3
 
 [mod]
+  [mod."github.com/a-h/templ"]
+    version = "v0.2.778"
+    hash = "sha256-54iSeNJU4dMMkxHEh0KyRu//vADMnt93fjmXzqc2xPE="
   [mod."github.com/alecthomas/chroma/v2"]
     version = "v2.9.1"
     hash = "sha256-rqRjAGKEBtCzoNe3zS9x+J3CM2EwzQAQli5/DWEGtJo="

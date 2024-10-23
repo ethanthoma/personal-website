@@ -9,6 +9,7 @@ require (
 )
 
 require (
+	github.com/a-h/templ v0.2.778 // indirect
 	github.com/alecthomas/chroma/v2 v2.9.1 // indirect
 	github.com/antlr4-go/antlr/v4 v4.13.0 // indirect
 	github.com/coder/websocket v1.8.12 // indirect

@@ -1,0 +1,22 @@
+package pages
+
+import (
+	"personal-website/internal"
+	"personal-website/services/webserver/layouts"
+)
+
+type Post struct {
+	Pages []string
+}
+
+templ (p Post) View(post internal.Post) {
+	@layouts.Base{
+		Pages:       p.Pages,
+		PageCurrent: "blog",
+		Title:       "Ethan Thoma \\ " + post.Title,
+	}.View() {
+		<article class="content">
+			@templ.Raw(post.HTML)
+		</article>
+	}
+}

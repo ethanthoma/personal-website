@@ -1,0 +1,13 @@
+package components
+
+type Header struct {
+	PageCurrent string
+	Pages       []string
+}
+
+templ (p Header) View() {
+	<header id="header" class="py-xs-s mb-xl">
+		@Nav{PageCurrent: p.PageCurrent, Pages: p.Pages}.View()
+		<div></div>
+	</header>
+}

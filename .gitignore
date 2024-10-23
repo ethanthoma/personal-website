@@ -1,25 +1,35 @@
-/*
+*
 
 !README.md
+!LICENSE
 
-# go webserver code
-!cmd/
+# go 
 !internal/
-!.air.toml
 !go.mod
 !go.sum
 !gomod2nix.toml
-cmd/webserver/public/js/
 
-# blogs
-!posts/
-
-# odin wasm code
-!client/
+# uploader
+!cmd/uploader
 
 # nix code
-!nix/
+!nix/*
 !flake.*
 
 # docker
-Makefile
+!Makefile
+
+# services
+!services/**/default.nix
+!services/**/*.go
+!services/**/*.templ
+services/**/*_templ.go
+
+# webserver
+!.air.toml
+!services/webserver/public/**
+services/webserver/**/*.js
+!services/webserver/public/tailwind.config.js
+!posts/
+
+!*/

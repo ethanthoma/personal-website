@@ -11,6 +11,7 @@
         flake-utils.follows = "flake-utils";
       };
     };
+    templ.url = "github:a-h/templ";
   };
 
   outputs =
@@ -19,45 +20,66 @@
       nixpkgs,
       flake-utils,
       gomod2nix,
+      templ,
     }:
     (flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        gopkgs = gomod2nix.legacyPackages.${system};
+        templpkgs = templ.packages.${system}.templ;
 
         callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
-
-        odin = callPackage ./nix/odin.nix {
-          MacOSX-SDK = pkgs.darwin.apple_sdk;
-          inherit (pkgs.darwin) Security;
-        };
       in
       rec {
-        packages.default = callPackage ./nix/webserver.nix {
-          pname = "webserver";
-          version = "0.1";
-          inherit pkgs odin;
-          inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
+        packages.default = callPackage ./services/webserver {
+          inherit (pkgs) makeWrapper tailwindcss;
+          inherit (gopkgs) buildGoApplication;
+          inherit templpkgs;
         };
 
-        packages.uploader = callPackage ./nix/uploader.nix {
-          pname = "uploader";
-          version = "0.1";
-          inherit (gomod2nix.legacyPackages.${system}) buildGoApplication;
+        packages.uploader = callPackage ./cmd/uploader { inherit (gopkgs) buildGoApplication; };
+
+        packages.blob = callPackage ./services/blob { inherit (gopkgs) buildGoApplication; };
+
+        packages.container = pkgs.dockerTools.buildImage {
+          name = packages.default.pname;
+          tag = packages.default.version;
+          created = "now";
+          copyToRoot = pkgs.buildEnv {
+            name = "image-root";
+            paths = [ packages.default ];
+            pathsToLink = [
+              "/bin"
+              "/public"
+            ];
+          };
+          config = {
+            Cmd = [ "${packages.default}/bin/${packages.default.pname}" ];
+            Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
+            ExposedPorts = {
+              "8080/tcp" = { };
+            };
+          };
         };
 
-        packages.container = callPackage ./nix/container.nix {
-          derivation = packages.default;
+        devShells.default =
+          let
+            goEnv = gopkgs.mkGoEnv { pwd = ./.; };
+          in
+          pkgs.mkShell {
+            packages = [
+              goEnv
+              gopkgs.gomod2nix
+              pkgs.air
+              pkgs.turso-cli
+              pkgs.gopls
+              pkgs.tailwindcss
+              #    uploader
+              templpkgs
+            ];
+          };
 
-          inherit pkgs;
-        };
-
-        devShells.default = callPackage ./nix/shell.nix {
-          uploader = packages.uploader;
-
-          inherit odin;
-          inherit (gomod2nix.legacyPackages.${system}) mkGoEnv gomod2nix;
-        };
       }
     ));
 }

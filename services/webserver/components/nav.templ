@@ -1,0 +1,27 @@
+package components
+
+type Nav struct {
+	PageCurrent string
+	Pages       []string
+}
+
+templ (p Nav) View() {
+	<nav id="nav" hx-swap-oob="true">
+		<ul class="flex justify-evenly gap-s-2xl">
+			for _, name := range p.Pages {
+				<li class="flex-1">
+					<a
+						class={ "block px-2xs-xs py-2xs border-2 text-center ", templ.KV("font-extrabold", p.PageCurrent == name) }
+						href={ templ.URL("/" + name) }
+						hx-get={ "/" + name }
+						hx-push-url={ "/" + name }
+						hx-target="main"
+						hx-select="main"
+					>
+						{ name }
+					</a>
+				</li>
+			}
+		</ul>
+	</nav>
+}

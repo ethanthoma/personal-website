@@ -1,0 +1,30 @@
+package pages
+
+import "personal-website/services/webserver/layouts"
+
+type Home struct {
+	Pages []string
+}
+
+templ (p Home) View() {
+	@layouts.Base{
+		Pages:       p.Pages,
+		PageCurrent: "home",
+		Title:       "Ethan Thoma",
+	}.View() {
+		<article>
+			<h1 class="text-2xl mb-m font-extrabold leading-none tracking-tight">Ethan Thoma</h1>
+			<p>
+				ML graduate student @ <a class="underline" href="https://github.com/STASER-Lab">STASER Lab UBC</a>
+				<br/>
+				Focused on NLP and RL research
+			</p>
+			<h2 class="mb-3xs-2xs mt-xs-s text-lg">Contact:</h2>
+			<ul class="space-y-2xs-xs list-disc list-inside">
+				<li><a class="underline" href="https://x.com/EthanBThoma">xitter (@EthanBThoma)</a></li>
+				<li><a class="underline" href="https://github.com/ethanthoma">GitHub</a></li>
+				<li><a class="underline" href="mailto:ethoma@student.ubc.ca">email</a></li>
+			</ul>
+		</article>
+	}
+}
