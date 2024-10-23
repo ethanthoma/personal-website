@@ -28,24 +28,20 @@ for styles. So it is technically more like the GoTTTH stack...
 ## Building + Running
 
 The nix flake has four derivations:
-- .#default: this produces the webserver binary
-- .#container: docker image containing the webserver binary
-- .#uploader: simple CLI to upload my markdown blogs
-- .#blob: a WIP blob storage service I plan to use for my images
+- #default: this produces the webserver binary
+- #container: docker image containing the webserver binary
+- #uploader: simple CLI to upload my markdown blogs
+- #blob: a WIP blob storage service I plan to use for my images
 
 ## Developing
 
 The [make file](./Makefile) in root is setup for running air w/ livereload.
-It will run tailwindcss, templ, and air.
+It will run tailwindcss, templ, and air. Simply run `make live`.
 
 > [!TIP]
 > You can also locally deply the docker image using `make docker`. 
 
-The webserver assumes the port is set to ":8080". This should be set in your dotenv.
-The dotenv file should contain:
+The webserver port is set in the [flake](./flake.nix). You also need a dotenv file.
+It should contain:
 - TURSO_DATABASE_URL
 - TURSO_AUTH_TOKEN
-- WEBSERVER_PORT
-
-> [!NOTE]
-> WEBSERVER_PORT will probably be moved to the flake config instead

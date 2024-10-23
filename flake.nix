@@ -29,10 +29,13 @@
         gopkgs = gomod2nix.legacyPackages.${system};
         templpkgs = templ.packages.${system}.templ;
 
+        webserverPort = "8080";
+
         callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
       in
       rec {
         packages.default = callPackage ./services/webserver {
+          port = webserverPort;
           inherit (pkgs) makeWrapper tailwindcss;
           inherit (gopkgs) buildGoApplication;
           inherit templpkgs;
@@ -58,7 +61,7 @@
             Cmd = [ "${packages.default}/bin/${packages.default.pname}" ];
             Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
             ExposedPorts = {
-              "8080/tcp" = { };
+              "${webserverPort}/tcp" = { };
             };
           };
         };
@@ -78,6 +81,8 @@
               #    uploader
               templpkgs
             ];
+
+            env.WEBSERVER_PORT = webserverPort;
           };
 
       }

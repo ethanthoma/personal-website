@@ -33,13 +33,16 @@
         }
 
         & pre {
-            @apply bg-high;
             @apply text-sm;
             @apply overflow-x-auto;
             @apply p-xs;
 
             &>code {
                 @apply break-words;
+
+                &>span>span{
+                    @apply pr-xs;
+                }
             }
         }
 

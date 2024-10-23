@@ -72,7 +72,7 @@ func main() {
 	http.Handle("GET /public/", http.StripPrefix("/public/", staticHandler(http.Dir("public"))))
 	http.Handle("GET /robots.txt", staticHandler(http.Dir("static/seo")))
 
-	log.Fatal(http.ListenAndServe(port, logRequests))
+	log.Fatal(http.ListenAndServe(":"+port, logRequests))
 }
 
 func slugToHTML(slug string) (internal.Post, error) {

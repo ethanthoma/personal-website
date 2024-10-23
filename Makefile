@@ -1,6 +1,6 @@
 IMAGE_NAME = webserver
 TAG = 0.1
-PORT = 8080
+PORT = ${WEBSERVER_PORT}
 SYSTEM = x86_64-linux
 
 run:
@@ -41,7 +41,7 @@ live/server:
 
 live/tailwind:
 	tailwindcss \
-		-c ./services/webserver/public/tailwind.config.js \
+		-c ./services/webserver/tailwind.config.js \
 		-i ./services/webserver/public/main.css \
 		-o ./public/main.css \
 		-m \
