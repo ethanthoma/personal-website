@@ -81,7 +81,7 @@
 
         & blockquote {
             @apply border-l-4;
-            @apply border-high;
+            @apply border-accent;
             @apply pl-3xs;
         }
     }

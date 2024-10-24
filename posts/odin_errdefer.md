@@ -4,7 +4,7 @@ I love [Zig](https://ziglang.org/). It's simple, it's nice, and I am still
 salty about [no comptime pointers](https://github.com/ziglang/zig/issues/7396). 
 
 But still, it's my go-to language for unmanaged memory. Why? Because other 
-languages do too much (cpp, rust, whateva else) and the larger the surface area,
+languages do too much (cpp, rust, whatever else) and the larger the surface area,
 the longer to learn the gotchas; simply a bigger surface area for failure.
 
 I'm lazy. I want a good STD, clear/simple syntax, and errors-as-values. So 
@@ -172,7 +172,6 @@ Programming languages should be simple.
 
 And I love Odin for that. Sure, it's not as explicit as Zig but it is simple, 
 it is readable, and there's even less special syntax and sugar and jazz than Zig.
-Like errors for example. In Odin, it is just a normal type like anyother.
 
 So try Odin. It is probably the best C-style language for graphics or for small 
 systems projects. I'd still use Zig (or maybe Rust one day) for big projects, 

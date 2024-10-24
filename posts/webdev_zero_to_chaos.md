@@ -25,11 +25,11 @@ Entire companies exist because of its UI/UX hell.
 
 But we are in luck (RUN), we can abstract the crap out of it and use the shiny 
 paradigm Infrastructure as Code (IaC). It comes with the wonderful perks of 
-all declaritive languages: it works perfectly until it doesn't work at all.
+all declarative languages: it works perfectly until it doesn't work at all.
 
 Originally, I tried [AWS CDK](https://aws.amazon.com/cdk/). Better than 
 haphazard button clicking but not by much. Eventually, I opted to use [Pulumi](https://www.pulumi.com/). 
-A much better experience and I got an oppurtunity to write it in Golang. So far,
+A much better experience and I got an opportunity to write it in Golang. So far,
 not a lost cause...
 
 ### Adding Building to a Static Site
@@ -45,7 +45,7 @@ What does SCSS do that CSS doesn't? No clue. Didn't know then, still don't.
 
 Now I add the fun step of compiling/transpiling/translating/preprocessing my 
 SCSS into CSS. Of course a simple Makefile would do? WRONG. Clearly I need to 
-overengineer a Bash build script. It came wiht a neat `config.json` that looked 
+overengineer a Bash build script. It came with a neat `config.json` that looked 
 like this:
 
 ```json
@@ -94,7 +94,7 @@ direction..."
 
 A solid six months past my first webdev trauma, my friend decided to make their 
 own website. Despite my poor gaslighting attempts for him to make it in [OCaml](https://ocaml.org/), 
-I failed...but I did convince myself...and so back to suffering ago, yippe
+I failed...but I did convince myself...and so back to suffering ago, yippee
 
 ### I like Opium but I can Dream too
 
@@ -106,7 +106,7 @@ build-tool, handled the integration for me. People tried to convince me the
 function composition way is better but I disagree. HTML is recognizable and easier
 to translate across frameworks and libraries.
 
-Evenrually I moved to [Dream](https://aantron.github.io/dream/) as it was better 
+Eventually I moved to [Dream](https://aantron.github.io/dream/) as it was better 
 maintained. What a mistake. Dream added something like 700 dependencies. This was 
 a "bit of an issue" as in the NixOS world I was using [opam-nix](https://www.tweag.io/blog/2023-02-16-opam-nix/) 
 which is great except it has to rebuild every dependency every time. This took a 
@@ -114,7 +114,7 @@ solid 13 minutes for when I was deploying via GitHub workflow. What the fuck...
 
 ### The HOT Stack: HTMX Ocaml Turso
 
-Everyone xitter users' favourite way to webdev: [Htmx](https://htmx.org/); it is 
+Everyone xitter users' favorite way to webdev: [Htmx](https://htmx.org/); it is 
 a small JS library that lets you do fun AJAX stuff in HTML tags instead of being 
 forced to use JS to do anything. With a little bit of kleptomancy in the HTMX 
 examples and TYXML adjustment, I got a decently presentable, modern webapp. Yay.
@@ -169,13 +169,15 @@ write is technical debt, every library I import is no different, except that one
 import line now represents hundreds to thousands to tens of thousands of debt.
 
 Part of this, less is more ideal is Golang. An overly simple, slightly verbose 
-language (I was on my zig and odin arc so it fits).
+language (I was on my Zig and Odin arc so it fits).
 
 Not only is my Turso database-reading code already in Go, Go standard library 
 comes with a simple HTTP webserver and HTML string templates which is awesome.
 
 The first two attempts took a combined four months of inconsistent effort. This 
 one? One day. 
+
+It took ONE DAY to do what took me months of wrangling complexity...
 
 Go works wonderfully on Nix with [Gomod2nix](https://www.tweag.io/blog/2021-03-04-gomod2nix/). 
 I wrote some simple template strings based off of my old Ocaml templates. Little 
@@ -184,9 +186,7 @@ Turso hosted blogs in maybe an hour. 30 minutes later my Nix flake could package
 my Go webserver into a Docker Image and I setup a GitHub Action to build and 
 host the image and call the [Render](https://render.com/) deploy hook.
 
-It took ONE DAY to do what took me months of wrangling complexity...
-
-> **_NOTE:_** I eventually moved to templ and tailwindcss to give them try. They are awesome tbqh!
+> **_NOTE:_** I eventually moved to templ and TailwindCSS to give them try. They are awesome tbqh!
 
 ## But Why Write This
 
