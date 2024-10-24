@@ -1,4 +1,4 @@
-# LLMs Don't Make Sense
+# LLMs Suck
 
 Picture two computers.
 

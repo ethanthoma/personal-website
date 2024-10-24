@@ -76,7 +76,7 @@ module.exports = {
 
         extend: {
             maxWidth: {
-                'content': 'min(clamp(320px, 100%, 680px), 100svw)',
+                'content': 'min(clamp(320px, 100%, max(680px, 33svw)), 100svw)',
             },
 
             keyframes: {
