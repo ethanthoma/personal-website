@@ -6,7 +6,7 @@ type Header struct {
 }
 
 templ (p Header) View() {
-	<header id="header" class="py-xs-s mb-xl">
+	<header id="header" class="pb-xs-s mb-xl">
 		@Nav{PageCurrent: p.PageCurrent, Pages: p.Pages}.View()
 		<div></div>
 	</header>

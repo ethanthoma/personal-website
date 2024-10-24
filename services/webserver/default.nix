@@ -7,10 +7,10 @@
   port,
 }:
 let
-  htmxVersion = "2.0.2";
+  htmxVersion = "2.0.3";
   htmx = fetchurl {
     url = "https://github.com/bigskysoftware/htmx/releases/download/v${htmxVersion}/htmx.min.js";
-    hash = "sha256-4XRtl1nsDUPFwoRFIzOjELtf1yheusSy3Jv0TXK1qIc=";
+    hash = "sha256-SRlVzRgQdH19e5zLk2QAr7dg4G0l1T5FcrZLZWOyeE4=";
   };
 in
 buildGoApplication rec {

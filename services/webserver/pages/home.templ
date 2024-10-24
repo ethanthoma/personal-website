@@ -6,6 +6,8 @@ type Home struct {
 	Pages []string
 }
 
+var tags = []string{"python", "nix", "zig", "odin", "go"}
+
 templ (p Home) View() {
 	@layouts.Base{
 		Pages:       p.Pages,
@@ -19,7 +21,14 @@ templ (p Home) View() {
 				<br/>
 				Focused on NLP and RL research
 			</p>
-			<h2 class="mb-xs-s mt-xs-s text-lg border-b-2 border-content">Contact:</h2>
+			<div class="flex flex-wrap gap-xs py-xs">
+				for _, tag := range tags {
+					<span class="px-xs py-3xs bg-low text-sm tracking-tight border-2 border-content">
+						{ tag }
+					</span>
+				}
+			</div>
+			<h2 class="mb-xs-s mt-m-l text-lg border-b-2 border-content">Contact:</h2>
 			<ul class="space-y-3xs-2xs list-inside ps-2xs-xs">
 				<li class="flex items-center gap-2xs">
 					<svg class="w-xs h-xs text-content" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -34,10 +43,10 @@ templ (p Home) View() {
 					<a class="underline" href="https://github.com/ethanthoma">GitHub (@ethanthoma)</a>
 				</li>
 				<li class="flex items-center gap-2xs">
-					<svg class="w-xs h-xs text-content" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+					<svg class="w-xs h-xs text-content animate-[underlineWave_4s_ease-in-out_infinite]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
 						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"></path>
 					</svg>
-					<a class="underline" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
+					<a class="underline animate-[underlineWave_4s_ease-in-out_infinite]" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
 				</li>
 			</ul>
 		</article>

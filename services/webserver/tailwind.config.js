@@ -6,7 +6,9 @@ module.exports = {
             'base': '#fafaf8',
             'content': '#141413',
             'link': '#907aa9',
-            'high': '#cecacd',
+            'high': '#ebdbbc',
+            'low': '#f0efea',
+            'accent': '#f97316',
         },
 
         fontSize: {
@@ -74,7 +76,20 @@ module.exports = {
 
         extend: {
             maxWidth: {
-                'content': 'min(clamp(320px, 75%, 640px), 100svw)',
+                'content': 'min(clamp(320px, 100%, 680px), 100svw)',
+            },
+
+            keyframes: {
+                underlineWave: {
+                    '0%, 100%': {
+                        'text-decoration-color': 'theme("colors.content")',
+                        'color': 'theme("colors.content")',
+                    },
+                    '50%': {
+                        'text-decoration-color': 'theme("colors.accent")',
+                        'color': 'theme("colors.accent")',
+                    },
+                },
             },
         },
     },

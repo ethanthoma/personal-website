@@ -78,7 +78,7 @@
               pkgs.turso-cli
               pkgs.gopls
               pkgs.tailwindcss
-              #    uploader
+              packages.uploader
               templpkgs
             ];
 
