@@ -43,10 +43,10 @@ is better: I decided to use SCSS.
 
 What does SCSS do that CSS doesn't? No clue. Didn't know then, still don't.
 
-Now I add the fun step of compiling/transpiling/translating/preprocessing my 
-SCSS into CSS. Of course a simple Makefile would do? WRONG. Clearly I need to 
-overengineer a Bash build script. It came with a neat `config.json` that looked 
-like this:
+Now I add the fun step of compiling (transpiling or translating or preprocessing 
+or what you prefer to call it) my SCSS into CSS. Of course a simple Makefile 
+would do? WRONG. Clearly I need to overengineer a Bash build script. It came 
+with a neat `config.json` that looked like this:
 
 ```json
 {

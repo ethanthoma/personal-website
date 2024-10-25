@@ -5,6 +5,8 @@ type Nav struct {
 	Pages       []string
 }
 
+const effect = "translate-x-3xs -translate-y-3xs shadow-content shadow-[-4px_4px_0_0]"
+
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
 		<ul class="flex justify-evenly gap-s-2xl">
@@ -12,12 +14,13 @@ templ (p Nav) View() {
 				<li class="flex-1">
 					<a
 						class={ "block px-2xs-xs py-2xs border-2 text-center transition-[transform,box-shadow] duration-200 ease-in-out hover:translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[-4px_4px_0_0]", 
-                            templ.KV("font-extrabold", p.PageCurrent == name) }
+                            templ.KV("font-extrabold " + effect, p.PageCurrent == name) }
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
 						hx-push-url={ "/" + name }
 						hx-target="main"
 						hx-select="main"
+						hx-swap="outerHTML"
 					>
 						{ name }
 					</a>

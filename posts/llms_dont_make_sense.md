@@ -52,7 +52,7 @@ engage in the same experiences. Yes, read the same things, but also do the same
 things, say the same things, match your senses to theirs. Fundamentally, you 
 need to have a similar sensory experience. 
 
-**Humans percieve first then communicate!**
+**Humans perceive first then communicate!**
 
 ## Values and RL
 
@@ -60,7 +60,7 @@ need to have a similar sensory experience.
 
 Reinforcement learning (RL) was king for much of 2000s. Before AlexNet's big run 
 and the eventual transformer hegemony, RL was the coolest kid of the block. And 
-I think, it will outlive deep conv nets and transformers.
+I think, it will outlive deep conv-nets and transformers.
 
 Value systems are an integral part of decision making. Economics captures this 
 part of us, at least partially (and why I think it and game theory are important 
@@ -89,7 +89,7 @@ is a bit better than the average person.
 > and let us make us a name, lest we be scattered abroad upon the face of the 
 > whole earth." -The Book of Genesis
 
-OpenAI has very succesfully [psyoped](https://en.wikipedia.org/wiki/Psychological_operations_(United_States)) 
+OpenAI has very successfully [psyoped](https://en.wikipedia.org/wiki/Psychological_operations_(United_States)) 
 us into thinking scaling was king. More parameters, more compute, more data, more
 more more. But, I think they're wrong. Transformers can scale really well. And 
 so we do scale them. But if you think transformers are the final architecture 
