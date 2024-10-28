@@ -15,7 +15,7 @@ templ (p Blog) View(posts []internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ Blog",
 	}.View() {
-		<article class="relative border-2 p-xs">
+		<article class="relative border-2 p-xs-s">
 			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
 			<ul class="mt-m space-y-s list-inside">
 				for i, post := range posts {

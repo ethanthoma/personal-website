@@ -15,7 +15,7 @@ templ (p Post) View(post internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ " + post.Title,
 	}.View() {
-		<article class="content">
+		<article class="content relative border-2 p-xs-s">
 			@templ.Raw(post.HTML)
 		</article>
 	}

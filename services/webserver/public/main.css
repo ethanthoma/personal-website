@@ -5,12 +5,8 @@
 @layer components {
     .content {
         &>*+* {
-            @apply mt-2xs-xs;
+            @apply mt-xs-s;
         }
-
-        @apply relative;
-        @apply border-2;
-        @apply p-xs;
 
         & h1 {
             @apply absolute;
