@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/yuin/goldmark"
@@ -37,6 +38,8 @@ func main() {
 	http.HandleFunc("GET /healthy", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+
+	// pages
 
 	navList := []string{"home", "blog"}
 
@@ -68,8 +71,40 @@ func main() {
 	})
 
 	// static
+
 	http.Handle("GET /public/", http.StripPrefix("/public/", staticHandler(http.Dir("public"))))
 	http.Handle("GET /robots.txt", staticHandler(http.Dir("public/seo")))
+
+	// sse
+
+	http.HandleFunc("GET /events", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+
+		clientGone := r.Context().Done()
+
+		rc := http.NewResponseController(w)
+		select {
+		case <-clientGone:
+			log.Printf("client disconnected")
+			return
+		default:
+			frag := fmt.Sprintf("<div id='time'>%v</div>", time.Now().Format(time.UnixDate))
+
+			event := fmt.Sprintf("event: datastar-fragment\n")
+			event += fmt.Sprintf("data: fragment %s\n\n", frag)
+
+			if _, err := fmt.Fprintf(w, event); err != nil {
+				log.Printf("failed to write SSE to response (%v)", err)
+				return
+			}
+			if err := rc.Flush(); err != nil {
+				log.Printf("failed to flush SSE to response (%v)", err)
+				return
+			}
+		}
+	})
 
 	log.Fatal(http.ListenAndServe(":"+port, logRequests))
 }
