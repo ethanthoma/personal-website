@@ -32,9 +32,9 @@ templ (p Blog) View(posts []internal.Post) {
 						>
 							<h3>{ post.Title }</h3>
 							if i == 0 {
-								<span class="flex absolute h-3xs w-3xs top-[0] right-[0] -mr-3xs">
-									<span class="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-blue opacity-75"></span>
-									<span class="relative inline-flex rounded-full h-3xs w-3xs bg-blue"></span>
+								<span class="flex absolute h-3xs w-3xs top-[0] right-[0] -mt-[calc(theme('spacing.3xs') / 2)] -mr-3xs">
+									<span class="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-blue opacity-85"></span>
+									<span class="relative inline-flex rounded-full h-full w-full bg-blue"></span>
 								</span>
 							}
 						</a>
