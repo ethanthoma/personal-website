@@ -31,12 +31,16 @@
         & h2 {
             @apply pb-3xs-2xs;
             @apply border-b-2;
-            @apply border-content;
+            @apply border-content/80;
             @apply text-lg;
             @apply mt-l-xl;
             @apply font-extrabold;
             @apply leading-none;
             @apply tracking-tight;
+
+            & p {
+                @apply text-content/80;
+            }
         }
 
         & h3 {
@@ -45,6 +49,10 @@
             @apply font-extrabold;
             @apply leading-none;
             @apply tracking-tight;
+        }
+
+        & p {
+            @apply font-sans;
         }
 
         & pre {
@@ -63,6 +71,7 @@
 
         & a {
             @apply underline;
+            @apply hover:text-blue;
         }
 
         & ul,

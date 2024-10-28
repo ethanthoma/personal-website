@@ -18,18 +18,26 @@ templ (p Blog) View(posts []internal.Post) {
 		<article class="relative border-2 p-xs">
 			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
 			<ul class="mt-m space-y-s list-inside">
-				for _, post := range posts {
+				for i, post := range posts {
 					<li class="flex">
 						<time>{ post.Date.Format("20060102") }</time>
 						<span class="px-2xs">-</span>
 						<a
-							class="underline"
+							class={ "underline hover:text-blue", templ.KV("relative inline-flex", i==0) }
 							href={ templ.URL("/post/" + post.Slug) }
 							hx-get={ "/post/" + post.Slug }
 							hx-target="main"
 							hx-select="main"
 							hx-push-url={ "/post/" + post.Slug }
-						><h2>{ post.Title }</h2></a>
+						>
+							<h3>{ post.Title }</h3>
+							if i == 0 {
+								<span class="flex absolute h-3xs w-3xs top-[0] right-[0] -mr-3xs">
+									<span class="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-blue opacity-75"></span>
+									<span class="relative inline-flex rounded-full h-3xs w-3xs bg-blue"></span>
+								</span>
+							}
+						</a>
 					</li>
 				}
 			</ul>

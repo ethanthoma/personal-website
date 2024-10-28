@@ -5,10 +5,8 @@ module.exports = {
         colors: {
             'base': '#fafaf8',
             'content': '#141413',
-            'link': '#907aa9',
-            'high': '#ebdbbc',
-            'low': '#f0efea',
             'accent': '#f97316',
+            'blue': '#0064E6',
         },
 
         fontSize: {
@@ -82,8 +80,8 @@ module.exports = {
             keyframes: {
                 underlineWave: {
                     '0%, 100%': {
-                        'text-decoration-color': 'theme("colors.content")',
-                        'color': 'theme("colors.content")',
+                        'text-decoration-color': 'inherit',
+                        'color': 'inherit',
                     },
                     '50%': {
                         'text-decoration-color': 'theme("colors.accent")',

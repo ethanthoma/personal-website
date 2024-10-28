@@ -38,7 +38,7 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	navList := []string{"home", "blog", "projects"}
+	navList := []string{"home", "blog"}
 
 	pageHome := pages.Home{Pages: navList}
 	http.Handle("GET /", templ.Handler(pageHome.View()))
@@ -66,9 +66,6 @@ func main() {
 
 		pagePost.View(post).Render(r.Context(), w)
 	})
-
-	pageProjects := pages.Projects{Pages: navList}
-	http.Handle("GET /projects", templ.Handler(pageProjects.View()))
 
 	// static
 	http.Handle("GET /public/", http.StripPrefix("/public/", staticHandler(http.Dir("public"))))
