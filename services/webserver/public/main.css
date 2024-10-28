@@ -74,6 +74,7 @@
         & ol {
             @apply list-inside;
             @apply list-disc;
+            @apply font-sans;
 
             &>li {
                 @apply ml-m;
