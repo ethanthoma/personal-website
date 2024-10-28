@@ -38,6 +38,8 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
+	// pages
+
 	navList := []string{"home", "blog"}
 
 	pageHome := pages.Home{Pages: navList}
@@ -68,6 +70,7 @@ func main() {
 	})
 
 	// static
+
 	http.Handle("GET /public/", http.StripPrefix("/public/", staticHandler(http.Dir("public"))))
 	http.Handle("GET /robots.txt", staticHandler(http.Dir("public/seo")))
 
@@ -104,7 +107,6 @@ func slugToHTML(slug string) (internal.Post, error) {
 func staticHandler(root http.FileSystem) http.HandlerFunc {
 	fileServer := http.FileServer(root)
 
-	// Calculate ETags once at startup
 	etagCache := make(map[string]string)
 	if dir, ok := root.(http.Dir); ok {
 		if err := filepath.Walk(string(dir), func(path string, info os.FileInfo, err error) error {
@@ -127,11 +129,9 @@ func staticHandler(root http.FileSystem) http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Get ETag if we have one
 		if etag, ok := etagCache[r.URL.Path]; ok {
 			w.Header().Set("ETag", etag)
 
-			// Check If-None-Match
 			if match := r.Header.Get("If-None-Match"); match != "" {
 				if strings.Contains(match, etag) {
 					w.WriteHeader(http.StatusNotModified)
