@@ -87,7 +87,9 @@ is a bit better than the average person.
 
 > "Go to, let us build us a city and a tower, whose top may reach unto heaven; 
 > and let us make us a name, lest we be scattered abroad upon the face of the 
-> whole earth." -The Book of Genesis
+> whole earth." 
+>
+> -The Book of Genesis
 
 OpenAI has very successfully [psyoped](https://en.wikipedia.org/wiki/Psychological_operations_(United_States)) 
 us into thinking scaling was king. More parameters, more compute, more data, more

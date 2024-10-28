@@ -87,7 +87,9 @@
         & blockquote {
             @apply border-l-4;
             @apply border-accent;
-            @apply pl-3xs;
+            @apply px-3xs;
+            @apply bg-base-dark;
+            @apply text-justify;
         }
     }
 }

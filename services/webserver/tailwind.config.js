@@ -3,7 +3,10 @@ module.exports = {
     content: ['./**/*.{html,templ,go}'],
     theme: {
         colors: {
-            'base': '#fafaf8',
+            base: {
+                DEFAULT: '#fafaf8',
+                'dark': '#f0efea',
+            },
             'content': '#141413',
             'accent': '#f97316',
             'blue': '#0064E6',
