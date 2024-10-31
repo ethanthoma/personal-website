@@ -94,3 +94,56 @@
         }
     }
 }
+
+@media print {
+
+    html,
+    body {
+        width: 210mm;
+        max-width: 210mm;
+        height: 297mm;
+        max-height: 297mm;
+        padding: 0;
+        margin: 0;
+    }
+
+    body {
+        display: flex;
+        justify-items: center;
+    }
+
+    .h-resume {
+        &>section {
+            padding-inline: 0;
+            margin-inline: 0;
+        }
+
+        & h2 {
+            @apply text-m;
+            border: 0;
+            border-bottom: 2px;
+            @apply border-content;
+            @apply border-solid;
+        }
+
+        & .skill {
+            @apply border-2;
+            @apply border-content;
+            @apply border-solid;
+        }
+
+        & a {
+            text-decoration: none;
+        }
+    }
+
+    header,
+    footer,
+    nav {
+        display: none !important;
+    }
+
+    * {
+        border: none;
+    }
+}

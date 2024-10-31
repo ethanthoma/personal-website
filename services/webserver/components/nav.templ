@@ -6,6 +6,7 @@ type Nav struct {
 }
 
 const effect = "translate-x-3xs -translate-y-3xs shadow-content shadow-[-4px_4px_0_0]"
+const hoverEffect = "hover:translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[-4px_4px_0_0]"
 
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
@@ -13,8 +14,12 @@ templ (p Nav) View() {
 			for _, name := range p.Pages {
 				<li class="flex-1">
 					<a
-						class={ "block px-2xs-xs py-2xs border-2 text-center transition-[transform,box-shadow] duration-200 ease-in-out hover:translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[-4px_4px_0_0]", 
-                            templ.KV("font-extrabold " + effect, p.PageCurrent == name) }
+						class={
+							"relative h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-200 ease-in-out group",
+							templ.KV(hoverEffect, p.PageCurrent != name),
+							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
+						}
+						href={ templ.URL("/" + name) }
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
 						hx-push-url={ "/" + name }
@@ -22,10 +27,35 @@ templ (p Nav) View() {
 						hx-select="main"
 						hx-swap="outerHTML"
 					>
-						{ name }
+						if name == "resume" {
+							@fancyHover(name)
+						} else {
+							{ name }
+						}
 					</a>
 				</li>
 			}
 		</ul>
 	</nav>
+}
+
+templ arrow() {
+	<svg class="w-xs h-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+	</svg>
+}
+
+templ fancyHover(name string) {
+	<span class="absolute inline-flex inset-[0] items-center justify-center overflow-hidden">
+		<span class="absolute bottom-[0] w-full h-[0] transition-all duration-150 ease-in-out bg-accent group-hover:h-full"></span>
+		<span class="absolute text-content right-[0] pr-3xs-2xs duration-200 ease-out group-hover:translate-x-m-l">
+			@arrow()
+		</span>
+		<span class="absolute text-base left-[0] pl-3xs-2xs duration-200 ease-out -translate-x-m-l group-hover:translate-x-[0]">
+			@arrow()
+		</span>
+		<span class="relative transition-colors duration-200 ease-in-out group-hover:text-base">
+			{ name }
+		</span>
+	</span>
 }

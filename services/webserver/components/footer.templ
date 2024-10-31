@@ -3,9 +3,27 @@ package components
 type Footer struct{}
 
 templ (p Footer) View() {
-	<footer class="pt-s border-t-content border-t-2 mt-xl">
+	<footer class="flex flex-col items-center pt-s border-t-content border-t-2 mt-xl">
 		<p class="text-wrap text-center">
 			&copy;2024 Ethan Thoma. All rights reserved.
 		</p>
+		<ul class="flex gap-x-xs-s justify-between text-content/60">
+			<li>
+				<a
+					class="underline hover:text-accent"
+					href="https://github.com/ethanthoma/personal-website"
+				>
+					website source code
+				</a>
+			</li>
+			<li>
+				<a
+					class="underline hover:text-accent"
+					href="https://www.buymeacoffee.com/ethanthoma"
+				>
+					Buy me a coffee?
+				</a>
+			</li>
+		</ul>
 	</footer>
 }

@@ -40,7 +40,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "blog"}
+	navList := []string{"home", "blog", "resume"}
 
 	pageHome := pages.Home{Pages: navList}
 	http.Handle("GET /", templ.Handler(pageHome.View()))
@@ -68,6 +68,9 @@ func main() {
 
 		pagePost.View(post).Render(r.Context(), w)
 	})
+
+	pageResume := pages.Resume{Pages: navList}
+	http.Handle("GET /resume", templ.Handler(pageResume.View()))
 
 	// static
 
