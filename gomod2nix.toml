@@ -2,29 +2,29 @@ schema = 3
 
 [mod]
   [mod."github.com/a-h/templ"]
-    version = "v0.2.778"
-    hash = "sha256-54iSeNJU4dMMkxHEh0KyRu//vADMnt93fjmXzqc2xPE="
+    version = "v0.3.857"
+    hash = "sha256-OI7Y4AP2XAV1XyNqUQapINWkSD9LCWgNaNYHQZBVaro="
   [mod."github.com/alecthomas/chroma/v2"]
-    version = "v2.9.1"
-    hash = "sha256-rqRjAGKEBtCzoNe3zS9x+J3CM2EwzQAQli5/DWEGtJo="
+    version = "v2.15.0"
+    hash = "sha256-vpYgavp9sAjP541UrPDDP10gBetbPKV6+owJ5Z01YXk="
   [mod."github.com/antlr4-go/antlr/v4"]
-    version = "v4.13.0"
-    hash = "sha256-98nKVlsgv1S7vMvGuKOQINOKkiEvrlX5DCSmyr6Mr+A="
+    version = "v4.13.1"
+    hash = "sha256-beAuxHNRUuhzcSJUh/8ztVf1zCUiaT72fg2Jvx0AuNQ="
   [mod."github.com/coder/websocket"]
-    version = "v1.8.12"
-    hash = "sha256-jEaJSKcwmKtXFkvtxwpEdFMdazXZM6bY2u5TGBimklI="
+    version = "v1.8.13"
+    hash = "sha256-NbF0aPhy8YR3jRM6LMMQTtkeGTFba0eIBPAUsqI9KOk="
   [mod."github.com/dlclark/regexp2"]
-    version = "v1.10.0"
-    hash = "sha256-Jxzj/O/Q9tIWBOOgCkCibhrgJBzzfVIxYDsabt7O8ow="
+    version = "v1.11.5"
+    hash = "sha256-jN5+2ED+YbIoPIuyJ4Ou5pqJb2w1uNKzp5yTjKY6rEQ="
   [mod."github.com/tursodatabase/libsql-client-go"]
     version = "v0.0.0-20240902231107-85af5b9d094d"
     hash = "sha256-Cu6yhSYDUb7iMi0oGrciKTMIefOXolYBUqqfiSKloUE="
   [mod."github.com/yuin/goldmark"]
-    version = "v1.7.4"
-    hash = "sha256-1L0gZyD+AguN8GBy17rs54eFZv7LTU5dcttULEJRabI="
+    version = "v1.7.8"
+    hash = "sha256-SNJMPPiXkRDLVOldrHN0ErC3bUB2VoWaLDkd9zmMATw="
   [mod."github.com/yuin/goldmark-highlighting/v2"]
     version = "v2.0.0-20230729083705-37449abec8cc"
     hash = "sha256-HpiwU7jIeDUAg2zOpTIiviQir8dpRPuXYh2nqFFccpg="
   [mod."golang.org/x/exp"]
-    version = "v0.0.0-20240325151524-a685a6edb6d8"
-    hash = "sha256-bYUSDnC/XOij85mLaW3bWD+2xRxby7ezXOvaPJ2e0lQ="
+    version = "v0.0.0-20250305212735-054e65f0b394"
+    hash = "sha256-Vgt/CNx/xJYxiKKu0PI7ZSiL/SOfXI4di3Mcyge3aw4="

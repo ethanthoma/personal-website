@@ -36,9 +36,10 @@
       rec {
         packages.default = callPackage ./services/webserver {
           port = webserverPort;
-          inherit (pkgs) makeWrapper tailwindcss;
+          inherit (pkgs) makeWrapper;
           inherit (gopkgs) buildGoApplication;
           inherit templpkgs;
+          tailwindcss = pkgs.tailwindcss_4;
         };
 
         packages.uploader = callPackage ./cmd/uploader { inherit (gopkgs) buildGoApplication; };

@@ -34,7 +34,7 @@ buildGoApplication rec {
 
     mkdir -p $static
 
-    tailwindcss -c ./services/${pname}/tailwind.config.js -i $public/main.css -o $static/main.css --minify
+    tailwindcss -i $public/main.css -o $static/main.css --minify
 
     rsync -a $public $out --exclude js --exclude='*.css'
 
