@@ -10,17 +10,37 @@ type Project struct {
 	date, title, url, description string
 }
 
-templ (project Project) view() {
-	<li class="project h-event flex">
-		<time class="py-2xs dt-start">{ project.date }</time>
-		<span class="p-2xs">-</span>
-		<div class={ "p-2xs rounded-md", templ.KV("bg-base-dark", project.description != "") }>
+templ (project Project) view(last bool) {
+	<li class="relative grid grid-cols-subgrid col-span-3">
+		<div class="col-[1] py-2xs relative">
+			<time class="bg-base py-2xs">{ project.date }</time>
+			if !last {
+				<div class="border-e [z-index:-1] border-content/20 h-full my-m w-1/2 absolute inset-0"></div>
+			}
+		</div>
+		<span class="col-[2] p-2xs">-</span>
+		if project.description != "" {
 			<a
-				class="underline hover:text-blue"
+				class="col-[3] p-2xs rounded-md w-fit relative bg-white border-shadow border-[1px] transition-all duration-200 ease-in-out hover:shadow-shadow hover:shadow-[3px_3px_0px_shadow]"
+				href={ templ.URL(project.url) }
+			>
+				<h3 class="underline hover:text-blue p-name">{ project.title }</h3>
+				<p>{ project.description }</p>
+				<svg aria-hidden="true" class="pointer-events-none absolute inset-0 h-full w-full fill-blue/50 stroke-blue/50 opacity-20 [mask-image:linear-gradient(to_top,_#ffffffad,_transparent)]" style="visibility: visible;">
+					<defs>
+						<pattern id=":R4foqfknq6ja:" width="13" height="13" patternUnits="userSpaceOnUse" x="-1" y="-1">
+							<path d="M.5 13V.5H13" fill="none" stroke-dasharray="0"></path>
+						</pattern>
+					</defs>
+					<rect width="100%" height="100%" stroke-width="0" fill="url(#:R4foqfknq6ja:)"></rect>
+				</svg>
+			</a>
+		} else {
+			<a
+				class="col-[3] p-2xs rounded-md w-fit underline hover:text-blue hover:bg-content/5"
 				href={ templ.URL(project.url) }
 			><h3 class="p-name">{ project.title }</h3></a>
-			<p>{ project.description }</p>
-		</div>
+		}
 	</li>
 }
 
@@ -34,7 +54,7 @@ var projects = []Project{
 	{
 		date:        "20250202",
 		title:       "effect: Gleam library for handling side effects",
-		url:         "https://github.com/ethanthoma/trellis",
+		url:         "https://github.com/ethanthoma/effect",
 		description: "",
 	},
 	{
@@ -83,9 +103,9 @@ templ (p Projects) View() {
 	}.View() {
 		<article class="relative border-2 p-xs-s">
 			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
-			<ol class="mt-m space-y-m list-inside">
-				for _, project := range projects {
-					@project.view()
+			<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
+				for i, project := range projects {
+					@project.view(i == len(projects)-1)
 				}
 			</ol>
 		</article>

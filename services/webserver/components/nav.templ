@@ -5,8 +5,8 @@ type Nav struct {
 	Pages       []string
 }
 
-const effect = "translate-x-3xs -translate-y-3xs shadow-content shadow-[-4px_4px_0_0]"
-const hoverEffect = "hover:translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[-4px_4px_0_0]"
+const effect = "-translate-x-3xs -translate-y-3xs shadow-content shadow-[4px_4px_0_0]"
+const hoverEffect = "hover:-translate-x-3xs hover:-translate-y-3xs hover:shadow-content hover:shadow-[4px_4px_0_0]"
 
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">

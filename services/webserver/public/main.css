@@ -21,6 +21,7 @@
     --color-content: #141413;
     --color-accent: #f97316;
     --color-blue: #0064E6;
+    --color-shadow: #c0bdad;
 
     /* @link https://utopia.fyi/space/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.33333333333|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl|s-2xl|4xs-3xs&g=s,l,xl,12 */
     --spacing-4xs: clamp(0.25rem, 0.2065rem + 0.2174vw, 0.375rem);
@@ -80,11 +81,8 @@
     }
 
     & h1 {
-        @apply absolute;
         @apply -top-xs;
         @apply bg-base;
-        @apply px-xs;
-        @apply mx-3xs;
         @apply text-2xl;
         @apply font-extrabold;
         @apply leading-none;
@@ -158,61 +156,9 @@
 
     & blockquote {
         @apply border-l-4;
-        @apply border-accent;
+        @apply border-shadow;
         @apply px-3xs;
         @apply bg-base-dark;
         @apply text-justify;
-    }
-}
-
-@media print {
-    html,
-    body {
-        width: 210mm;
-        max-width: 210mm;
-        height: 297mm;
-        max-height: 297mm;
-        padding: 0;
-        margin: 0;
-    }
-
-    body {
-        display: flex;
-        justify-items: center;
-    }
-
-    .h-resume {
-        &>section {
-            padding-inline: 0;
-            margin-inline: 0;
-        }
-
-        & h2 {
-            @apply text-m;
-            border: 0;
-            border-bottom: 2px;
-            @apply border-content;
-            @apply border-solid;
-        }
-
-        & .skill {
-            @apply border-2;
-            @apply border-content;
-            @apply border-solid;
-        }
-
-        & a {
-            text-decoration: none;
-        }
-    }
-
-    header,
-    footer,
-    nav {
-        display: none !important;
-    }
-
-    * {
-        border: none;
     }
 }

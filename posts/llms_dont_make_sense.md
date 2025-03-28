@@ -1,87 +1,128 @@
-# LLMs Suck
+# LLMs don't make sense
 
-Picture two computers.
+Picture two computers, Timmy and Billy.
 
-They can send little signals to each other over the so called "network".
+These two can communicate. They send little signals, bit by bit.
 
-We know computers have more information than what is communicated over the
-network. Could be a lot of internal information, a lot of processing, etc.
+Now, imagine that you can't access these computers. In fact, you don't even know
+what they can do. They might not even be computers! All you can see, is the network 
+and its traffic between them.
 
-Now imagine you are trying to train a neural network. The goal? To emulate a 
-computer. The data? Whatever is sent over the network...
+A couple bits from Timmy, a couple bits from Billy.
 
-You may be an optimist. Fair. I am not though. I simply cannot see how the 
-network will become a general purpose computer from looking at network data. And 
-for that reason, I don't see how LLMs will learn to be AGI by looking at text.
+And you decide, you also want to talk to Timmy or Billy. You also want to join 
+communicate in this network. You have all their communications. So what do you do?
+
+Well, lets train a neural network. We don't know exactly what Timmy and Billy are,
+so we can approximate them. And off you go to train it.
+
+And it works. A little bit. You can "talk" to them, and they reply. And your data 
+grows. And you train bigger models. You use more compute.
+
+Now, you may be an optimist. Fair. I'm not though. You might think if we just get 
+more data, more compute, we can emulate a Timmy or Billy. But can you? Do you really 
+think, you will emulate a computer? Just from network data? I don't.
+
+Computers are complex beasts, that we have made efficient and optimized to perform 
+the computer things it does. Sure, a one trillion parameter model might be to do 
+computer-like things. But would it ever be a computer? Would more parameters make it
+a computer? How many orders of magnitude more compute would you need to make it 90% 
+as good?
+
+And for that reason, I don't see how LLMs will learn to be AGI by looking at text.
+
+## Language Modeling is a Subtask
+
+The language modeling part of a Large Language Model is a subtask.
+
+A necassary condition for AGI, sure, but hardly sufficient.
+
+And I think, we lost site of this.
+
+We know language modeling doesn't need AGI. We have Claude and ChatGPT and so on. 
+They model language exceptionally well. In fact, it feels almost asymptotically 
+close to AGI. If anything, the [ChatGPT paper](https://arxiv.org/pdf/2001.08361) 
+almost implies this. If we keep scaling, we will get better at language modeling.
+But it won't get to AGI. It gives you a big compute bill for a great token guesser.
+
+Language modeling is useful. That's why the industry is throwing billions at it. 
+But it is not the final boss. You know what the real language "model" is?
+
+You. Me. Literally anyone.
+
+The real goal of language modeling is to model the language maker, a human, not 
+just predict the language maker's next move. These are **not the same**.
 
 ## The Human Experience
 
-> "How does an LLM walk in my shoes for day?"
+> "You never really understand a person until you consider things from his point of 
+> view, until you climb inside of his skin and walk around in it."
 
-Language modeling is a subtask. However, I feel like we lost site of this.
+One of the main reasons language modeling is not the gateway drug to AGI, is because
+text is a terrible communication protocol. So much is missed. So much information 
+is simply lost. So much is conveyed through other mediums like body language and facial 
+expressions and tone and so on. 
 
-AGI *would* be able to model language, but language model doesn't need AGI.
+Communication is hard. Even for humans! And humans have the human experience. 
+They're literally built for human-interaction. To propose that a model can model 
+human experience from text is frankly, insane to me. 
 
-We know this to be true. We have Claude and ChatGPT and LLama and so on. They 
-model language exceptionally well. It feels almost asymptotically close to AGI,
-but it won't get there. Scaling a transformer model to trillions of params does 
-not give you sentience, it gives you a big compute bill for a great token guesser.
+And I think there are two issues at hand. One, the lack of human experience for 
+model. The best way for a human to learn another's human experience is to literally 
+engage in the same experiences. Yes, that includes reading the same things, but 
+also means to do the same things, say the same things, match your senses to theirs. 
+Fundamentally, you need to have a **similar sensory experience**.
 
-Don't get me wrong, language modeling is useful. Really useful. That's why the 
-industry is throwing billions at it. But it is not the final boss. You know what 
-the real language "model" is?
-
-Literally any person.
-
-That's because the actual goal is the human. You want to model the language 
-maker, not predict the language maker's next move. These are **not the same**.
-
-Part of this comes from text being a terrible communication protocol. So much is
-missed, so much is conveyed through other mediums like body language and facial 
-expressions and tone and so on. Theres a reason people still struggle with 
-communication in their adulthood. It's hard. It's hard for humans who have the 
-human experience. To propose that a model can model human experience from text 
-is insane to me. 
-
-Humans already have a human experience, and even with other mediums such as voice,
-I don't think humans are all that capable of modeling the experience of another.
-And we come with the best pre-training for it too!
-
-The best for a human to experience the experience of another is to literally 
-engage in the same experiences. Yes, read the same things, but also do the same 
-things, say the same things, match your senses to theirs. Fundamentally, you 
-need to have a similar sensory experience. 
+This is why multi-modality is important. But also, not sufficient. Models need to 
+adapt and interact. We need models that can put small Legos into their mouth.
 
 **Humans perceive first then communicate!**
 
-## Values and RL
+The second issue is implicit knowledge. Humans, as we grow and age, engage with 
+others and are taught by others. We develop values, norms, and cultural commonsense.
+These affect what we know and what we say. They are apart of why text is a terrible 
+medium. Admittedly, there have been large efforts to combat this, especially across
+modalities.
 
-> "Reinforcement learning: I used to rule the world..."
+In my mind, the solution will be in two parts. First, adding socially implied knowledge 
+to the model, probably through a test-time learning with a surprise mechanism (i.e. 
+when model expectations deviate from observations). Secondly, a value store/system, that 
+allows models to represent what they value and by how much. Which leads me to...
+
+## Values and Reinforcement Learning
+
+> "I used to rule the world..."
 
 Reinforcement learning (RL) was king for much of 2000s. Before AlexNet's big run 
-and the eventual transformer hegemony, RL was the coolest kid of the block. And 
+and the eventual transformer hegemony, RL was the coolest kid on the block. And 
 I think, it will outlive deep conv-nets and transformers.
 
-Value systems are an integral part of decision making. Economics captures this 
-part of us, at least partially (and why I think it and game theory are important 
-for machine learning research). You may like fruit A more than fruit B (or 
-you're like me who doesn't really eat fruit) but after giving you _x_ fruit A, 
+**Value systems are an integral part of decision making**. Economics captures this 
+part of us, at least partially; it's why I think economics and game theory are 
+important for machine learning research. You may like fruit A more than fruit B (or 
+you're like me who doesn't really like fruit) but after giving you _x_ fruit A, 
 you will probably want fruit B more...
 
-And this is important. Really important. OpenAI knows that there is a base 
-entropy in language modeling. You know that too. Think about it. You probably 
-can guess what someone you're close to would say if you text them. But would 
-that change if they were more stressed? What if they normally like your texts 
-but today they got hammered by a bunch of people asking them the same thing? 
+And this is important, in my opinion. In fact, I think it's really important. 
+OpenAI knows that there is a base entropy in language modeling. You know that too. 
+You could probably can guess what someone you're close to would say if you text 
+them. But would that change if they were more stressed? What if they normally like 
+your texts but today they got hammered by a bunch of people asking them the same thing? 
 
-I find the smartest someone is, philosophically not academically, the more 
-self-consistent their value system tends to be. The decisions we make are 
-heavily influenced by multiple factors like emotion our values. How your values 
-changed affect how you interact with the environment, including communication, 
-which can not be predicted on average, like a LLM tries to do.
+The decisions we make are heavily influenced by our values. And they change. They
+change by whims and emotions and our environment. They impact what we say and do.
+And most importantly, its variance will give a base entropy to our language modeling.
 
-I don't think we want an average-predicting model, we want AGI, something I hope 
-is a bit better than the average person.
+RL can do this for us. RL has done this for us, in part. Sure, it's reward based, 
+but aren't we? Food makes us happy, exercise too, as well as being socially accepted. 
+A lot of our reward networks are biologically ingrained and in the context of RL,
+will likely require us to specify very targeted reward systems.
+
+We need to let our models interact with the environment, and update their knowledge 
+and values. RL will hand us that on a silver platter. There are beautiful papers out 
+there that explore it too. Some papers like the [Worldformer](https://arxiv.org/pdf/2106.09608) 
+show us that we can update our knowledge and operate over it "live". I hope many 
+more researchers explore this path.
 
 ## Architecture is King
 
@@ -91,27 +132,28 @@ is a bit better than the average person.
 >
 > -The Book of Genesis
 
-OpenAI has very successfully [psyoped](https://en.wikipedia.org/wiki/Psychological_operations_(United_States)) 
-us into thinking scaling was king. More parameters, more compute, more data, more
-more more. But, I think they're wrong. Transformers can scale really well. And 
-so we do scale them. But if you think transformers are the final architecture 
-then go off and spend your trillions on training your single model.
+OpenAI has very successfully psyoped us into thinking scaling was king. More 
+parameters, more compute, more data, more more more. But, I think they're wrong. 
+Transformers can scale really well. And so we do scale them.
 
 Transformers have one flaw. They're not the perfect model. Okay, maybe that's 
 more than one flaw deep down but I feel like people forget what we made it for.
-We are at the point where we take a 3D scene, project it onto 2D (pictures FTW) 
+We are at the point where we take a 3D scene, project it onto 2D (pictures) 
 and then...sequence it into 1D just so we can use a transformer? Huh!? We are so 
 lost in desire for better benchmark performance that our models have almost 
-nothing to do with our data? Do we just hate statistics that much?
+nothing to do with our data?
 
-I feel like on recently, as our mega-transformers of doom hit the fiscal-compute 
+I feel like only recently, as our mega-transformers of doom hit the fiscal-compute 
 ceiling have we come to terms with maybe, just maybe, we can make better models.
-In the pre-transformer era we used to build assumptions **into** our models. We 
-have the physics formulas for light and projections and so on, so we added this 
-into our models and we got better models, or at least quicker to train models.
+Models that actually cater to the task at hand. In the pre-transformer era we used 
+to build assumptions **into** our models. In fact, a lot spaces still do! To grand
+effect. I think we need to go back to where we bake in our knowledge of the data or 
+of the process back into the model. Attention mechanisms are great, they are just 
+**not** all you need.
 
-I think this underlines why AlexNet era and transformer is so different. A CNN 
-is blazingly fast to train and takes way less data but sure, transformers do 
-predict a bit better. I think we need to go back to where we construct our 
-knowledge of the data or the process back into the model. Attention mechanisms 
-are great, they are just **not** all you need.
+The dimensionality of our models are huge. So large in fact, imposing constraints 
+probably hurt the model performance no more than a random seed does. We can constrain 
+our latent spaces to our data. We can build in assumptions. We can make our models
+train faster and conform better. People already know this too. We already constrain 
+our latent spaces. But there's so much more we can do, if we are willing to explore 
+more.

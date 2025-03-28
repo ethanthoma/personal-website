@@ -15,7 +15,8 @@ templ (p Post) View(post internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ " + post.Title,
 	}.View() {
-		<article class="content relative border-2 p-xs-s">
+		<article class="content relative">
+			<time class="text-content/60">{ post.Date.Format("20060102") }</time>
 			@templ.Raw(post.HTML)
 		</article>
 	}
