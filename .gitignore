@@ -30,7 +30,6 @@ services/**/*_templ.go
 !.air.toml
 !services/webserver/public/**
 services/webserver/**/*.js
-!services/webserver/tailwind.config.js
 !posts/**
 
 !*/

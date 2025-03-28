@@ -1,102 +1,171 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer theme, base, components, utilities;
 
-@layer components {
-    .content {
-        &>*+* {
-            @apply mt-xs-s;
-        }
+@import "tailwindcss";
+@import "tailwindcss/preflight.css" layer(base);
 
-        & h1 {
-            @apply absolute;
-            @apply -top-xs;
-            @apply bg-base;
-            @apply px-xs;
-            @apply mx-3xs;
-            @apply text-2xl;
-            @apply font-extrabold;
-            @apply leading-none;
-            @apply tracking-tight;
-        }
+@theme {
+    /* @link https://utopia.fyi/type/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl&g=s,l,xl,12 */
 
-        & h1+* {
-            @apply mt-m;
-        }
+    --text-xs: clamp(0.6944rem, 0.6299rem + 0.3227vw, 0.88rem);
+    --text-sm: clamp(0.9375rem, 0.9159rem + 0.1085vw, 1rem);
+    --text-m: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
+    --text-lg: clamp(1.35rem, 1.2767rem + 0.3688vw, 1.5625rem);
+    --text-xl: clamp(1.62rem, 1.5051rem + 0.5781vw, 1.9531rem);
+    --text-2xl: clamp(1.9438rem, 1.7722rem + 0.8633vw, 2.4413rem);
+    --text-3xl: clamp(2.3325rem, 2.0844rem + 1.2484vw, 3.0519rem);
+    --text-4xl: clamp(2.7994rem, 2.4491rem + 1.7625vw, 3.815rem);
 
-        & h2 {
-            @apply pb-3xs-2xs;
-            @apply border-b-2;
-            @apply border-content/80;
-            @apply text-lg;
-            @apply mt-l-xl;
-            @apply font-extrabold;
-            @apply leading-none;
-            @apply tracking-tight;
+    --color-base-light: #ffffff;
+    --color-base: #fafaf8;
+    --color-base-dark: #f0efea;
+    --color-content: #141413;
+    --color-accent: #f97316;
+    --color-blue: #0064E6;
 
-            & p {
-                @apply text-content/80;
-            }
-        }
+    /* @link https://utopia.fyi/space/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.33333333333|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl|s-2xl|4xs-3xs&g=s,l,xl,12 */
+    --spacing-4xs: clamp(0.25rem, 0.2065rem + 0.2174vw, 0.375rem);
+    --spacing-3xs: clamp(0.3125rem, 0.269rem + 0.2174vw, 0.4375rem);
+    --spacing-2xs: clamp(0.5rem, 0.4348rem + 0.3261vw, 0.6875rem);
+    --spacing-xs: clamp(0.75rem, 0.6413rem + 0.5435vw, 1.0625rem);
+    --spacing-s: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
+    --spacing-m: clamp(1.5rem, 1.3043rem + 0.9783vw, 2.0625rem);
+    --spacing-l: clamp(2rem, 1.7391rem + 1.3043vw, 2.75rem);
+    --spacing-xl: clamp(3rem, 2.6087rem + 1.9565vw, 4.125rem);
+    --spacing-2xl: clamp(4rem, 3.4783rem + 2.6087vw, 5.5rem);
+    --spacing-3xl: clamp(6rem, 5.2174rem + 3.913vw, 8.25rem);
+    --spacing-4xl: clamp(8rem, 6.9565rem + 5.2174vw, 11rem);
+    --spacing-5xl: clamp(11rem, 9.5652rem + 7.1739vw, 15.125rem);
+    --spacing-6xl: clamp(15rem, 13.0435rem + 9.7826vw, 20.625rem);
+    --spacing-7xl: clamp(19rem, 16.5217rem + 12.3913vw, 26.125rem);
 
-        & h3 {
-            @apply text-m;
-            @apply mt-l-xl;
-            @apply font-extrabold;
-            @apply leading-none;
-            @apply tracking-tight;
-        }
+    /* One-up pairs */
+    --spacing-4xs-3xs: clamp(0.25rem, 0.1848rem + 0.3261vw, 0.4375rem);
+    --spacing-3xs-2xs: clamp(0.25rem, 0.0978rem + 0.7609vw, 0.6875rem);
+    --spacing-2xs-xs: clamp(0.5rem, 0.3043rem + 0.9783vw, 1.0625rem);
+    --spacing-xs-s: clamp(0.75rem, 0.5326rem + 1.087vw, 1.375rem);
+    --spacing-s-m: clamp(1rem, 0.6304rem + 1.8478vw, 2.0625rem);
+    --spacing-m-l: clamp(1.5rem, 1.0652rem + 2.1739vw, 2.75rem);
+    --spacing-l-xl: clamp(2rem, 1.2609rem + 3.6957vw, 4.125rem);
+    --spacing-xl-2xl: clamp(3rem, 2.1304rem + 4.3478vw, 5.5rem);
+    --spacing-2xl-3xl: clamp(4rem, 2.5217rem + 7.3913vw, 8.25rem);
+    --spacing-3xl-4xl: clamp(6rem, 4.2609rem + 8.6957vw, 11rem);
+    --spacing-4xl-5xl: clamp(8rem, 5.5217rem + 12.3913vw, 15.125rem);
+    --spacing-5xl-6xl: clamp(11rem, 7.6522rem + 16.7391vw, 20.625rem);
+    --spacing-6xl-7xl: clamp(15rem, 11.1304rem + 19.3478vw, 26.125rem);
+
+    /* Two-up pairs */
+    --spacing-4xs-3xs: clamp(0.25rem, 0.1848rem + 0.3261vw, 0.4375rem);
+    --spacing-3xs-xs: clamp(0.25rem, -0.0326rem + 1.413vw, 1.0625rem);
+    --spacing-2xs-s: clamp(0.5rem, 0.1957rem + 1.5217vw, 1.375rem);
+    --spacing-xs-m: clamp(0.75rem, 0.2935rem + 2.2826vw, 2.0625rem);
+    --spacing-s-l: clamp(1rem, 0.3913rem + 3.0435vw, 2.75rem);
+    --spacing-m-xl: clamp(1.5rem, 0.587rem + 4.5652vw, 4.125rem);
+    --spacing-l-2xl: clamp(2rem, 0.7826rem + 6.087vw, 5.5rem);
+    --spacing-xl-3xl: clamp(3rem, 1.1739rem + 9.1304vw, 8.25rem);
+    --spacing-2xl-4xl: clamp(4rem, 1.5652rem + 12.1739vw, 11rem);
+    --spacing-3xl-5xl: clamp(6rem, 2.8261rem + 15.8696vw, 15.125rem);
+    --spacing-4xl-6xl: clamp(8rem, 3.6087rem + 21.9565vw, 20.625rem);
+    --spacing-5xl-6xl: clamp(11rem, 7.6522rem + 16.7391vw, 20.625rem);
+    --spacing-6xl-7xl: clamp(15rem, 11.1304rem + 19.3478vw, 26.125rem);
+
+    /* Custom */
+    --spacing-s-2xl: clamp(1rem, -0.5652rem + 7.8261vw, 5.5rem);
+
+    --spacing-content: min(clamp(320px, 100%, max(720px, 33svw)), 100svw);
+}
+
+.content {
+    &>*+* {
+        @apply mt-xs-s;
+    }
+
+    & h1 {
+        @apply absolute;
+        @apply -top-xs;
+        @apply bg-base;
+        @apply px-xs;
+        @apply mx-3xs;
+        @apply text-2xl;
+        @apply font-extrabold;
+        @apply leading-none;
+        @apply tracking-tight;
+    }
+
+    & h1+* {
+        @apply mt-m;
+    }
+
+    & h2 {
+        @apply pb-3xs-2xs;
+        @apply border-b-2;
+        @apply border-content/80;
+        @apply text-lg;
+        @apply mt-l-xl;
+        @apply font-extrabold;
+        @apply leading-none;
+        @apply tracking-tight;
 
         & p {
-            @apply font-sans;
+            @apply text-content/80;
         }
+    }
 
-        & pre {
-            @apply text-sm;
-            @apply overflow-x-auto;
-            @apply p-xs;
+    & h3 {
+        @apply text-m;
+        @apply mt-l-xl;
+        @apply font-extrabold;
+        @apply leading-none;
+        @apply tracking-tight;
+    }
 
-            &>code {
-                @apply break-words;
+    & p {
+        @apply font-sans;
+    }
 
-                &>span>span {
-                    @apply pr-xs;
-                }
+    & pre {
+        @apply text-sm;
+        @apply overflow-x-auto;
+        @apply p-xs;
+
+        &>code {
+            @apply break-words;
+
+            &>span>span {
+                @apply pr-xs;
             }
         }
+    }
 
-        & a {
-            @apply underline;
-            @apply hover:text-blue;
+    & a {
+        @apply underline;
+        @apply hover:text-blue;
+    }
+
+    & ul,
+    & ol {
+        @apply list-inside;
+        @apply list-disc;
+        @apply font-sans;
+
+        &>li {
+            @apply ml-m;
         }
 
-        & ul,
-        & ol {
-            @apply list-inside;
-            @apply list-disc;
-            @apply font-sans;
-
-            &>li {
-                @apply ml-m;
-            }
-
-            &>*+li {
-                @apply mt-3xs;
-            }
+        &>*+li {
+            @apply mt-3xs;
         }
+    }
 
-        & blockquote {
-            @apply border-l-4;
-            @apply border-accent;
-            @apply px-3xs;
-            @apply bg-base-dark;
-            @apply text-justify;
-        }
+    & blockquote {
+        @apply border-l-4;
+        @apply border-accent;
+        @apply px-3xs;
+        @apply bg-base-dark;
+        @apply text-justify;
     }
 }
 
 @media print {
-
     html,
     body {
         width: 210mm;

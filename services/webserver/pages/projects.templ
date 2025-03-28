@@ -1,0 +1,93 @@
+package pages
+
+import "personal-website/services/webserver/layouts"
+
+type Projects struct {
+	Pages []string
+}
+
+type Project struct {
+	date, title, url, description string
+}
+
+templ (project Project) view() {
+	<li class="project h-event flex">
+		<time class="py-2xs dt-start">{ project.date }</time>
+		<span class="p-2xs">-</span>
+		<div class={ "p-2xs rounded-md", templ.KV("bg-base-dark", project.description != "") }>
+			<a
+				class="underline hover:text-blue"
+				href={ templ.URL(project.url) }
+			><h3 class="p-name">{ project.title }</h3></a>
+			<p>{ project.description }</p>
+		</div>
+	</li>
+}
+
+var projects = []Project{
+	{
+		date:        "20250211",
+		title:       "Nix builder to wrap Erlang-target Gleam code",
+		url:         "https://github.com/ethanthoma/nix-gleam-burrito",
+		description: "This is incredibly cursed...",
+	},
+	{
+		date:        "20250202",
+		title:       "effect: Gleam library for handling side effects",
+		url:         "https://github.com/ethanthoma/trellis",
+		description: "",
+	},
+	{
+		date:        "20250128",
+		title:       "trellis: simple Gleam library for pretty printing tables",
+		url:         "https://github.com/ethanthoma/trellis",
+		description: "",
+	},
+	{
+		date:        "20250125",
+		title:       "Canvas Group Quiz creation CLI in Gleam",
+		url:         "https://github.com/STASER-Lab/cgq",
+		description: "",
+	},
+	{
+		date:        "20241210",
+		title:       "Zig native WebGPU Voxel Render",
+		url:         "https://github.com/ethanthoma/graphics",
+		description: "",
+	},
+	{
+		date:        "20240911",
+		title:       "Interaction Nets in Odin",
+		url:         "https://github.com/ethanthoma/interaction-net",
+		description: "With a bespoke MPMC concurrent queue!",
+	},
+	{
+		date:        "20240719",
+		title:       "Zig Webgpu Compute Shader",
+		url:         "https://github.com/ethanthoma/zig-webgpu-compute-shader",
+		description: "",
+	},
+	{
+		date:        "20240708",
+		title:       "Zensor: a Zig tensor library",
+		url:         "https://github.com/ethanthoma/zensor",
+		description: "Very WIP but has some handrolled assembly...",
+	},
+}
+
+templ (p Projects) View() {
+	@layouts.Base{
+		Pages:       p.Pages,
+		PageCurrent: "projects",
+		Title:       "Ethan Thoma \\ Projects",
+	}.View() {
+		<article class="relative border-2 p-xs-s">
+			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
+			<ol class="mt-m space-y-m list-inside">
+				for _, project := range projects {
+					@project.view()
+				}
+			</ol>
+		</article>
+	}
+}

@@ -4,61 +4,60 @@ PORT = ${WEBSERVER_PORT}
 SYSTEM = x86_64-linux
 
 run:
-	nix run github:Mic92/nix-fast-build -- --flake '.#packages.$(SYSTEM).default'
-	nix run
+	@nix run github:Mic92/nix-fast-build -- --flake '.#packages.$(SYSTEM).default'
+	@nix run
 
 docker/build:
-	nix build .#container
+	@nix build .#container
 
 docker: build/docker
-	docker load < result
-	docker run \
+	@docker load < result
+	@docker run \
 		--rm \
 		--env-file ./.env \
 		-p 127.0.0.1:$(PORT):$(PORT) \
 		-t $(IMAGE_NAME):$(TAG)
 
 live/templ:
-	templ generate \
+	@templ generate \
 		--watch \
-		--proxy="http://localhost:3001" \
+		--proxy="http://localhost:$(PORT)" \
 		--open-browser=false \
 		-v \
 		--path=./services/webserver/
 
 live/server:
-	air \
+	@air \
 		--build.cmd "go build -o tmp/bin/main personal-website/services/webserver" \
 		--build.bin "tmp/bin/main" \
 		--build.delay "100" \
 		--build.include_ext "go" \
 		--build.stop_on_error "false" \
 		--misc.clean_on_exit true \
-		--proxy.enabled true \
-		--proxy.proxy_port 3001  \
-		--proxy.app_port $(PORT)
+		--proxy.enabled true
 
 live/tailwind:
-	rsync -a ./services/webserver/public/* ./public --exclude='*.css'
-	rm -f ./public/main.css
-	tailwindcss \
-		-c ./services/webserver/tailwind.config.js \
+	echo "running tailwind"
+	@tailwindcss \
 		-i ./services/webserver/public/main.css \
 		-o ./public/main.css \
-		-m \
-		-w
+		--watch=always \
+		-cwd=./services/webserver
+	echo "finished... tailwind"
 
 live/sync_assets:
-	air \
+	@sleep 1000
+	@air \
 		--build.cmd "templ generate --notify-proxy" \
-		--build.bin "true" \
+		--build.bin "rsync -a ./services/webserver/public/* ./public --exclude='*.css'" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
-		--build.include_dir "public" \
+		--build.include_dir "./public" \
 		--build.include_ext "js,css"
 
 live: 
-	make live/templ & \
-	make live/server & \
-	make live/tailwind & \
-	(sleep 0.1 && make live/sync_assets)
+	make -j4 \
+		live/server \
+		live/templ \
+		live/tailwind \
+		live/sync_assets

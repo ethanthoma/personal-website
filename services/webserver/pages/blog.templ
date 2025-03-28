@@ -17,13 +17,16 @@ templ (p Blog) View(posts []internal.Post) {
 	}.View() {
 		<article class="relative border-2 p-xs-s">
 			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
-			<ul class="mt-m space-y-s list-inside">
+			<ol class="mt-m space-y-m list-inside">
 				for i, post := range posts {
-					<li class="flex">
+					<li class="flex items-center">
 						<time>{ post.Date.Format("20060102") }</time>
-						<span class="px-2xs">-</span>
+						<span class="mx-2xs">-</span>
+						if i == 0 {
+							<span class="mr-2xs px-2xs text-xs font-medium bg-blue/80 text-base rounded">New</span>
+						}
 						<a
-							class={ "underline hover:text-blue", templ.KV("relative inline-flex", i==0) }
+							class={ "underline hover:text-blue" }
 							href={ templ.URL("/post/" + post.Slug) }
 							hx-get={ "/post/" + post.Slug }
 							hx-target="main"
@@ -31,16 +34,10 @@ templ (p Blog) View(posts []internal.Post) {
 							hx-push-url={ "/post/" + post.Slug }
 						>
 							<h3>{ post.Title }</h3>
-							if i == 0 {
-								<span class="flex absolute h-3xs w-3xs top-[0] right-[0] -mt-[calc(theme('spacing.3xs') / 2)] -mr-3xs">
-									<span class="animate-ping [animation-duration:1.5s] absolute inline-flex h-full w-full rounded-full bg-blue opacity-85"></span>
-									<span class="relative inline-flex rounded-full h-full w-full bg-blue"></span>
-								</span>
-							}
 						</a>
 					</li>
 				}
-			</ul>
+			</ol>
 		</article>
 	}
 }

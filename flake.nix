@@ -77,7 +77,9 @@
               pkgs.air
               pkgs.turso-cli
               pkgs.gopls
-              pkgs.tailwindcss
+              pkgs.tailwindcss_4
+              pkgs.watchman
+              pkgs.tailwindcss-language-server
               packages.uploader
               templpkgs
             ];
