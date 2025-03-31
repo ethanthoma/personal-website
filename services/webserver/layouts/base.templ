@@ -32,6 +32,14 @@ templ (p Base) View() {
 				{ children... }
 			</main>
 			@components.Footer{}.View()
+			<svg aria-hidden="true" class="-z-10 pointer-events-none absolute top-0 bottom-0 -left-[calc((100dvw-var(--spacing-content))*0.5)] h-full w-dvw fill-blue/50 stroke-blue/50 opacity-10 [mask-image:linear-gradient(to_top,_var(--color-base),_transparent)] visible">
+				<defs>
+					<pattern id=":R4foqfknq6ja:" width="13" height="13" patternUnits="userSpaceOnUse" x="-1" y="-1">
+						<path d="M.5 13V.5H13" fill="none" stroke-dasharray="0"></path>
+					</pattern>
+				</defs>
+				<rect width="100%" height="100%" stroke-width="0" fill="url(#:R4foqfknq6ja:)"></rect>
+			</svg>
 		</body>
 	</html>
 }
