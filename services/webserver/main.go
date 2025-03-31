@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/yuin/goldmark"
@@ -19,6 +20,49 @@ import (
 	"personal-website/services/webserver/cache"
 	"personal-website/services/webserver/pages"
 )
+
+var projects = []internal.Project{
+	{
+		Date:  time.Date(2025, 2, 11, 0, 0, 0, 0, time.Local),
+		Title: "Nix builder to wrap Erlang-target Gleam code",
+		Url:   "https://github.com/ethanthoma/nix-gleam-burrito",
+	},
+	{
+		Date:  time.Date(2025, 2, 2, 0, 0, 0, 0, time.Local),
+		Title: "effect: Gleam library for handling side effects",
+		Url:   "https://github.com/ethanthoma/effect",
+	},
+	{
+		Date:  time.Date(2025, 1, 28, 0, 0, 0, 0, time.Local),
+		Title: "trellis: simple Gleam library for pretty printing tables",
+		Url:   "https://github.com/ethanthoma/trellis",
+	},
+	{
+		Date:  time.Date(2025, 1, 25, 0, 0, 0, 0, time.Local),
+		Title: "Canvas Group Quiz creation CLI in Gleam",
+		Url:   "https://github.com/STASER-Lab/cgq",
+	},
+	{
+		Date:  time.Date(2024, 12, 10, 0, 0, 0, 0, time.Local),
+		Title: "Zig native WebGPU Voxel Render",
+		Url:   "https://github.com/ethanthoma/graphics",
+	},
+	{
+		Date:  time.Date(2024, 9, 11, 0, 0, 0, 0, time.Local),
+		Title: "Interaction Nets in Odin",
+		Url:   "https://github.com/ethanthoma/interaction-net",
+	},
+	{
+		Date:  time.Date(2024, 7, 19, 0, 0, 0, 0, time.Local),
+		Title: "Zig Webgpu Compute Shader",
+		Url:   "https://github.com/ethanthoma/zig-webgpu-compute-shader",
+	},
+	{
+		Date:  time.Date(2024, 7, 8, 0, 0, 0, 0, time.Local),
+		Title: "zensor: a Zig tensor library",
+		Url:   "https://github.com/ethanthoma/zensor",
+	},
+}
 
 var (
 	port = os.Getenv("WEBSERVER_PORT")
@@ -43,8 +87,16 @@ func main() {
 	navList := []string{"home", "blog", "projects"}
 
 	pageHome := pages.Home{Pages: navList}
-	http.Handle("GET /", templ.Handler(pageHome.View()))
-	http.Handle("GET /home", templ.Handler(pageHome.View()))
+	handlerHome := func(w http.ResponseWriter, r *http.Request) {
+		posts, err := cache.Cache.GetPosts()
+		if err != nil {
+			log.Printf("failed to fetch posts from cache (%v)", err)
+		}
+
+		pageHome.View(posts, projects).Render(r.Context(), w)
+	}
+	http.HandleFunc("GET /", handlerHome)
+	http.HandleFunc("GET /home", handlerHome)
 
 	pageBlog := pages.Blog{Pages: navList}
 	http.HandleFunc("GET /blog", func(w http.ResponseWriter, r *http.Request) {
@@ -70,7 +122,7 @@ func main() {
 	})
 
 	pageProjects := pages.Projects{Pages: navList}
-	http.Handle("GET /projects", templ.Handler(pageProjects.View()))
+	http.Handle("GET /projects", templ.Handler(pageProjects.View(projects)))
 
 	// static
 

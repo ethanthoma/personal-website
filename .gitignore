@@ -2,6 +2,7 @@
 
 !README.md
 !LICENSE
+!.gitignore
 
 # go 
 !internal/
@@ -31,5 +32,11 @@ services/**/*_templ.go
 !services/webserver/public/**
 services/webserver/**/*.js
 !posts/**
+
+!internal/
+!internal/**/*.go
+
+!docs
+!docs/**/*.pdf
 
 !*/

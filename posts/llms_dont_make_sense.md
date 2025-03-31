@@ -10,34 +10,34 @@ and its traffic between them.
 
 A couple bits from Timmy, a couple bits from Billy.
 
-And you decide, you also want to talk to Timmy or Billy. You also want to join 
+But, maybe you also want to talk to Timmy or Billy. You also want to join 
 communicate in this network. You have all their communications. So what do you do?
 
 Well, lets train a neural network. We don't know exactly what Timmy and Billy are,
-so we can approximate them. And off you go to train it.
+so we can approximate them. Off you go to train it.
 
-And it works. A little bit. You can "talk" to them, and they reply. And your data 
-grows. And you train bigger models. You use more compute.
+It works. A little bit. You can "talk" to them, and they reply. Your data 
+grows. You train bigger models. You use more compute.
 
 Now, you may be an optimist. Fair. I'm not though. You might think if we just get 
 more data, more compute, we can emulate a Timmy or Billy. But can you? Do you really 
 think, you will emulate a computer? Just from network data? I don't.
 
 Computers are complex beasts, that we have made efficient and optimized to perform 
-the computer things it does. Sure, a one trillion parameter model might be to do 
+the computer things it does. Sure, an one trillion parameter model might be to do 
 computer-like things. But would it ever be a computer? Would more parameters make it
 a computer? How many orders of magnitude more compute would you need to make it 90% 
 as good?
 
-And for that reason, I don't see how LLMs will learn to be AGI by looking at text.
+For that reason, I don't see how LLMs will learn to be AGI by looking at text.
 
-## Language Modeling is a Subtask
+## Language Modeling is a Sub-task
 
-The language modeling part of a Large Language Model is a subtask.
+The language modeling part of a Large Language Model is a sub-task.
 
 A necassary condition for AGI, sure, but hardly sufficient.
 
-And I think, we lost site of this.
+I think, we lost sight of this.
 
 We know language modeling doesn't need AGI. We have Claude and ChatGPT and so on. 
 They model language exceptionally well. In fact, it feels almost asymptotically 
@@ -57,24 +57,26 @@ just predict the language maker's next move. These are **not the same**.
 
 > "You never really understand a person until you consider things from his point of 
 > view, until you climb inside of his skin and walk around in it."
+>
+> — Harper Lee
 
 One of the main reasons language modeling is not the gateway drug to AGI, is because
 text is a terrible communication protocol. So much is missed. So much information 
 is simply lost. So much is conveyed through other mediums like body language and facial 
 expressions and tone and so on. 
 
-Communication is hard. Even for humans! And humans have the human experience. 
+Communication is hard. Even for humans and humans have the human experience! 
 They're literally built for human-interaction. To propose that a model can model 
 human experience from text is frankly, insane to me. 
 
-And I think there are two issues at hand. One, the lack of human experience for 
+I think there are two issues at hand. One, the lack of human experience for 
 model. The best way for a human to learn another's human experience is to literally 
 engage in the same experiences. Yes, that includes reading the same things, but 
 also means to do the same things, say the same things, match your senses to theirs. 
 Fundamentally, you need to have a **similar sensory experience**.
 
 This is why multi-modality is important. But also, not sufficient. Models need to 
-adapt and interact. We need models that can put small Legos into their mouth.
+adapt and interact. We need models that can put small Lego's into their mouth.
 
 **Humans perceive first then communicate!**
 
@@ -92,10 +94,12 @@ allows models to represent what they value and by how much. Which leads me to...
 ## Values and Reinforcement Learning
 
 > "I used to rule the world..."
+>
+> — Chris Martin
 
 Reinforcement learning (RL) was king for much of 2000s. Before AlexNet's big run 
-and the eventual transformer hegemony, RL was the coolest kid on the block. And 
-I think, it will outlive deep conv-nets and transformers.
+and the eventual transformer hegemony, RL was the coolest kid on the block and I 
+think, it will outlive deep conv-nets and transformers.
 
 **Value systems are an integral part of decision making**. Economics captures this 
 part of us, at least partially; it's why I think economics and game theory are 
@@ -103,15 +107,15 @@ important for machine learning research. You may like fruit A more than fruit B 
 you're like me who doesn't really like fruit) but after giving you _x_ fruit A, 
 you will probably want fruit B more...
 
-And this is important, in my opinion. In fact, I think it's really important. 
-OpenAI knows that there is a base entropy in language modeling. You know that too. 
+This is important, in my opinion. In fact, I think it's really important. OpenAI 
+knows that there is a base entropy in language modeling. You know that too. 
 You could probably can guess what someone you're close to would say if you text 
 them. But would that change if they were more stressed? What if they normally like 
 your texts but today they got hammered by a bunch of people asking them the same thing? 
 
 The decisions we make are heavily influenced by our values. And they change. They
 change by whims and emotions and our environment. They impact what we say and do.
-And most importantly, its variance will give a base entropy to our language modeling.
+Most importantly, its variance will give a base entropy to our language modeling.
 
 RL can do this for us. RL has done this for us, in part. Sure, it's reward based, 
 but aren't we? Food makes us happy, exercise too, as well as being socially accepted. 
@@ -130,11 +134,11 @@ more researchers explore this path.
 > and let us make us a name, lest we be scattered abroad upon the face of the 
 > whole earth." 
 >
-> -The Book of Genesis
+> — The Book of Genesis
 
 OpenAI has very successfully psyoped us into thinking scaling was king. More 
 parameters, more compute, more data, more more more. But, I think they're wrong. 
-Transformers can scale really well. And so we do scale them.
+Transformers can scale really well. So we do scale them.
 
 Transformers have one flaw. They're not the perfect model. Okay, maybe that's 
 more than one flaw deep down but I feel like people forget what we made it for.

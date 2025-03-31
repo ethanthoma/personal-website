@@ -10,12 +10,12 @@ const hoverEffect = "hover:-translate-x-3xs hover:-translate-y-3xs hover:shadow-
 
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
-		<ul class="flex justify-evenly gap-s-2xl">
+		<ul class="flex justify-evenly items-center gap-s-2xl">
 			for _, name := range p.Pages {
-				<li class="flex-1">
+				<li class="flex-1 h-fit">
 					<a
 						class={
-							"relative h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-200 ease-in-out group",
+							"relative h-full block px-2xs-xs py-2xs border-2 text-center hover:bg-[hsl(from_var(--color-base)_h_s_calc(l_-_10))] transition-all duration-200 ease-in-out group",
 							templ.KV(hoverEffect, p.PageCurrent != name),
 							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
 						}

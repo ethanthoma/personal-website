@@ -19,7 +19,7 @@ markdown into HTML and vamos. Unfortunately, I am not smarter than me.
 At first, I did make a little HTML and CSS (go me). Unfortunately, it stops 
 there. My first bad idea was, of course, manually hosting my stuff but
 
-> AWS sucks 
+AWS sucks.
 
 Entire companies exist because of its UI/UX hell. 
 
