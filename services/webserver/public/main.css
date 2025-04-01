@@ -7,7 +7,7 @@
     /* @link https://utopia.fyi/type/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl&g=s,l,xl,12 */
 
     --text-xs: clamp(0.6944rem, 0.6299rem + 0.3227vw, 0.88rem);
-    --text-sm: clamp(0.9375rem, 0.9159rem + 0.1085vw, 1rem);
+    --text-s: clamp(0.9375rem, 0.9159rem + 0.1085vw, 1rem);
     --text-m: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
     --text-lg: clamp(1.35rem, 1.2767rem + 0.3688vw, 1.5625rem);
     --text-xl: clamp(1.62rem, 1.5051rem + 0.5781vw, 1.9531rem);
@@ -124,7 +124,7 @@
     }
 
     & pre {
-        @apply text-sm;
+        @apply text-s;
         @apply overflow-x-auto;
         @apply p-xs;
 

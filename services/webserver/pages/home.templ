@@ -42,13 +42,13 @@ templ (p Home) View(posts []internal.Post, projects []internal.Project) {
 				</svg>
 				Vancouver, Canada
 			</span>
-			<section class="mt-s-m pt-3xs flex flex-col gap-2xs-xs flex-wrap">
+			<section class="mt-s-m pt-3xs flex flex-col gap-m-l flex-wrap">
 				<p class="leading-8">
 					ML graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
 					Focused on NLP and RL research. 
 					Side quests in programming Gleam CLIs, tensor libraries, and interaction net runtimes.
 				</p>
-				<ul class="space-y-xs list-inside ps-2xs-xs text-content/80">
+				<ul class="space-y-xs list-inside text-content/80">
 					<li class="flex items-center gap-2xs hover:text-blue w-[fit-content]">
 						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"></path>
@@ -69,7 +69,7 @@ templ (p Home) View(posts []internal.Post, projects []internal.Project) {
 					</li>
 				</ul>
 			</section>
-			<section class="relative mt-m-l">
+			<section class="mt-l-xl">
 				<h2 class="mb-xs-s text-lg border-b-2 border-content/80">Latest:</h2>
 				<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
 					{{ sort.SliceStable(events, func(i, j int) bool { return events[i].GetDate().After(events[j].GetDate()) }) }}
@@ -78,7 +78,7 @@ templ (p Home) View(posts []internal.Post, projects []internal.Project) {
 					}
 				</ol>
 			</section>
-			<section class="mt-m-l pt-xs-s border-t-2 justify-around items-start grid grid-flow-col grid-cols-3">
+			<section class="mt-l-xl pt-xs-s border-t-2 justify-around items-start grid grid-flow-col grid-cols-3">
 				<div class="z-10 inline-flex flex-col gap-4xs rounded-md text-center items-center">
 					<a
 						class="[box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0]  text-base leading-none rounded-[88px] font-bold bg-accent justify-center h-l aspect-square border-2 border-content/80 text-center inline-flex items-center hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] cursor-pointer transition-all duration-200 ease-in-out"
