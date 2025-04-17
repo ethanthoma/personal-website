@@ -93,7 +93,7 @@ func main() {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		pageHome.View(posts, projects).Render(r.Context(), w)
+		pageHome.View(posts).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)

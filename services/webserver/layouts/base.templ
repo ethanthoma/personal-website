@@ -23,23 +23,18 @@ templ (p Base) View() {
 			<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png"/>
 			<link rel="manifest" href="/public/favicon/site.webmanifest"/>
 		</head>
-		<body class="p-s relative font-mono flex flex-col min-h-full overflow-x-hidden bg-base text-s text-content antialiased max-w-content mx-auto">
+		<body
+			style="grid-template-columns: minmax(var(--spacing-s), calc((100% - 720px) / 2)) repeat(10, minmax(0, 1fr)) minmax(var(--spacing-s), calc((100% - 720px) / 2));"
+			class="relative font-mono grid grid-rows-[auto_1fr_auto] gap-s-xl max-w-full min-h-full overflow-x-hidden bg-base text-sm text-content antialiased"
+		>
 			@components.Header{
 				PageCurrent: p.PageCurrent,
 				Pages:       p.Pages,
 			}.View()
-			<main class="flex-auto">
+			<main class="grid grid-cols-subgrid col-span-12">
 				{ children... }
 			</main>
 			@components.Footer{}.View()
-			<svg aria-hidden="true" class="-z-10 pointer-events-none absolute top-0 bottom-0 -left-[calc((100dvw-var(--spacing-content))*0.5)] h-full w-dvw fill-blue/50 stroke-blue/50 opacity-10 [mask-image:linear-gradient(to_top,_var(--color-base),_transparent)] visible">
-				<defs>
-					<pattern id=":R4foqfknq6ja:" width="13" height="13" patternUnits="userSpaceOnUse" x="-1" y="-1">
-						<path d="M.5 13V.5H13" fill="none" stroke-dasharray="0"></path>
-					</pattern>
-				</defs>
-				<rect width="100%" height="100%" stroke-width="0" fill="url(#:R4foqfknq6ja:)"></rect>
-			</svg>
 		</body>
 	</html>
 }

@@ -15,9 +15,9 @@ templ (p Blog) View(posts []internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ Blog",
 	}.View() {
-		<article class="relative border-2 p-xs-s bg-base half-tone-shadow">
-			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
-			<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
+		<article class="row-start-1 col-[2/-2] self-start my-l-xl p-xs-s bg-[#fff] border-2 half-tone-shadow">
+			<h1 class="absolute -top-[calc(2.03px+var(--text-2xl)*0.5)] bg-[linear-gradient(180deg,_transparent_50%,_#fff_0)] px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Blog</h1>
+			<ol class="mt-s-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
 				for i, post := range posts {
 					@view_post(post, i == 0, i == len(posts)-1)
 				}

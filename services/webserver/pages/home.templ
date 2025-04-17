@@ -1,31 +1,29 @@
 package pages
 
-import "personal-website/services/webserver/layouts"
-import "personal-website/internal"
-import "strings"
-
-import "sort"
+import (
+	"bytes"
+	"github.com/grokify/html-strip-tags-go"
+	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
+	"html/template"
+	"log"
+	"personal-website/internal"
+	"personal-website/services/webserver/layouts"
+	"sort"
+	"strings"
+)
 
 type Home struct {
 	Pages []string
 }
 
-templ (p Home) View(posts []internal.Post, projects []internal.Project) {
+templ (p Home) View(posts []internal.Post) {
 	{{
-	var events []internal.Event
+	sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].GetDate()) })
 
-	for i := range posts {
-		events = append(events, &posts[i])
-	}
-
-	for i := range projects {
-		events = append(events, &projects[i])
-	}
-
-	sort.SliceStable(events, func(i, j int) bool { return events[i].GetDate().After(events[j].GetDate()) })
-
-	if len(events) >= 3 {
-		events = events[:3]
+	if len(posts) >= 3 {
+		posts = posts[:3]
 	}
 	}}
 	@layouts.Base{
@@ -33,92 +31,103 @@ templ (p Home) View(posts []internal.Post, projects []internal.Project) {
 		PageCurrent: "home",
 		Title:       "Ethan Thoma",
 	}.View() {
-		<article class="relative border-2 p-xs-s bg-base half-tone-shadow">
-			<h1 class="absolute -top-xs bg-base px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Ethan Thoma</h1>
-			<span class="absolute top-xs flex items-center gap-xs mt-3xs text-content/80 ml-3xs pl-xs text-xs">
-				<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c4-4 8-7 8-12a8 8 0 1 0-16 0c0 5 4 8 8 12z"></path>
-					<circle cx="12" cy="9" r="2" stroke-width="2"></circle>
-				</svg>
-				Vancouver, Canada
-			</span>
-			<section class="mt-s-m pt-3xs flex flex-col gap-m-l flex-wrap">
-				<p class="leading-8">
-					ML graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
-					Focused on NLP and RL research. 
-					Side quests in programming Gleam CLIs, tensor libraries, and interaction net runtimes.
-				</p>
-				<ul class="space-y-xs list-inside text-content/80">
-					<li class="flex items-center gap-2xs hover:text-blue w-[fit-content]">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-							<path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"></path>
-						</svg>
-						<a class="underline" href="https://x.com/EthanBThoma">xitter (EthanBThoma)</a>
-					</li>
-					<li class="flex items-center gap-2xs hover:text-blue w-[fit-content]">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-							<path fill-rule="evenodd" d="M12.006 2a9.847 9.847 0 0 0-6.484 2.44 10.32 10.32 0 0 0-3.393 6.17 10.48 10.48 0 0 0 1.317 6.955 10.045 10.045 0 0 0 5.4 4.418c.504.095.683-.223.683-.494 0-.245-.01-1.052-.014-1.908-2.78.62-3.366-1.21-3.366-1.21a2.711 2.711 0 0 0-1.11-1.5c-.907-.637.07-.621.07-.621.317.044.62.163.885.346.266.183.487.426.647.71.135.253.318.476.538.655a2.079 2.079 0 0 0 2.37.196c.045-.52.27-1.006.635-1.37-2.219-.259-4.554-1.138-4.554-5.07a4.022 4.022 0 0 1 1.031-2.75 3.77 3.77 0 0 1 .096-2.713s.839-.275 2.749 1.05a9.26 9.26 0 0 1 5.004 0c1.906-1.325 2.74-1.05 2.74-1.05.37.858.406 1.828.101 2.713a4.017 4.017 0 0 1 1.029 2.75c0 3.939-2.339 4.805-4.564 5.058a2.471 2.471 0 0 1 .679 1.897c0 1.372-.012 2.477-.012 2.814 0 .272.18.592.687.492a10.05 10.05 0 0 0 5.388-4.421 10.473 10.473 0 0 0 1.313-6.948 10.32 10.32 0 0 0-3.39-6.165A9.847 9.847 0 0 0 12.007 2Z" clip-rule="evenodd"></path>
-						</svg>
-						<a class="underline" href="https://github.com/ethanthoma">GitHub (ethanthoma)</a>
-					</li>
-					<li class="flex items-center gap-2xs hover:text-blue  w-[fit-content]">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"></path>
-						</svg>
-						<a class="underline" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
-					</li>
-				</ul>
-			</section>
-			<section class="mt-l-xl">
-				<h2 class="mb-xs-s text-lg border-b-2 border-content/80">Latest:</h2>
-				<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
-					{{ sort.SliceStable(events, func(i, j int) bool { return events[i].GetDate().After(events[j].GetDate()) }) }}
-					for i, event := range events {
-						@view_event(event, i == len(events)-1)
-					}
-				</ol>
-			</section>
-			<section class="mt-l-xl pt-xs-s border-t-2 justify-around items-start grid grid-flow-col grid-cols-3">
-				<div class="z-10 inline-flex flex-col gap-4xs rounded-md text-center items-center">
-					<a
-						class="[box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0]  text-base leading-none rounded-[88px] font-bold bg-accent justify-center h-l aspect-square border-2 border-content/80 text-center inline-flex items-center hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] cursor-pointer transition-all duration-200 ease-in-out"
-						href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
-					</a>
-					Download Resume
-				</div>
-				<div class="z-10 inline-flex flex-col gap-4xs rounded-md text-center items-center">
-					<a
-						class="[box-shadow:hsl(from_var(--color-base)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0]  text-accent leading-none rounded-[88px] font-bold bg-base justify-center h-l aspect-square border-2 border-content/80 text-center inline-flex items-center hover:bg-[hsl(from_var(--color-base)_h_s_calc(l_-_20))] cursor-pointer transition-all duration-200 ease-in-out"
-						href="https://github.com/ethanthoma/personal-website"
-					>
-						<svg class="w-[1rem] h-[1rem]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-							<path fill-rule="evenodd" d="M12.006 2a9.847 9.847 0 0 0-6.484 2.44 10.32 10.32 0 0 0-3.393 6.17 10.48 10.48 0 0 0 1.317 6.955 10.045 10.045 0 0 0 5.4 4.418c.504.095.683-.223.683-.494 0-.245-.01-1.052-.014-1.908-2.78.62-3.366-1.21-3.366-1.21a2.711 2.711 0 0 0-1.11-1.5c-.907-.637.07-.621.07-.621.317.044.62.163.885.346.266.183.487.426.647.71.135.253.318.476.538.655a2.079 2.079 0 0 0 2.37.196c.045-.52.27-1.006.635-1.37-2.219-.259-4.554-1.138-4.554-5.07a4.022 4.022 0 0 1 1.031-2.75 3.77 3.77 0 0 1 .096-2.713s.839-.275 2.749 1.05a9.26 9.26 0 0 1 5.004 0c1.906-1.325 2.74-1.05 2.74-1.05.37.858.406 1.828.101 2.713a4.017 4.017 0 0 1 1.029 2.75c0 3.939-2.339 4.805-4.564 5.058a2.471 2.471 0 0 1 .679 1.897c0 1.372-.012 2.477-.012 2.814 0 .272.18.592.687.492a10.05 10.05 0 0 0 5.388-4.421 10.473 10.473 0 0 0 1.313-6.948 10.32 10.32 0 0 0-3.39-6.165A9.847 9.847 0 0 0 12.007 2Z" clip-rule="evenodd"></path>
-						</svg>
-					</a>
-					Website Code
-				</div>
-				<div class="z-10 inline-flex flex-col gap-4xs rounded-md text-center items-center">
-					<a
-						class="[box-shadow:hsl(from_var(--color-base)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0]  text-accent leading-none rounded-[88px] font-bold bg-base justify-center h-l aspect-square border-2 border-content/80 text-center inline-flex items-center hover:bg-[hsl(from_var(--color-base)_h_s_calc(l_-_20))] cursor-pointer transition-all duration-200 ease-in-out"
-						href="https://www.buymeacoffee.com/ethanthoma"
-					>
-						<svg class="w-[1rem] h-[1rem]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 17.345a4.76 4.76 0 0 0 2.558 1.618c2.274.589 4.512-.446 4.999-2.31.487-1.866-1.273-3.9-3.546-4.49-2.273-.59-4.034-2.623-3.547-4.488.486-1.865 2.724-2.899 4.998-2.31.982.236 1.87.793 2.538 1.592m-3.879 12.171V21m0-18v2.2"></path>
-						</svg>
-					</a>
-					Support Me
-				</div>
-			</section>
+		<article class="row-start-1 col-[2/-2] mt-l-xl border-2 bg-[#fff] p-xs-s half-tone-shadow">
+			<heading class="absolute mx-3xs -top-[calc(2.03px+var(--text-2xl)*0.5)]">
+				<h1 class="text-2xl px-xs bg-[linear-gradient(180deg,_transparent_50%,_#fff_0)] font-extrabold leading-none tracking-tight">Ethan Thoma</h1>
+				<span class="top-xs px-xs flex items-center gap-xs mt-3xs text-content/80 text-xs">
+					<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c4-4 8-7 8-12a8 8 0 1 0-16 0c0 5 4 8 8 12z"></path>
+						<circle cx="12" cy="9" r="2" stroke-width="2"></circle>
+					</svg>
+					Vancouver, Canada
+				</span>
+			</heading>
+			<p class="mt-s-m pt-3xs leading-8">
+				ML graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
+				Focused on NLP and RL research. 
+				Side quests in programming Gleam CLIs, tensor libraries, and interaction net runtimes.
+			</p>
+			<ul class="mt-s-m space-y-xs list-inside text-content/80">
+				<li class="flex items-center gap-2xs hover:text-blue w-[fit-content]">
+					<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+						<path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"></path>
+					</svg>
+					<a class="underline" href="https://x.com/EthanBThoma">xitter (EthanBThoma)</a>
+				</li>
+				<li class="flex items-center gap-2xs hover:text-blue w-[fit-content]">
+					<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+						<path fill-rule="evenodd" d="M12.006 2a9.847 9.847 0 0 0-6.484 2.44 10.32 10.32 0 0 0-3.393 6.17 10.48 10.48 0 0 0 1.317 6.955 10.045 10.045 0 0 0 5.4 4.418c.504.095.683-.223.683-.494 0-.245-.01-1.052-.014-1.908-2.78.62-3.366-1.21-3.366-1.21a2.711 2.711 0 0 0-1.11-1.5c-.907-.637.07-.621.07-.621.317.044.62.163.885.346.266.183.487.426.647.71.135.253.318.476.538.655a2.079 2.079 0 0 0 2.37.196c.045-.52.27-1.006.635-1.37-2.219-.259-4.554-1.138-4.554-5.07a4.022 4.022 0 0 1 1.031-2.75 3.77 3.77 0 0 1 .096-2.713s.839-.275 2.749 1.05a9.26 9.26 0 0 1 5.004 0c1.906-1.325 2.74-1.05 2.74-1.05.37.858.406 1.828.101 2.713a4.017 4.017 0 0 1 1.029 2.75c0 3.939-2.339 4.805-4.564 5.058a2.471 2.471 0 0 1 .679 1.897c0 1.372-.012 2.477-.012 2.814 0 .272.18.592.687.492a10.05 10.05 0 0 0 5.388-4.421 10.473 10.473 0 0 0 1.313-6.948 10.32 10.32 0 0 0-3.39-6.165A9.847 9.847 0 0 0 12.007 2Z" clip-rule="evenodd"></path>
+					</svg>
+					<a class="underline" href="https://github.com/ethanthoma">GitHub (ethanthoma)</a>
+				</li>
+				<li class="flex items-center gap-2xs hover:text-blue  w-[fit-content]">
+					<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"></path>
+					</svg>
+					<a class="underline" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
+				</li>
+			</ul>
+			<a
+				class="mt-s-m p-2xs-xs inline-flex gap-4xs text-base cursor-pointer rounded-md border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
+				href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
+			>
+				<svg class="mb-[4pt]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+				Download Resume
+			</a>
+		</article>
+		<article class="row-start-2 col-[2/-2] my-l-xl">
+			<h2 class="mb-xs-s text-lg border-b-2 border-content/80">Latest Blogs:</h2>
+			<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
+				for i, post := range posts {
+					@view_event(post, i == len(posts)-1)
+				}
+			</ol>
 		</article>
 	}
 }
 
-templ view_event(event internal.Event, last bool) {
+templ view_event(event internal.Post, last bool) {
+	{{
+	content := strings.Join(strings.Split(event.Content, "\n")[1:4], " ")
+
+	mdRenderer := goldmark.New(
+		goldmark.WithExtensions(
+			extension.NewTypographer(
+				extension.WithTypographicSubstitutions(map[extension.TypographicPunctuation]string{
+					extension.LeftSingleQuote:  "'",
+					extension.RightSingleQuote: "'",
+					extension.LeftDoubleQuote:  "",
+					extension.RightDoubleQuote: "",
+					extension.EnDash:           "–",
+					extension.EmDash:           "—",
+					extension.Ellipsis:         "...",
+					extension.LeftAngleQuote:   "<",
+					extension.RightAngleQuote:  ">",
+					extension.Apostrophe:       "'",
+				}),
+			),
+		),
+		goldmark.WithRendererOptions(
+			html.WithUnsafe(),
+		),
+	)
+
+	var buf bytes.Buffer
+	err := mdRenderer.Convert([]byte(content), &buf)
+	if err != nil {
+		log.Printf("error parsing post %s to markdown (%v)", event.Slug, err)
+		content = "..."
+	}
+
+	content = strings.TrimSpace(strip.StripTags(string(template.HTML(buf.String()))))
+
+	if !strings.HasSuffix(content, "...") && strings.HasSuffix(content, ".") {
+		content = content[:len(content)-1] + "..."
+	}
+	}}
 	<li class="grid grid-cols-subgrid col-span-3">
 		<div class="col-[1] py-2xs pe-3xs flex flex-col">
-			<time>{ event.GetDate().Format("20060102") }</time>
+			<time>{ event.Date.Format("20060102") }</time>
 			if !last {
 				<div class="relative flex-1">
 					<div class="border-e-2 [z-index:1] border-content/20 my-2xs h-[calc(100%_+_var(--spacing-m))] w-1/2 absolute inset-0"></div>
@@ -126,24 +135,12 @@ templ view_event(event internal.Event, last bool) {
 			}
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
-		switch event.(type) {
-			case *internal.Project:
-				{{ event := event.(*internal.Project) }}
-				<a
-					class="col-[3] px-3xs py-2xs rounded-md underline hover:text-blue hover:bg-content/5"
-					href={ templ.URL(event.Url) }
-				>
-					<h3 class="p-name">{ event.Title }</h3>
-				</a>
-			case *internal.Post:
-				{{ event := event.(*internal.Post) }}
-				<a
-					class="col-[3] px-3xs py-2xs rounded-md z-10 bg-base border-shadow border-[1px] transition-all duration-200 ease-in-out shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:bg-content/5 hover:text-blue"
-					href={ templ.URL("/post/" + event.Slug) }
-				>
-					<h3 class="underline">{ event.Title }</h3>
-					<p>{ strings.Join(strings.Fields(event.Content)[0:10], " ") + "..." }</p>
-				</a>
-		}
+		<a
+			class="col-[3] px-2xs py-2xs rounded-md z-10 bg-[#fff] border-shadow border-[1px] transition-all duration-200 ease-in-out shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow]  hover:text-blue"
+			href={ templ.URL("/post/" + event.Slug) }
+		>
+			<h3 class="underline">{ event.Title }</h3>
+			<p>{ content } </p>
+		</a>
 	</li>
 }

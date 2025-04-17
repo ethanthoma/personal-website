@@ -6,7 +6,7 @@ type Nav struct {
 }
 
 const effect = "-translate-x-3xs -translate-y-3xs shadow-content shadow-[4px_4px_0_0]"
-const hoverEffect = "group-hover:-translate-x-3xs group-hover:-translate-y-3xs group-hover:shadow-content group-hover:shadow-[4px_4px_0_0]"
+const hoverEffect = "group-hover:text-blue group-hover:-translate-x-3xs group-hover:-translate-y-3xs group-hover:shadow-content group-hover:shadow-[4px_4px_0_0]"
 
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
@@ -15,7 +15,7 @@ templ (p Nav) View() {
 				<li class="flex-1 h-fit relative group">
 					<a
 						class={
-							"relative h-full block px-2xs-xs py-2xs border-2 text-center group-hover:bg-[hsl(from_var(--color-base)_h_s_calc(l_-_10))] transition-all duration-200 ease-in-out ",
+							"relative bg-[hsl(from_var(--color-base)_h_s_calc(l_+_10))] h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-200 ease-in-out ",
 							templ.KV(hoverEffect, p.PageCurrent != name),
 							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
 						}

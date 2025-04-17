@@ -15,9 +15,7 @@
     --text-3xl: clamp(2.3325rem, 2.0844rem + 1.2484vw, 3.0519rem);
     --text-4xl: clamp(2.7994rem, 2.4491rem + 1.7625vw, 3.815rem);
 
-    --color-base-light: #ffffff;
-    --color-base: #fafaf8;
-    --color-base-dark: #f0efea;
+    --color-base: #fbf8ef;
     --color-content: #141413;
     --color-accent: #f97316;
     --color-blue: #0064E6;
@@ -161,12 +159,13 @@
         @apply border-l-4;
         @apply border-shadow;
         @apply px-3xs;
-        @apply bg-base-dark;
+        @apply bg-content/5;
         @apply text-justify;
     }
 }
 
 .half-tone-shadow {
+    @apply relative;
     @apply before:content-[''];
     @apply before:absolute;
     @apply before:inset-0;

@@ -16,6 +16,9 @@ schema = 3
   [mod."github.com/dlclark/regexp2"]
     version = "v1.11.5"
     hash = "sha256-jN5+2ED+YbIoPIuyJ4Ou5pqJb2w1uNKzp5yTjKY6rEQ="
+  [mod."github.com/grokify/html-strip-tags-go"]
+    version = "v0.1.0"
+    hash = "sha256-0dmC6txGHXxHwQdkwUk2Qbsx3x5JDjGeioEYgoOz1+c="
   [mod."github.com/tursodatabase/libsql-client-go"]
     version = "v0.0.0-20240902231107-85af5b9d094d"
     hash = "sha256-Cu6yhSYDUb7iMi0oGrciKTMIefOXolYBUqqfiSKloUE="
