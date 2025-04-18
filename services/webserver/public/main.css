@@ -72,6 +72,7 @@
 
     /* Custom */
     --spacing-s-2xl: clamp(1rem, -0.5652rem + 7.8261vw, 5.5rem);
+    --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
     --spacing-content: min(clamp(320px, 100%, max(720px, 33svw)), 100svw);
 }

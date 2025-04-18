@@ -24,14 +24,14 @@ templ (p Base) View() {
 			<link rel="manifest" href="/public/favicon/site.webmanifest"/>
 		</head>
 		<body
-			style="grid-template-columns: minmax(var(--spacing-s), calc((100% - 720px) / 2)) repeat(10, minmax(0, 1fr)) minmax(var(--spacing-s), calc((100% - 720px) / 2));"
-			class="relative font-mono grid grid-rows-[auto_1fr_auto] gap-s-xl max-w-full min-h-full overflow-x-hidden bg-base text-sm text-content antialiased"
+			style="grid-template-columns: minmax(0, calc((100% - 720px) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - 720px) / 2));"
+			class="relative font-mono grid grid-rows-[auto_1fr_auto] gap-x-xs-xl max-w-full min-h-full overflow-x-hidden bg-base text-sm text-content antialiased"
 		>
 			@components.Header{
 				PageCurrent: p.PageCurrent,
 				Pages:       p.Pages,
 			}.View()
-			<main class="grid grid-cols-subgrid col-span-12 auto-rows-min">
+			<main class="grid grid-cols-subgrid col-[1/-1] auto-rows-min">
 				{ children... }
 			</main>
 			@components.Footer{}.View()
