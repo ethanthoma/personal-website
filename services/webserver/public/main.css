@@ -175,3 +175,32 @@
     @apply before:[background-size:3px_3px];
     @apply before:translate-[9px]
 }
+
+@utility acronym-* {
+    @apply relative;
+    @apply font-bold;
+    @apply hover:after:visible;
+    @apply hover:after:opacity-100;
+    @apply after:invisible;
+    @apply after:opacity-0;
+    @apply after:p-3xs-2xs;
+    @apply after:font-normal;
+    @apply after:text-content;
+    @apply after:bg-[#fff];
+    @apply after:border-2;
+    @apply after:border-shadow;
+    @apply after:rounded-md;
+    @apply after:shadow-shadow;
+    @apply after:shadow-[3px_3px_0px_shadow];
+    @apply after:absolute;
+    @apply after:max-w-content;
+    @apply after:top-(--text-m);
+    @apply after:left-0;
+    @apply after:transition-all;
+    @apply after:duration-200;
+    @apply after:ease-in-out;
+
+    &::after {
+        content: --value([*]) !important;
+    }
+}

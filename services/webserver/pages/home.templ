@@ -43,8 +43,8 @@ templ (p Home) View(posts []internal.Post) {
 				</span>
 			</heading>
 			<p class="mt-m text-justify leading-8">
-				<strong class="font-bold">ML</strong> graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
-				Focused on <strong class="font-bold">NLP</strong> and <strong class="font-bold">RL</strong> research. 
+				<strong class="font-bold acronym-['Machine_Learning']">ML</strong> graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
+				Focused on <strong class="font-bold acronym-['Natural_Language_Processing']">NLP</strong> and <strong class="font-bold acronym-['Reinforcement_Learning']">RL</strong> research. 
 				Side quests in programming Gleam CLIs, tensor libraries, and interaction net runtimes.
 			</p>
 			<section class="flex flex-wrap mt-s-m gap-s-m justify-between">
@@ -140,7 +140,7 @@ templ view_event(event internal.Post, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
 		<a
-			class="col-[3] px-2xs py-2xs rounded-md z-10 bg-[#fff] border-shadow border-[1px] transition-all duration-200 ease-in-out shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow]  hover:text-blue"
+			class="col-[3] px-2xs py-2xs rounded-md z-10 bg-[#fff] border-shadow border-[1px] transition-all duration-200 ease-in-out shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
 			href={ templ.URL("/post/" + event.Slug) }
 		>
 			<h3 class="underline">{ event.Title }</h3>
