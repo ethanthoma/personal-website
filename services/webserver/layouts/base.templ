@@ -31,7 +31,9 @@ templ (p Base) View() {
 				PageCurrent: p.PageCurrent,
 				Pages:       p.Pages,
 			}.View()
-			<main class="grid grid-cols-subgrid col-[1/-1] auto-rows-min">
+			<main
+				class="grid grid-cols-subgrid col-[1/-1] gap-y-2xl-3xl auto-rows-min py-2xl-3xl"
+			>
 				{ children... }
 			</main>
 			@components.Footer{}.View()
