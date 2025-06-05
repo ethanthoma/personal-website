@@ -83,6 +83,7 @@
               pkgs.tailwindcss-language-server
               packages.uploader
               templpkgs
+              pkgs.mdformat
             ];
 
             env.WEBSERVER_PORT = webserverPort;

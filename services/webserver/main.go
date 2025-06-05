@@ -28,16 +28,6 @@ var projects = []internal.Project{
 		Url:   "https://github.com/ethanthoma/nix-gleam-burrito",
 	},
 	{
-		Date:  time.Date(2025, 2, 2, 0, 0, 0, 0, time.Local),
-		Title: "effect: Gleam library for handling side effects",
-		Url:   "https://github.com/ethanthoma/effect",
-	},
-	{
-		Date:  time.Date(2025, 1, 28, 0, 0, 0, 0, time.Local),
-		Title: "trellis: simple Gleam library for pretty printing tables",
-		Url:   "https://github.com/ethanthoma/trellis",
-	},
-	{
 		Date:  time.Date(2025, 1, 25, 0, 0, 0, 0, time.Local),
 		Title: "Canvas Group Quiz creation CLI in Gleam",
 		Url:   "https://github.com/STASER-Lab/cgq",
@@ -51,11 +41,6 @@ var projects = []internal.Project{
 		Date:  time.Date(2024, 9, 11, 0, 0, 0, 0, time.Local),
 		Title: "Interaction Nets in Odin",
 		Url:   "https://github.com/ethanthoma/interaction-net",
-	},
-	{
-		Date:  time.Date(2024, 7, 19, 0, 0, 0, 0, time.Local),
-		Title: "Zig Webgpu Compute Shader",
-		Url:   "https://github.com/ethanthoma/zig-webgpu-compute-shader",
 	},
 	{
 		Date:  time.Date(2024, 7, 8, 0, 0, 0, 0, time.Local),
