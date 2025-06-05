@@ -19,17 +19,19 @@ so we can approximate them. Off you go to train it.
 It works. A little bit. You can "talk" to them, and they reply. Your data 
 grows. You train bigger models. You use more compute.
 
-Now, you may be an optimist. Fair. I'm not though. You might think if we just get 
-more data, more compute, we can emulate a Timmy or Billy. But can you? Do you really 
+Now, you may be an optimist. Fair. You might think if we can just get more data, 
+more compute, maybe then we can emulate a Timmy or a Billy. But can you? Do you really 
 think, you will emulate a computer? Just from network data? I don't.
 
-Computers are complex beasts, that we have made efficient and optimized to perform 
-the computer things it does. Sure, an one trillion parameter model might be to do 
-computer-like things. But would it ever be a computer? Would more parameters make it
+Computers are complex beasts. We made them efficient and optimized to perform 
+the things it does. Sure, a trillion parameter model might be able to do 
+computer-like things. But would it be a computer? Would more parameters make it
 a computer? How many orders of magnitude more compute would you need to make it 90% 
 as good?
 
-For that reason, I don't see how LLMs will learn to be AGI by looking at text.
+We can approximate it, sure. But it won't be better. Hell, by the time it trains, 
+it will probably be outdated already and for that reason, I don't see how LLMs 
+will become AGI, especially if we just learn from text.
 
 ## Language Modeling is a Sub-task
 
