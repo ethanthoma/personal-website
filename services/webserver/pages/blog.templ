@@ -43,6 +43,7 @@ templ view_post(post internal.Post, first, last bool) {
 			hx-get={ "/post/" + post.Slug }
 			hx-target="main"
 			hx-select="main"
+			hx-swap="outerHTML"
 			hx-push-url={ "/post/" + post.Slug }
 		>
 			if first {
