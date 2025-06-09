@@ -28,9 +28,9 @@ pub fn map(list: List(a), with fun: fn(a) -> b) -> List(b) {
 }
 ```
 
-The `map` function takes in two parameters, the list it is operating over and a
-mapping function. Let's say we had a list of ints we wanted to increment, we
-could
+The `map` function takes in two parameters, the list it is operating over,
+`list` and a mapping function, `fun`. Let's say we had a list of ints we wanted
+to increment, we could
 
 ```gleam
 let ints = [0, 1, 2, 3, 4]
@@ -48,8 +48,8 @@ which prints out
 [1, 2, 3, 4, 5]
 ```
 
-We created a lambda function (which we named `inc`). Instead, we can "unwrap" it
-with `use`:
+In this example, we created a lambda function (which we named `inc`). Instead,
+we can "unwrap" it with `use`:
 
 ```gleam
 let ints = [0, 1, 2, 3, 4]
@@ -61,7 +61,8 @@ echo {
 ```
 
 Now what matters is that everything _after_ the `use` is now **inside** the
-lambda function. Sort-of like an implicit scope.
+lambda function. Sort-of like an implicit scope. In otherwords, we _plop_ the
+callback scope into the current scope.
 
 ## Common Uses
 
@@ -103,9 +104,9 @@ echo users
 }
 ```
 
-Now this, this we can call callback heaven.
+This we can call callback heaven.
 
-Another common way is for early returns. Lets take this example:
+Another common way for using `use` is for early returns. Lets take this example:
 
 ```gleam
 let should_return_early = True
@@ -127,12 +128,11 @@ ReturnedAsPlanned
 ```
 
 The beauty of this is that it _feels_ like an early return. And sure, it only
-works with bools but there are [libraries](https://github.com/inoas/gleam-given)
-that open that up too.
+works with bools but there are libraries that open that up too.
 
 ## The Ugliness of Case Statements
 
-I think, aesthetically, gleam's weakness is the case statement.
+Aesthetically, gleam's weakness is the case statement.
 
 Simply put, it's **ugly**.
 
@@ -157,10 +157,13 @@ let positive_num = ifelse(num > 0, num, 0)
 ```
 
 It's nice! But then again, all it does is replace a case statement. People (imo)
-like the `ifelse`. To be honest, I literally avoid checking boolean conditions
-because writing an `ifelse` using a case sucks.
+like the `ifelse`. I literally avoid checking boolean conditions because writing
+an `ifelse` using a case sucks.
 
 That's why I **abuse** use.
+
+I love the [given library](https://github.com/inoas/gleam-given). But it is
+hardly the _worst_ way to use `use`.
 
 ## Introduction to Abuse
 
@@ -298,7 +301,7 @@ fn some_func(route) -> Response {
         _ -> Error(InvalidRoute)
     }
 
-    use view: View <- result.try(result) // <- this is a type error!!!
+    use view: View <- result.map(result) // <- this is a type error!!!
 
     case view {
         Home -> "this my home page"
@@ -319,7 +322,7 @@ fn some_func(route) -> Response {
             _ -> Error(InvalidRoute)
         }
 
-        use view: View <- result.try(result)
+        use view: View <- result.map(result)
 
         case view {
             Home -> "this my home page"
@@ -353,7 +356,7 @@ fn some_func(route) -> Response {
         _ -> Error(InvalidRoute)
     }
 
-    use view: View <- result.try(result)
+    use view: View <- result.map(result)
 
     case view {
         Home -> "this my home page"
@@ -362,12 +365,13 @@ fn some_func(route) -> Response {
 }
 ```
 
-et voilà. You can we still get the niceness of using `use` with `result.try` but
+et voilà. You can we still get the niceness of using `use` with `result.map` but
 instead of the function returning that, we unwrap it with our `apply_with`,
-turning our `Result` into a `Response`. Admittedly, it is confusing when code
-runs. `use` tends wraps types as we go _down_ the function while our
-`apply_with` does the opposite, it unwraps as we go _up_. This can easily
-confuse people if we mix-and-match a whole lot of these.
+turning our `Result` into a `Response`. Admittedly, the order in which the code
+runs is. The `use` syntax tends to wraps types as we go _down_ the function but
+our `apply_with` does the opposite; it unwraps as we go _up_. You can
+mix-and-match a whole lot of these to cause maximal psychic damage to gleam
+noobies.
 
 ## Professional Abuser
 
@@ -390,7 +394,7 @@ fn view(model) {
 (from their readme)
 
 And, to be honest, I hate it. It's how people recommend doing webdev in Ocaml as
-well and, to be honest, I hated it then too. In fact, I setup `dune` to compile
+well and I hated it then too. In fact, I setup `dune` to compile
 [reasonml](https://reasonml.github.io/) with a JSX preprocessor just to have
 something more HTML-like.
 
@@ -501,9 +505,9 @@ pub fn group(elements children: List(Element(msg))) {
 What really makes it complex is returning another callback function...in the
 callback function.
 
-We can break it down real quick. The `list` function takes a single callback,
-`f`. This callback has two parameters: `append` and `done`. `append` is a
-function that takes in the element we want to append and a callback.
+Lets break it down real quick. The `list` function takes a single callback, `f`.
+This callback has two parameters: `append` and `done`. `append` is a function
+that takes in the element we want to append and a callback.
 
 The callback expects the user to return a `Done` type. The user can do this in
 two ways. One, they use `append` again, as its return type is also `Done`. This

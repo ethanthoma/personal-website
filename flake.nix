@@ -84,6 +84,8 @@
               packages.uploader
               templpkgs
               pkgs.mdformat
+              pkgs.rustywind
+              pkgs.stylelint
             ];
 
             env.WEBSERVER_PORT = webserverPort;

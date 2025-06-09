@@ -173,7 +173,7 @@
     @apply before:[z-index:-10];
     @apply before:[background-image:repeating-linear-gradient(_to_top,_transparent,_transparent_33%,_black_33%,_black_66%,_transparent_66%),_repeating-linear-gradient(_to_left,_transparent,_transparent_33%,_black_33%,_black_66%,_transparent_66%)];
     @apply before:[background-size:3px_3px];
-    @apply before:translate-[9px]
+    @apply before:translate-[9px];
 }
 
 @utility acronym-* {
