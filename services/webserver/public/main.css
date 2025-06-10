@@ -121,6 +121,13 @@
 
     & p {
         @apply font-sans;
+
+        & code {
+            @apply text-accent;
+            @apply [filter:brightness(0.8)];
+            @apply tracking-tight;
+            @apply font-mono;
+        }
     }
 
     & pre {
