@@ -1,22 +1,28 @@
 # Odin Errdefer
 
-I love [Zig](https://ziglang.org/). It's simple, it's nice, and I am still 
-salty about [no comptime pointers](https://github.com/ziglang/zig/issues/7396). 
+I love [Zig](https://ziglang.org/). The language is simple and clear. Sure it
+isn't the easiest for noobies to read but its explicitness is its appeal.
 
-But still, it's my go-to language for unmanaged memory. Why? Because other 
-languages do too much (cpp, rust, whatever else) and the larger the surface area,
-the longer to learn the gotchas; simply a bigger surface area for failure.
+While I'm still salty about the
+[removal of comptime pointers](https://github.com/ziglang/zig/issues/7396), Zig
+is still my go-to language for manual memory management.
 
-I'm lazy. I want a good STD, clear/simple syntax, and errors-as-values. So 
-basically, I want a better C (on the managed-memory side of the world).
+Why?
 
-But Zig isn't the only racehorse in replacing C, there's [Odin](https://odin-lang.org/).
+Because many other languages, C++ and Rust, do too much and have a lot of
+"gotchas" you just have to know. I like smaller surface areas, smaller chances
+for failure.
+
+My needs are pretty straightforward. I want a good STD, clear/simple syntax, and
+errors-as-values (theses have changed a bit but shhh). basically, I'm looking
+for a modern C. And to be honest, I think of Zig as a more C++ alternative. For
+the C world, there's [Odin](https://odin-lang.org/).
 
 ## Magic of `errdefer`
 
-One of Zig's most banger features is its `defer` and `errdefer` statements. 
-This lets you run *things* at the end of the current scope. Take this Zig 
-function, for instance:
+One of Zig's most banger features is its `defer` and `errdefer` statements. This
+lets you run *things* at the end of the current scope. Take this Zig function,
+for instance:
 
 ```zig
 fn find_and_replace(
@@ -45,24 +51,23 @@ fn find_and_replace(
 ```
 
 The gist is
-- We want to find all ints with value `find` in our `slice` and replace them 
-    with `replace`, if there are no replacements, return an error.
+
+- We want to find all ints with value `find` in our `slice` and replace them
+  with `replace`, if there are no replacements, return an error.
 - We dup(licat)e the input `slice`, using the passed in `allocater`.
 - We return either the `copied_slice` or an error.
-- The `errdefer` ensures that if an error pops up, `copied_slice` is freed 
-    automatically, preventing memory leaks.
+- The `errdefer` ensures that if an error pops up, `copied_slice` is freed
+  automatically, preventing memory leaks.
 
-### But What About Odin
+### What About Odin
 
-Odin doesn't have `errdefer`, only `defer`. In fact, it's not really possible 
-for Odin to have `errdefer` because Odin does even have an error type.
+Odin doesn't have `errdefer`, only `defer`. In fact, it's not really possible
+for Odin to have `errdefer` because Odin doesn't even have a special error type.
 
-In Zig, errors are a special kind of type: a global, modifiable error enum. This 
-lets the Ziglang devs make specialized syntax just for the error type. 
+In Zig, errors are a dedicated type: a global, modifiable error enum. Instead,
+Odin, has two idiomatic ways to manage errors: enums or bools.
 
-Odin, instead has two idiomatic ways to manage errors: enums or bools. 
-
-Here's how we can emulate `errdefer` in Odin using `defer` and an `enum`:
+Here's how we can emulate `errdefer` in Odin using `defer` with an `enum`:
 
 ```odin
 Error :: enum {
@@ -89,24 +94,27 @@ find_and_replace :: proc(slice: []u32, find, replace: u32) -> (err: Error) {
 }
 ```
 
-The trick of this trick is:
-- By including `err` in the function signature, we have a reference to the error 
-    state within our `defer` statement.
-- The `defer` is conditional, checking the value of `err` before deciding 
-    whether to clean up `copied_slice`.
+The trick here is:
+
+- By including `err` in the function signature, we have a reference to the error
+  state within our `defer` statement.
+- The `defer` is conditional, checking the value of `err` before deciding
+  whether to clean up `copied_slice`.
 - By default, `err` is `.None`, signaling no error.
 
 ### It was Trap: Default Values
 
-Odin has the concept of default values. When you define a variable without a 
-value, it gets set to a default value:
+Odin has a feature of setting default values for uninitialized variables. For
+instance, an int defaults to 0:
 
 ```odin
 some_number: int // this is equal to 0
 ```
 
-For booleans, the default is `false` which makes sense (from the C world) but 
-leads to a sneaky bug if you're not careful:
+For booleans, the default is `false` which makes sense (from the C world) but
+leads to a sneaky bug if you're not careful.
+
+Consider this alternative implementation using a boolean to signal success:
 
 ```odin
 find_and_replace :: proc(slice: []u32, find, replace: u32) -> (ok: bool) {
@@ -127,15 +135,15 @@ find_and_replace :: proc(slice: []u32, find, replace: u32) -> (ok: bool) {
 }
 ```
 
-We tried to be smart here by skipping the loop if `find` and `replace` are the 
-same. But if they are the same, `ok` remains `false` (the default), and our 
-`defer` goes ahead and deletes the `copied_slice` memory and then returns it, 
-making a dangling pointer. Oops.
+We tried to be smart here and skip the loop if `find` and `replace` are the same
+value. But, if they are the same, `ok` never gets set to `true` and stays its
+default `false` value. Our `defer` statement then goes ahead and deletes the
+`copied_slice` memory before it's returned, making it into a dangling pointer.
+Oops.
 
 ### The Fix: Assume Success
 
-To dodge this pitfall, we have to explicitly set `ok` to `true`. In other words,
-like every other function, assume success unless otherwise:
+To dodge this pitfall, we must be explicit and assume the function will succeed:
 
 ```odin
 find_and_replace :: proc(slice: []u32, find, replace: u32) -> (ok: bool = true) {
@@ -156,24 +164,40 @@ find_and_replace :: proc(slice: []u32, find, replace: u32) -> (ok: bool = true) 
 }
 ```
 
-It is a little bit annoying as (1) the STD doesn't do this so it's hard to be 
-aware of this pitfall till you fall and (2) default success is true for the enum
-error and no error, only defaults to failure for bools which is bad design imo.
+By setting the default value of `ok` to `true` in the function signature, we
+_assume success_.
 
-But I think this pitfalls shows the real difference between Odin and Zig. In Zig,
-everything is explicit. There is no [default allocator](https://odin-lang.org/docs/overview/#allocators) 
-and there are no default values. You will always know, explicitly, what things 
-are. 
+This is a little bit annoying. First, the STD doesn't set boolean errors as
+`true` by default so it's hard to be aware of this pattern till it bites you in
+the ass. Secondly, functions with no errors or use enums for error assume the
+function was successful. It is only for booleans where the default assumes
+failure, it's more the inconsistency that makes this an issue.
 
-This is why I love Zig. And also why Zig removed my beloved comptime vars, as 
-the execution order was hard to parse. Zig's manifesto of making the language 
-readable and simple in syntactic sugar aligns with what I believe about coding. 
-Programming languages should be simple. 
+## A More Philosophical Difference
 
-And I love Odin for that. Sure, it's not as explicit as Zig but it is simple, 
-it is readable, and there's even less special syntax and sugar and jazz than Zig.
+Odin and Zig both heavily emphasize explicitness, just differently.
 
-So try Odin. It is probably the best C-style language for graphics or for small 
-systems projects. I'd still use Zig (or maybe Rust one day) for big projects, 
-like my [tensor library](https://github.com/ethanthoma/zensor), but I think 
-Odin is perfect for anything else. *Lucky coding*.
+In Zig, everything is explicit. You always know what things are. It doesn't have
+a [default allocator](https://odin-lang.org/docs/overview/#allocators) and there
+are no default values. It's why Zig is so readable and why why features that
+obscured execution flow, like my beloved comptime vars, were removed. And this
+aligns with what I believey about coding:
+
+**Programming languages should be simple.**
+
+And I don't mean simple like golang (ew). I mean the state-machine a coder keeps
+in their head should be as simple as possible. It should be the compilers job,
+not mine.
+
+Odin is a bit different from Zig in this sense. While it is also simple and
+readable, Odin makes a few more concessions for convenience. There's less
+special syntax, sugar, and jazz than Zig.
+
+Yet, we can still make `errdefer`.
+
+I love languages that can get away with using one feature for many. Like gleam's
+`use` for early returns. It's that smaller surface error that makes **me less
+likely to make mistakes**.
+
+So, give Odin a try. It is probably the best C-style language that is simple and
+a pleasure to use. *Lucky coding!*

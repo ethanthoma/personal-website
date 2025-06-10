@@ -3,6 +3,7 @@ package pages
 import (
 	"personal-website/services/webserver/layouts"
 	"personal-website/internal"
+	"strings"
 )
 
 type Projects struct {
@@ -15,9 +16,9 @@ templ (p Projects) View(projects []internal.Project) {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<article class="relative row-start-1 col-[2/-2] self-start py-xs-s">
+		<article class="relative row-start-1 self-start col-[2/-2] py-xs-s">
 			<h1 class="absolute -top-[calc(2.13px+var(--text-2xl)*0.5)] text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
-			<ol class="mt-m gap-y-m grid grid-cols-[1fr_1fr]">
+			<ol class="grid mt-m gap-y-m grid-cols-[1fr_1fr]">
 				for i, project := range projects {
 					@view_project(project, i == len(projects)-1)
 				}
@@ -27,29 +28,33 @@ templ (p Projects) View(projects []internal.Project) {
 }
 
 templ view_project(project internal.Project, last bool) {
-	<li class="col-span-2 grid grid-cols-subgrid bg-[#f0f6ff] border-2 border-black shadow-content shadow-[4px_4px_0_0]">
-		<header class="col-span-2 flex gap-s justify-between bg-white border-b-2 border-black p-3xs">
+	<li class="grid col-span-2 border-2 border-black grid-cols-subgrid bg-lightblue shadow-content shadow-[4px_4px_0_0]">
+		<header class="flex col-span-2 justify-between bg-white border-b-2 border-black gap-s p-3xs">
 			<h2 class="font-bold">
 				{ project.Title }
 			</h2>
 			<time class="text-content/80">{ project.Date.Format("20060102") }</time>
 		</header>
-		<div class="m-4xs-3xs flex gap-3xs">
-			<a
-				class="border-2 border-black px-4xs py-5xs underline bg-accent hover:bg-blue text-white inline-flex items-center"
-				href={ templ.URL(project.Url) }
-			>
-				GitHub
-				<svg class="ml-0.5 h-3 w-3" fill="currentColor" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
-				</svg>
-			</a>
-			<span class="h-full border-2 border-black px-4xs py-5xs bg-white">
-				{ project.Lang }
-			</span>
+		<div class="flex items-center m-4xs-3xs gap-3xs">
+			if project.Url != "" {
+				<a
+					class="inline-flex items-center font-extrabold text-white underline border-2 border-black px-4xs py-5xs bg-accent hover:bg-blue"
+					href={ templ.URL(project.Url) }
+				>
+					GitHub
+					<svg class="ml-0.5 w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+						<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
+					</svg>
+				</a>
+			}
+			if project.Lang != "" {
+				<span class="inline-flex items-center h-full tracking-widest bg-white border-2 border-black py-auto px-4xs">
+					{ strings.ToUpper(project.Lang) }
+				</span>
+			}
 		</div>
 		<p class="col-span-2 p-3xs">
-			{ project.Description }
+			@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
 		</p>
 	</li>
 }

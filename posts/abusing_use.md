@@ -368,9 +368,9 @@ fn some_func(route) -> Response {
 et voilà. You can we still get the niceness of using `use` with `result.map` but
 instead of the function returning that, we unwrap it with our `apply_with`,
 turning our `Result` into a `Response`. Admittedly, the order in which the code
-runs is. The `use` syntax tends to wraps types as we go _down_ the function but
-our `apply_with` does the opposite; it unwraps as we go _up_. You can
-mix-and-match a whole lot of these to cause maximal psychic damage to gleam
+runs is confusing. The `use` syntax tends to wraps types as we go _down_ the
+function but our `apply_with` does the opposite; it unwraps as we go _up_. You
+can mix-and-match a whole lot of these to cause maximal psychic damage to gleam
 noobies.
 
 ## Professional Abuser
