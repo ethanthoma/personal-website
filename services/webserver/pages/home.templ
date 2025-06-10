@@ -23,7 +23,7 @@ templ (p Home) View(posts []internal.Post) {
 		PageCurrent: "home",
 		Title:       "Ethan Thoma",
 	}.View() {
-		<article class="row-start-1 border-2 col-[2/-2] p-xs-s bg-[#fff] half-tone-shadow">
+		<article class="grid grid-cols-2 row-start-1 border-2 gap-m col-[2/-2] p-xs-s bg-[#fff] half-tone-shadow">
 			<heading class="absolute mx-3xs -top-[calc(2.13px+var(--text-2xl)*0.5)]">
 				<h1 class="text-2xl px-xs bg-[linear-gradient(180deg,_transparent_50%,_#fff_0)] font-extrabold leading-none tracking-tight">Ethan Thoma</h1>
 				<span class="flex items-center text-xs top-xs px-xs gap-xs mt-3xs text-content/80">
@@ -34,13 +34,14 @@ templ (p Home) View(posts []internal.Post) {
 					Vancouver, Canada
 				</span>
 			</heading>
-			<p class="leading-8 text-justify mt-m">
+			<p class="col-span-full row-start-1 leading-8 text-justify mt-m">
 				<strong class="font-bold acronym-['Machine_Learning']">ML</strong> graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
 				Focused on <strong class="font-bold acronym-['Natural_Language_Processing']">NLP</strong> and <strong class="font-bold acronym-['Reinforcement_Learning']">RL</strong> research. 
 				Side quests in programming Gleam mobile apps, zig tensor libraries, and odin interaction net runtimes.
 			</p>
-			<section class="flex flex-wrap justify-between mt-s-m gap-m">
-				<ul class="list-inside space-y-xs text-content/80">
+			<section>
+				<h3 class="border-b-2 border-black mb-s pe-l">My Socials</h3>
+				<ul class="list-inside space-y-2xs text-content/80">
 					<li class="flex items-center gap-2xs w-[fit-content] hover:text-blue">
 						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"></path>
@@ -60,13 +61,40 @@ templ (p Home) View(posts []internal.Post) {
 						<a class="underline" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
 					</li>
 				</ul>
-				<div class="flex flex-1 justify-center">
+			</section>
+			<section>
+				<h3 class="border-b-2 border-black mb-s pe-l">My Tech</h3>
+				<ul class="grid grid-flow-row list-inside grid-cols-[repeat(auto-fit,minmax(calc(((100%-(var(--spacing-m)-4rem)*4)/4)),1fr))] list-[square] gap-x-m gap-y-2xs text-content/80">
+					<li class="h-max">Python</li>
+					<li>Gleam</li>
+					<li>Zig</li>
+					<li>Odin</li>
+				</ul>
+			</section>
+			<section class="flex col-span-2 items-center font-extrabold gap-m">
+				<div>
 					<a
-						class="self-center p-2xs-xs inline-flex justify-center gap-4xs font-extrabold text-base cursor-pointer rounded-md border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
+						class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
 						href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 					>
 						<svg class="mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
 						Download Resume
+					</a>
+				</div>
+				<div>
+					<a
+						class="inline-flex items-center leading-6 gap-4xs text-blue"
+						href="/projects"
+						hx-get="/projects"
+						hx-push-url="/projects"
+						hx-target="main"
+						hx-select="main"
+						hx-swap="outerHTML"
+					>
+						See projects
+						<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path>
+						</svg>
 					</a>
 				</div>
 			</section>

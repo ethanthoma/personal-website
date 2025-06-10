@@ -12,14 +12,13 @@ templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
 		<ul class="flex justify-evenly items-center gap-s-2xl">
 			for _, name := range p.Pages {
-				<li class="flex-1 h-fit relative group">
+				<li class="relative flex-1 h-fit group">
 					<a
 						class={
 							"relative bg-[hsl(from_var(--color-base)_h_s_calc(l_+_10))] h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-200 ease-in-out",
 							templ.KV(hoverEffect, p.PageCurrent != name),
 							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
 						}
-						href={ templ.URL("/" + name) }
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
 						hx-push-url={ "/" + name }
@@ -30,8 +29,7 @@ templ (p Nav) View() {
 						{ name }
 					</a>
 					<a
-						class="w-full h-full absolute bottom-[calc(var(--spacing-3xs)-4px)] right-[calc(var(--spacing-3xs)-4px)] block"
-						href={ templ.URL("/" + name) }
+						class="block absolute w-full h-full bottom-[calc(var(--spacing-3xs)-4px)] right-[calc(var(--spacing-3xs)-4px)]"
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
 						hx-push-url={ "/" + name }
