@@ -1,7 +1,9 @@
 package pages
 
-import "personal-website/services/webserver/layouts"
-import "personal-website/internal"
+import (
+	"personal-website/services/webserver/layouts"
+	"personal-website/internal"
+)
 
 type Projects struct {
 	Pages []string
@@ -13,9 +15,9 @@ templ (p Projects) View(projects []internal.Project) {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<article class="row-start-1 col-[2/-2] self-start p-xs-s bg-[#fff] border-2 half-tone-shadow">
-			<h1 class="absolute -top-[calc(2.13px+var(--text-2xl)*0.5)] bg-[linear-gradient(180deg,_transparent_50%,_#fff_0)] px-xs mx-3xs text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
-			<ol class="mt-m gap-y-m grid grid-cols-[min-content_min-content_1fr]">
+		<article class="relative row-start-1 col-[2/-2] self-start py-xs-s">
+			<h1 class="absolute -top-[calc(2.13px+var(--text-2xl)*0.5)] text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
+			<ol class="mt-m gap-y-m grid grid-cols-[1fr_1fr]">
 				for i, project := range projects {
 					@view_project(project, i == len(projects)-1)
 				}
@@ -25,19 +27,29 @@ templ (p Projects) View(projects []internal.Project) {
 }
 
 templ view_project(project internal.Project, last bool) {
-	<li class="relative grid grid-cols-subgrid col-span-3">
-		<div class="col-[1] py-2xs pe-3xs flex flex-col">
-			<time>{ project.Date.Format("20060102") }</time>
-			if !last {
-				<div class="relative flex-1">
-					<div class="border-e-2 [z-index:1] border-content/20 my-2xs h-[calc(100%_+_var(--spacing-m))] w-1/2 absolute inset-0"></div>
-				</div>
-			}
+	<li class="col-span-2 grid grid-cols-subgrid bg-[#f0f6ff] border-2 border-black shadow-content shadow-[4px_4px_0_0]">
+		<header class="col-span-2 flex gap-s justify-between bg-white border-b-2 border-black p-3xs">
+			<h2 class="font-bold">
+				{ project.Title }
+			</h2>
+			<time class="text-content/80">{ project.Date.Format("20060102") }</time>
+		</header>
+		<div class="m-4xs-3xs flex gap-3xs">
+			<a
+				class="border-2 border-black px-4xs py-5xs underline bg-accent hover:bg-blue text-white inline-flex items-center"
+				href={ templ.URL(project.Url) }
+			>
+				GitHub
+				<svg class="ml-0.5 h-3 w-3" fill="currentColor" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
+				</svg>
+			</a>
+			<span class="h-full border-2 border-black px-4xs py-5xs bg-white">
+				{ project.Lang }
+			</span>
 		</div>
-		<span class="col-[2] px-3xs py-2xs">-</span>
-		<a
-			class="col-[3] px-3xs py-2xs rounded-md w-fit underline hover:text-blue hover:bg-content/5"
-			href={ templ.URL(project.Url) }
-		><h3>{ project.Title }</h3></a>
+		<p class="col-span-2 p-3xs">
+			{ project.Description }
+		</p>
 	</li>
 }

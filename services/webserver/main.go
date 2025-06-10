@@ -26,26 +26,36 @@ var projects = []internal.Project{
 		Date:  time.Date(2025, 2, 11, 0, 0, 0, 0, time.Local),
 		Title: "Nix builder to wrap Erlang-target Gleam code",
 		Url:   "https://github.com/ethanthoma/nix-gleam-burrito",
+		Description: "A nix builder that lets Erlang Gleam projects become a standalone executable.\n\nI inject a mix config with the burrito elixir plugin which takes the Gleam project and make it a mix project, then I make it a binary.",
+		Lang: "Nix",
 	},
 	{
 		Date:  time.Date(2025, 1, 25, 0, 0, 0, 0, time.Local),
 		Title: "Canvas Group Quiz creation CLI in Gleam",
 		Url:   "https://github.com/STASER-Lab/cgq",
+		Description: "This a simple Gleam CLI tool I used to create and manage quizzes for Canvas. It allows creating quizzes PER a group which the platform doesn't natively support.",
+		Lang: "Gleam",
 	},
 	{
 		Date:  time.Date(2024, 12, 10, 0, 0, 0, 0, time.Local),
 		Title: "Zig native WebGPU Voxel Render",
 		Url:   "https://github.com/ethanthoma/graphics",
+		Description: "I wanted to learn how to do simple 3D graphics with WebGPU, so why not in Zig? I wrote way too much comptime code but it does work (at least on wayland).",
+		Lang: "Zig",
 	},
 	{
 		Date:  time.Date(2024, 9, 11, 0, 0, 0, 0, time.Local),
 		Title: "Interaction Nets in Odin",
 		Url:   "https://github.com/ethanthoma/interaction-net",
+		Description: "Interaction nets are a somewhat novel model of computation. I decided to implement a runtime for executing interaction net code and wanted to learn odin. A two for one.",
+		Lang: "Odin",
 	},
 	{
 		Date:  time.Date(2024, 7, 8, 0, 0, 0, 0, time.Local),
 		Title: "zensor: a Zig tensor library",
 		Url:   "https://github.com/ethanthoma/zensor",
+		Description: "Compile time known tensor sizes! A super simple tensor library with a compute graph. Even has a WIP JIT for x86 (that I wrote by hand).",
+		Lang: "Zig",
 	},
 }
 

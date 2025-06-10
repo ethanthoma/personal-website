@@ -38,7 +38,7 @@ templ view_post(post internal.Post, first, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
 		<a
-			class="col-[3] inline-flex gap-x-2xs px-3xs py-2xs rounded-md items-start w-fit hover:text-blue hover:bg-content/5"
+			class="col-[3] inline-flex gap-x-2xs px-3xs py-2xs items-start w-fit hover:text-blue hover:bg-content/5"
 			href={ templ.URL("/post/" + post.Slug) }
 			hx-get={ "/post/" + post.Slug }
 			hx-target="main"
