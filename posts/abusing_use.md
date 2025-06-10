@@ -5,15 +5,16 @@
 
 [Gleam](https://gleam.run/) is a simple language.
 
-Too simple for me.
+A little too simple for me.
 
-I love zig comptime and hell, I even do runtime checks on Python type
-annotations. I love metaprogramming. It's unbelievable useful, but gleam doesn't
-have it. Sure, the author of the lang
+Because I love metaprogramming. It's hella useful. I've wasted many hours
+creating cursed zig comptime horrors or writing Python code that operate on type
+annotations. But...gleam doesn't have any form of metaprogramming. Sure, the
+author of the lang
 [wrote about it](https://lpil.uk/blog/how-to-add-metaprogramming-to-gleam/) and
-perhaps, once LLMs have replaced all coders, it will have it. Till then, it is
-probably better bet to use a similar lang that does have it (like my beloved
-[flix](https://flix.dev/)).
+perhaps, once LLMs have replaced all coders, gleam will have it. Till then, I
+think is probably better to use a similar lang that does have it (like my
+beloved [flix](https://flix.dev/)) if you really need it.
 
 **However**, gleam does have one amazing feature: `use`.
 

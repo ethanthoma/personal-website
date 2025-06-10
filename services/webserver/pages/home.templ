@@ -72,31 +72,27 @@ templ (p Home) View(posts []internal.Post) {
 				</ul>
 			</section>
 			<section class="flex col-span-2 items-center font-extrabold gap-m">
-				<div>
-					<a
-						class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
-						href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
-					>
-						<svg class="mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
-						Download Resume
-					</a>
-				</div>
-				<div>
-					<a
-						class="inline-flex items-center leading-6 gap-4xs text-blue"
-						href="/projects"
-						hx-get="/projects"
-						hx-push-url="/projects"
-						hx-target="main"
-						hx-select="main"
-						hx-swap="outerHTML"
-					>
-						See projects
-						<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path>
-						</svg>
-					</a>
-				</div>
+				<a
+					class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
+					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
+				>
+					<svg class="mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+					Download Resume
+				</a>
+				<a
+					class="inline-flex items-center leading-6 gap-4xs text-blue hover:[filter:brightness(0.8)]"
+					href="/projects"
+					hx-get="/projects"
+					hx-push-url="/projects"
+					hx-target="main"
+					hx-select="main"
+					hx-swap="outerHTML"
+				>
+					See projects
+					<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path>
+					</svg>
+				</a>
 			</section>
 		</article>
 		<article class="row-start-2 col-[2/-2]">
