@@ -28,7 +28,7 @@ templ (p Projects) View(projects []internal.Project) {
 }
 
 templ view_project(project internal.Project, last bool) {
-	<li class="grid col-span-2 border-2 border-black grid-cols-subgrid bg-lightblue shadow-content shadow-[4px_4px_0_0]">
+	<li class="grid col-span-2 border-2 border-black grid-cols-subgrid bg-lightblue shadow-shadow shadow-[4px_4px_0_0]">
 		<header class="flex col-span-2 justify-between bg-white border-b-2 border-black gap-s p-3xs">
 			<h2 class="font-bold">
 				{ project.Title }
