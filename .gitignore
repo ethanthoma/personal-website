@@ -29,7 +29,7 @@ services/**/*_templ.go
 
 # webserver
 !.air.toml
-!services/webserver/public/**
+!services/webserver/public/**/*
 services/webserver/**/*.js
 !posts/**
 

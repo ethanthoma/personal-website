@@ -16,8 +16,8 @@ templ (p Projects) View(projects []internal.Project) {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<article class="relative row-start-1 self-start col-[2/-2] py-xs-s">
-			<h1 class="absolute -top-[calc(2.13px+var(--text-2xl)*0.5)] text-2xl font-extrabold leading-none tracking-tight">Projects</h1>
+		<article class="row-start-1 self-start col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none">Projects</h1>
 			<ol class="grid mt-m gap-y-m grid-cols-[1fr_1fr]">
 				for i, project := range projects {
 					@view_project(project, i == len(projects)-1)
@@ -38,7 +38,7 @@ templ view_project(project internal.Project, last bool) {
 		<div class="flex items-center m-4xs-3xs gap-3xs">
 			if project.Url != "" {
 				<a
-					class="inline-flex items-center font-extrabold text-white underline border-2 border-black px-4xs py-5xs bg-accent hover:bg-blue"
+					class="inline-flex items-center font-extrabold text-white underline border-2 border-black px-4xs py-5xs bg-orange hover:bg-blue"
 					href={ templ.URL(project.Url) }
 				>
 					GitHub

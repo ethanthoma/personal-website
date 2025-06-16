@@ -69,11 +69,12 @@ templ (p Home) View(posts []internal.Post) {
 					<li>Gleam</li>
 					<li>Zig</li>
 					<li>Odin</li>
+					<li>Nix</li>
 				</ul>
 			</section>
 			<section class="flex col-span-2 items-center font-extrabold mt-xs gap-m">
 				<a
-					class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-accent [box-shadow:hsl(from_var(--color-accent)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-accent)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
+					class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-orange [box-shadow:hsl(from_var(--color-orange)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-orange)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>
 					<svg class="mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
@@ -118,7 +119,7 @@ templ view_event(event internal.Post, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
 		<a
-			class="z-10 rounded-md transition-all duration-200 ease-in-out col-[3] space-y-xs px-2xs py-2xs bg-[#fff] border-shadow border-[1px] shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
+			class="z-10 border-2 transition-all duration-200 ease-in-out col-[3] space-y-xs px-2xs py-2xs bg-[#fff] border-shadow shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
 			href={ templ.URL("/post/" + event.Slug) }
 		>
 			<h3 class="underline">{ event.Title }</h3>
