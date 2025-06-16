@@ -5,6 +5,12 @@
         <loc>http://www.ethanthoma.com</loc>
     </url>
     <url>
+        <loc>http://www.ethanthoma.com/home</loc>
+    </url>
+    <url>
         <loc>http://www.ethanthoma.com/blog</loc>
+    </url>
+    <url>
+        <loc>http://www.ethanthoma.com/projects</loc>
     </url>
 </urlset>

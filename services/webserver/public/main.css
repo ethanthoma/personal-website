@@ -3,9 +3,11 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight.css" layer(base);
 
+@import "./fonts/DejaVuSans/style.css";
+@import "./fonts/LiberationMono/style.css";
+
 @theme {
     /* @link https://utopia.fyi/type/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl&g=s,l,xl,12 */
-
     --text-xs: clamp(0.6944rem, 0.6299rem + 0.3227vw, 0.88rem);
     --text-s: clamp(0.9375rem, 0.9159rem + 0.1085vw, 1rem);
     --text-m: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
@@ -16,11 +18,11 @@
     --text-4xl: clamp(2.7994rem, 2.4491rem + 1.7625vw, 3.815rem);
 
     --color-base: #fbf8ef;
+    --color-shadow: #c0bdad;
     --color-content: #141413;
     --color-orange: #f96b06;
     --color-blue: #0064E6;
     --color-lightblue: #F0F6FF;
-    --color-shadow: #c0bdad;
 
     /* https://utopia.fyi/space/calculator/?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75%7C0.5%7C0.33333333333%7C0.25%7C0.15,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl%7Cs-2xl%7C4xs-2xs%7C5xs-3xs&g=s,l,xl,12 */
     --spacing-5xs: clamp(0.125rem, 0.1033rem + 0.1087vw, 0.1875rem);
@@ -76,57 +78,57 @@
     --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
     --spacing-content: min(clamp(320px, 100%, max(720px, 33svw)), 100svw);
+
+    /* Font */
+    --font-mono: "Liberation Mono", monospace;
+    --font-sans: "DejaVu Sans", sans-serif;
 }
 
 .content {
     &>*+* {
-        @apply mt-xs-s;
+        @apply mt-xs;
+    }
+
+    & h1, & h2, & h3 {
+        @apply font-extrabold;
+        @apply leading-none;
+        @apply tracking-tight;
     }
 
     & h1 {
-        @apply -top-xs;
-        @apply bg-base;
         @apply text-2xl;
-        @apply font-extrabold;
-        @apply leading-none;
-        @apply tracking-tight;
     }
 
     & h1+* {
-        @apply mt-m;
+        @apply mt-s;
     }
 
     & h2 {
+        @apply text-lg;
+
+        @apply mt-l-xl;
         @apply pb-3xs-2xs;
         @apply border-b-2;
         @apply border-content/80;
-        @apply text-lg;
-        @apply mt-l-xl;
-        @apply font-extrabold;
-        @apply leading-none;
-        @apply tracking-tight;
-
-        & p {
-            @apply text-content/80;
-        }
     }
 
     & h3 {
         @apply text-m;
-        @apply mt-l-xl;
-        @apply font-extrabold;
-        @apply leading-none;
-        @apply tracking-tight;
+
+        @apply mt-m-l;
     }
 
     & p {
         @apply font-sans;
+        @apply font-medium;
+        @apply tracking-wide;
 
         & code {
-            @apply text-accent;
-            @apply [filter:brightness(0.8)];
             @apply tracking-tight;
+            @apply text-orange;
             @apply font-mono;
+            @apply font-bold;
+            @apply not-italic;
         }
     }
 
@@ -165,11 +167,18 @@
     }
 
     & blockquote {
-        @apply border-l-4;
+        @apply mx-auto;
+        @apply border-2;
         @apply border-shadow;
-        @apply px-3xs;
-        @apply bg-content/5;
         @apply text-justify;
+        @apply italic;
+        @apply text-content/80;
+        @apply bg-white;
+        @apply w-fit;
+        @apply p-2xs;
+        @apply shadow-shadow;
+        @apply shadow-[3px_3px_0];
+        @apply space-y-xs;
     }
 }
 

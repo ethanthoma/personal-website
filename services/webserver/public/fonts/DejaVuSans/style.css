@@ -1,0 +1,71 @@
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("fonts/DejaVuSans/DejaVuSans.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSans.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("fonts/DejaVuSans/DejaVuSans-Oblique.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSans-Oblique.woff") format("woff");
+    font-weight: normal;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("fonts/DejaVuSans/DejaVuSans-BoldOblique.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSans-BoldOblique.woff") format("woff");
+    font-weight: bold;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: "DejaVu Sans";
+    src: url("fonts/DejaVuSans/DejaVuSans-Bold.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSans-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "DejaVu Sans Condensed";
+    src: url("fonts/DejaVuSans/DejaVuSansCondensed.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSansCondensed.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "DejaVu Sans Condensed";
+    src: url("fonts/DejaVuSans/DejaVuSansCondensed-BoldOblique.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSansCondensed-BoldOblique.woff") format("woff");
+    font-weight: bold;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: "DejaVu Sans Condensed";
+    src: url("fonts/DejaVuSans/DejaVuSansCondensed-Bold.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSansCondensed-Bold.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "DejaVu Sans Condensed";
+    src: url("fonts/DejaVuSans/DejaVuSansCondensed-Oblique.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSansCondensed-Oblique.woff") format("woff");
+    font-weight: normal;
+    font-style: oblique;
+}
+
+@font-face {
+    font-family: "DejaVu Sans ExtraLight";
+    src: url("fonts/DejaVuSans/DejaVuSans-ExtraLight.woff2") format("woff2"),
+         url("fonts/DejaVuSans/DejaVuSans-ExtraLight.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
