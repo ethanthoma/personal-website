@@ -518,10 +518,14 @@ provided by the `list` function, which is also the only way to end the `list`
 
 ## A Forewarning
 
-The main problem with `use` is that it confuses readers. Of course, with time,
-it becomes easier to parse and eventually you start making incredibly cursed
-functions to fulfill your perverse desires. Even my own code scares my friends
-away:
+The main problem with `use` is that it confuses readers.
+
+Of course, with time, it becomes easier and easier to parse which, in turn, you
+eventually start making incredibly cursed functions to fulfill your perverse
+desires.
+
+Mix in some mutability and you can write code that seemingly does nothing while
+doing too much:
 
 ```gleam
 let current_ids =
@@ -542,9 +546,10 @@ let current_ids =
     |> option.unwrap(current_ids)
 ```
 
-...yeah. This has a lot of mutable state. Perhaps one day I will figure out a
-nice way to type guard it, like regions in other immutable langs.
+...yeah. This has a lot of mutable state. Worse yet, there is no type system in
+Gleam to represent this (or other effects). Perhaps one day I will figure out a
+nice way to type guard it, like a region type or something...
 
-I wish more languages had `use`. Although, I imagine that if
-[Louis](https://lpil.uk/) ever saw my code, he would nuke this feature in a
-heartbeat...
+But the point is to **manage your abuse**. Too far, and you'll be caught out,
+dazed and unmaintainable. I imagine that if [Louis](https://lpil.uk/) ever saw
+my code, he would nuke this feature in a heartbeat...

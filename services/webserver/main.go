@@ -23,13 +23,21 @@ import (
 
 var projects = []internal.Project{
 	{
+		Date:  time.Date(2025, 3, 5, 0, 0, 0, 0, time.Local),
+		Title: "Gleam Mobile Game",
+		Description: `An Elm-based game engine written and game. 
+
+		The engine has bindings for Three.js and uses nativescript for mobile.`,
+		Lang: []string{"Gleam", "JavaScript"},
+	},
+	{
 		Date:  time.Date(2025, 2, 11, 0, 0, 0, 0, time.Local),
 		Title: "Nix builder to wrap Erlang-target Gleam code",
 		Url:   "https://github.com/ethanthoma/nix-gleam-burrito",
 		Description: `A Nix flake that packages Gleam projects into a single, standalone executable. 
 
 		This builder injects a mix config into the Gleam project and uses the Burrito Elixir library to compile the code and all of its Erlang/Elixir dependencies into a self-contained binary.`,
-		Lang: "Nix",
+		Lang: []string{"Nix"},
 	},
 	{
 		Date:  time.Date(2025, 1, 25, 0, 0, 0, 0, time.Local),
@@ -38,7 +46,7 @@ var projects = []internal.Project{
 		Description: `A command-line tool for the Canvas LMS that automates the creation of group-specific quizzes.
 		
 		Canvas doesn't allow educators to easily generate unique quizzes for different student groups, this tool does!`,
-		Lang: "Gleam",
+		Lang: []string{"Gleam"},
 	},
 	{
 		Date:  time.Date(2024, 12, 10, 0, 0, 0, 0, time.Local),
@@ -47,7 +55,7 @@ var projects = []internal.Project{
 		Description: `An exploration into voxel 3D graphics programming using Zig and WebGPU.
 		
 		I use Zig's comptime capabilities for compile-time generation of rendering logic and uses an instance buffer to efficiently render voxel chunks.`,
-		Lang: "Zig",
+		Lang: []string{"Zig"},
 	},
 	{
 		Date:  time.Date(2024, 9, 11, 0, 0, 0, 0, time.Local),
@@ -56,7 +64,7 @@ var projects = []internal.Project{
 		Description: `A runtime for Interaction Nets, a graph-based model of computation, written in Odin.
 		
 		I wanted to learn the Odin language and how interaction nets work. A two for one.`,
-		Lang: "Odin",
+		Lang: []string{"Odin"},
 	},
 	{
 		Date:  time.Date(2024, 7, 8, 0, 0, 0, 0, time.Local),
@@ -65,7 +73,7 @@ var projects = []internal.Project{
 		Description: `A tensor library for Zig that prioritizes correctness and compile-time safety. Comes with compile-time known tensor shapes and types, eliminating a class of runtime errors tensors normally have.
 
 		Tensor operations are converted into an AST, compiled into an intermediate representation, and then executed. It also features a work-in-progress (handmade) JIT compiler for x86.`,
-		Lang: "Zig",
+		Lang: []string{"Zig"},
 	},
 }
 

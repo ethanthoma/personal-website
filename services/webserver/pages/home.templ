@@ -74,14 +74,14 @@ templ (p Home) View(posts []internal.Post) {
 			</section>
 			<section class="flex col-span-2 items-center font-extrabold mt-xs gap-m">
 				<a
-					class="px-3xs-2xs py-3xs-2xs inline-flex gap-4xs text-base cursor-pointer border-2 border-black text-center items-center bg-orange [box-shadow:hsl(from_var(--color-orange)_h_s_calc(l_-_20))_0_-3px_0_0_inset,_hsl(219,_93%,_95%)_0_1px_3px_0] hover:bg-[hsl(from_var(--color-orange)_h_s_calc(l_-_20))] transition-all duration-200 ease-in-out"
+					class="inline-flex items-center text-base text-center border-2 border-black cursor-pointer px-3xs-2xs py-3xs-2xs gap-4xs bg-orange hover:bg-blue"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>
 					<svg class="mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
 					Download Resume
 				</a>
 				<a
-					class="inline-flex items-center leading-6 gap-4xs text-blue hover:[filter:brightness(0.8)]"
+					class="inline-flex items-center leading-6 gap-4xs text-blue hover:text-orange"
 					href="/projects"
 					hx-get="/projects"
 					hx-push-url="/projects"
@@ -119,10 +119,15 @@ templ view_event(event internal.Post, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
 		<a
-			class="z-10 border-2 transition-all duration-200 ease-in-out col-[3] space-y-xs px-2xs py-2xs bg-[#fff] border-shadow shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
+			class="z-10 border-2 ease-in-out col-[3] space-y-xs px-2xs py-2xs bg-[#fff] border-shadow shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
 			href={ templ.URL("/post/" + event.Slug) }
 		>
-			<h3 class="underline">{ event.Title }</h3>
+			<heading class="inline-flex items-center">
+				<h3 class="underline">{ event.Title }</h3>
+				<svg class="ml-0.5 w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
+					<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
+				</svg>
+			</heading>
 			if event.TLDR != "" {
 				<p>{ event.TLDR } </p>
 			}

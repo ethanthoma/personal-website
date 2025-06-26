@@ -84,6 +84,11 @@
     --font-sans: "DejaVu Sans", sans-serif;
 }
 
+* {
+    @apply focus-visible:outline-blue;
+    @apply focus-visible:outline-offset-4;
+}
+
 .content {
     &>*+* {
         @apply mt-xs;
@@ -172,8 +177,7 @@
         @apply border-shadow;
         @apply text-justify;
         @apply italic;
-        @apply text-content/80;
-        @apply bg-white;
+        @apply bg-white/80;
         @apply w-fit;
         @apply p-2xs;
         @apply shadow-shadow;

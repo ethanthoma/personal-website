@@ -17,7 +17,7 @@ templ (p Blog) View(posts []internal.Post) {
 	}.View() {
 		<article class="row-start-1 self-start border-2 col-[2/-2] bg-[#fff]">
 			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 px-xs-s py-3xs">Blogs</h1>
-			<ol class="grid bg-lightblue gap-y-m grid-cols-[min-content_min-content_1fr] px-xs-s py-3xs">
+			<ol class="grid bg-base/80 gap-y-m grid-cols-[min-content_min-content_1fr] px-xs-s py-3xs">
 				for i, post := range posts {
 					@view_post(post, i == 0, i == len(posts)-1)
 				}

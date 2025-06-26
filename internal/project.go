@@ -3,6 +3,7 @@ package internal
 import "time"
 
 type Project struct {
-	Title, Url, Description, Lang string
+	Title, Url, Description string
+	Lang                    []string
 	Date                    time.Time
 }

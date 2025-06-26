@@ -15,7 +15,7 @@ templ (p Nav) View() {
 				<li class="relative flex-1 h-fit group">
 					<a
 						class={
-							"relative bg-[hsl(from_var(--color-base)_h_s_calc(l_+_10))] h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-200 ease-in-out",
+							"relative bg-[hsl(from_var(--color-base)_h_s_calc(l_+_10))] h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-100 ease-in-out",
 							templ.KV(hoverEffect, p.PageCurrent != name),
 							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
 						}
@@ -36,6 +36,7 @@ templ (p Nav) View() {
 						hx-target="main"
 						hx-select="main"
 						hx-swap="outerHTML"
+						tabindex="-1"
 					></a>
 				</li>
 			}
