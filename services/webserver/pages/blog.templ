@@ -45,6 +45,7 @@ templ view_post(post internal.Post, first, last bool) {
 			hx-select="main"
 			hx-swap="outerHTML"
 			hx-push-url={ "/post/" + post.Slug }
+			preload="mouseover"
 		>
 			if first {
 				<p class="text-xs font-extrabold rounded text-lightblue align-super px-2xs bg-orange after:content-[''] group-hover:bg-blue after:table after:mt-[calc((-0.10)*var(--text-xs)*var(--text-xs--line-height))]">New</p>

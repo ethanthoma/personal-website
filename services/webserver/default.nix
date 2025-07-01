@@ -12,6 +12,12 @@ let
     url = "https://github.com/bigskysoftware/htmx/releases/download/v${htmxVersion}/htmx.min.js";
     hash = "sha256-SRlVzRgQdH19e5zLk2QAr7dg4G0l1T5FcrZLZWOyeE4=";
   };
+
+  preloadVersion = "2.1.1";
+  preload = fetchurl {
+    url = "https://cdn.jsdelivr.net/npm/htmx-ext-preload@${preloadVersion}/dist/preload.min.js";
+    hash = "sha256-E17eAiDgdtSal+NsO8D/QOlyCcRtW7dNzf1dhObsDCk=";
+  };
 in
 buildGoApplication rec {
   pname = "webserver";
@@ -40,6 +46,7 @@ buildGoApplication rec {
 
     mkdir -p $static/js
     cp ${htmx} $static/js/htmx.min.js
+    cp ${preload} $static/js/preload.min.js
 
     mv $out/bin/${pname} $out/bin/.${pname}-unwrapped
     makeWrapper $out/bin/.${pname}-unwrapped $out/bin/${pname} \
