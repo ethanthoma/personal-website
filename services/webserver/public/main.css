@@ -92,7 +92,7 @@
 
 .content {
     &>*+* {
-        @apply mt-xs;
+        @apply mt-2xs;
     }
 
     & h1, & h2, & h3 {
@@ -112,16 +112,17 @@
     & h2 {
         @apply text-lg;
 
-        @apply mt-l-xl;
+        @apply mt-m-l;
         @apply pb-3xs-2xs;
         @apply border-b-2;
-        @apply border-content/80;
+        @apply border-content;
+        @apply border-dashed;
     }
 
     & h3 {
         @apply text-m;
 
-        @apply mt-m-l;
+        @apply mt-s-m;
     }
 
     & p {
@@ -131,10 +132,13 @@
 
         & code {
             @apply tracking-tight;
-            @apply text-orange;
             @apply font-mono;
             @apply font-bold;
             @apply not-italic;
+
+            &:after, &:before {
+                content: '`';
+            }
         }
     }
 
@@ -153,8 +157,8 @@
     }
 
     & a {
-        @apply underline;
-        @apply hover:text-blue;
+        @apply text-blue;
+        @apply hover:underline;
     }
 
     & ul,
@@ -173,54 +177,11 @@
     }
 
     & blockquote {
-        @apply mx-auto;
-        @apply text-justify;
         @apply italic;
-        @apply bg-white/80;
         @apply w-fit;
         @apply p-2xs;
         @apply space-y-xs;
-        @apply border-dotted;
-        @apply border-black/80;
-        @apply border-1;
-    }
-}
-
-.half-tone-shadow {
-    @apply relative;
-    @apply before:content-[''];
-    @apply before:absolute;
-    @apply before:inset-0;
-    @apply before:[z-index:-10];
-    @apply before:[background-image:repeating-linear-gradient(_to_top,_transparent,_transparent_33%,_black_33%,_black_66%,_transparent_66%),_repeating-linear-gradient(_to_left,_transparent,_transparent_33%,_black_33%,_black_66%,_transparent_66%)];
-    @apply before:[background-size:3px_3px];
-    @apply before:translate-[9px];
-}
-
-@utility acronym-* {
-    @apply relative;
-    @apply font-bold;
-    @apply hover:after:visible;
-    @apply hover:after:opacity-100;
-    @apply after:invisible;
-    @apply after:opacity-0;
-    @apply after:p-3xs-2xs;
-    @apply after:font-normal;
-    @apply after:text-content;
-    @apply after:bg-white;
-    @apply after:border-2;
-    @apply after:border-shadow;
-    @apply after:shadow-shadow;
-    @apply after:shadow-[3px_3px_0px_shadow];
-    @apply after:absolute;
-    @apply after:max-w-content;
-    @apply after:top-(--text-m);
-    @apply after:left-0;
-    @apply after:transition-all;
-    @apply after:duration-200;
-    @apply after:ease-in-out;
-
-    &::after {
-        content: --value([*]) !important;
+        @apply border-black;
+        @apply border-s-1;
     }
 }
