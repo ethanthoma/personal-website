@@ -15,10 +15,11 @@ var projects = []internal.Project{
 	{
 		Date:  time.Date(2025, 3, 5, 0, 0, 0, 0, time.Local),
 		Title: "Gleam Mobile Game",
-		Description: `An Elm-based game engine written and game. 
+		Description: `A mini-gacha rougelite game. 
 
-		The engine has bindings for Three.js and uses nativescript for mobile.`,
+        Made a custome Elm-based mobile-game engine. The engine has bindings for Three.js and uses nativescript for running on mobile.`,
 		Lang: []string{"Gleam", "JavaScript"},
+		WIP:  true,
 	},
 	{
 		Date:  time.Date(2025, 2, 11, 0, 0, 0, 0, time.Local),
@@ -64,6 +65,7 @@ var projects = []internal.Project{
 
 		Tensor operations are converted into an AST, compiled into an intermediate representation, and then executed. It also features a work-in-progress (handmade) JIT compiler for x86.`,
 		Lang: []string{"Zig"},
+		WIP:  true,
 	},
 }
 
@@ -73,49 +75,52 @@ templ (p Projects) View() {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<article class="row-start-1 self-start col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none">Projects</h1>
-			<ol class="grid mt-m gap-y-m grid-cols-[1fr_1fr]">
-				for i, project := range projects {
-					@view_project(project, i == len(projects)-1)
-				}
-			</ol>
+		<article class="row-start-1 border-2 border-black col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none bg-white border-b-2 border-black px-xs-s py-3xs">Projects</h1>
+			<section class="py-s px-xs-m">
+				<ol class="grid gap-y-m grid-cols-[1fr_1fr]">
+					for _, project := range projects {
+						@view_project(project)
+					}
+				</ol>
+			</section>
 		</article>
 	}
 }
 
-templ view_project(project internal.Project, last bool) {
-	<li class="col-span-2 bg-white border-2 border-black shadow-shadow shadow-[4px_4px_0_0]">
-		<header class="flex col-span-2 justify-between bg-white border-b-2 border-black gap-s p-3xs">
+templ view_project(project internal.Project) {
+	<li class="col-span-2 [&_>*+*]:mx-3xs [&_>*+*]:py-3xs border-shadow border-1 shadow-shadow shadow-[4px_4px_0_0]">
+		<header class="flex col-span-2 justify-between bg-white border-black border-b-1 gap-s p-3xs">
 			<h2 class="font-bold">
 				{ project.Title }
 			</h2>
 			<time class="text-content/80">{ project.Date.Format("20060102") }</time>
 		</header>
-		<div class="grid bg-base/80">
-			<ol class="flex tracking-widest p-4xs-3xs gap-3xs">
-				if project.Url != "" {
-					<li>
-						<a
-							class="inline-flex items-center font-extrabold text-white underline border-2 border-black gap-[0.1em] px-4xs py-5xs bg-orange hover:bg-blue"
-							href={ templ.URL(project.Url) }
-						>
-							GitHub
-							<svg class="ml-0.5 w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
-								<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
-							</svg>
-						</a>
-					</li>
-				}
-				for _, lang := range project.Lang {
-					<li class="inline-flex items-center bg-white border-2 border-black py-auto px-4xs">
-						<span>{ strings.ToUpper(lang) } </span>
-					</li>
-				}
-			</ol>
-			<p class="p-3xs">
-				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
-			</p>
-		</div>
+		<ol class="flex tracking-widest border-black border-dashed border-b-1 gap-3xs">
+			if project.WIP {
+				<li class="inline-flex items-center text-black border-black border-1 bg-gold px-4xs py-6xs">
+					<span>WIP</span>
+				</li>
+			}
+			for _, lang := range project.Lang {
+				<li class="inline-flex items-center bg-white border-black border-1 py-auto px-4xs">
+					<span>{ strings.ToUpper(lang) } </span>
+				</li>
+			}
+		</ol>
+		<p>
+			@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
+		</p>
+		if project.Url != "" {
+			<div>
+				<a
+					class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
+					href={ templ.URL(project.Url) }
+				>
+					GitHub
+					<svg class="ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path> </svg>
+				</a>
+			</div>
+		}
 	</li>
 }

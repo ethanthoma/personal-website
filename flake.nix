@@ -86,6 +86,7 @@
               pkgs.mdformat
               pkgs.rustywind
               pkgs.stylelint
+              pkgs.biome
             ];
 
             env.WEBSERVER_PORT = webserverPort;

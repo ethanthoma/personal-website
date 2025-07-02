@@ -23,56 +23,74 @@ templ (p Home) View(posts []internal.Post) {
 		PageCurrent: "home",
 		Title:       "Ethan Thoma",
 	}.View() {
-		<article class="grid grid-cols-2 row-start-1 border-2 gap-m col-[2/-2] p-xs-s bg-[#fff] half-tone-shadow">
-			<heading class="absolute mx-3xs -top-[calc(2.13px+var(--text-2xl)*0.5)]">
-				<h1 class="text-2xl px-xs bg-[linear-gradient(180deg,_transparent_50%,_#fff_0)] font-extrabold leading-none tracking-tight">Ethan Thoma</h1>
-				<span class="flex items-center text-xs top-xs px-xs gap-xs mt-3xs text-content/80">
-					<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21c4-4 8-7 8-12a8 8 0 1 0-16 0c0 5 4 8 8 12z"></path>
-						<circle cx="12" cy="9" r="2" stroke-width="2"></circle>
-					</svg>
-					Vancouver, Canada
-				</span>
-			</heading>
-			<p class="col-span-full row-start-1 leading-8 text-justify mt-m">
-				<strong class="font-bold acronym-['Machine_Learning']">ML</strong> graduate student @ <a class="underline hover:text-blue" href="https://github.com/STASER-Lab">STASER Lab UBC</a>.
-				Focused on <strong class="font-bold acronym-['Natural_Language_Processing']">NLP</strong> and <strong class="font-bold acronym-['Reinforcement_Learning']">RL</strong> research. 
-				Side quests in programming Gleam mobile apps, zig tensor libraries, and odin interaction net runtimes.
-			</p>
-			<section>
-				<h3 class="border-b-2 border-black mb-s pe-l">My Socials</h3>
-				<ul class="list-inside space-y-2xs text-content/80">
-					<li class="flex items-center gap-2xs w-[fit-content] hover:text-blue">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-							<path d="M13.795 10.533 20.68 2h-3.073l-5.255 6.517L7.69 2H1l7.806 10.91L1.47 22h3.074l5.705-7.07L15.31 22H22l-8.205-11.467Zm-2.38 2.95L9.97 11.464 4.36 3.627h2.31l4.528 6.317 1.443 2.02 6.018 8.409h-2.31l-4.934-6.89Z"></path>
-						</svg>
-						<a class="underline" href="https://x.com/EthanBThoma">xitter (EthanBThoma)</a>
-					</li>
-					<li class="flex items-center gap-2xs w-[fit-content] hover:text-blue">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-							<path fill-rule="evenodd" d="M12.006 2a9.847 9.847 0 0 0-6.484 2.44 10.32 10.32 0 0 0-3.393 6.17 10.48 10.48 0 0 0 1.317 6.955 10.045 10.045 0 0 0 5.4 4.418c.504.095.683-.223.683-.494 0-.245-.01-1.052-.014-1.908-2.78.62-3.366-1.21-3.366-1.21a2.711 2.711 0 0 0-1.11-1.5c-.907-.637.07-.621.07-.621.317.044.62.163.885.346.266.183.487.426.647.71.135.253.318.476.538.655a2.079 2.079 0 0 0 2.37.196c.045-.52.27-1.006.635-1.37-2.219-.259-4.554-1.138-4.554-5.07a4.022 4.022 0 0 1 1.031-2.75 3.77 3.77 0 0 1 .096-2.713s.839-.275 2.749 1.05a9.26 9.26 0 0 1 5.004 0c1.906-1.325 2.74-1.05 2.74-1.05.37.858.406 1.828.101 2.713a4.017 4.017 0 0 1 1.029 2.75c0 3.939-2.339 4.805-4.564 5.058a2.471 2.471 0 0 1 .679 1.897c0 1.372-.012 2.477-.012 2.814 0 .272.18.592.687.492a10.05 10.05 0 0 0 5.388-4.421 10.473 10.473 0 0 0 1.313-6.948 10.32 10.32 0 0 0-3.39-6.165A9.847 9.847 0 0 0 12.007 2Z" clip-rule="evenodd"></path>
-						</svg>
-						<a class="underline" href="https://github.com/ethanthoma">GitHub (ethanthoma)</a>
-					</li>
-					<li class="flex items-center gap-2xs w-[fit-content] hover:text-blue">
-						<svg class="w-xs h-xs" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1"></path>
-						</svg>
-						<a class="underline" href="mailto:ethoma@mail.ubc.ca">ethoma (at) mail.ubc.ca</a>
-					</li>
-				</ul>
+		<article class="[&_section]:mx-xs-m [&_section]:py-s row-start-1 border-2 border-black col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none bg-white border-b-2 border-black px-xs-s py-3xs">Ethan Thoma</h1>
+			<section class="border-b-2 border-black border-dashed">
+				<dl class="[&_dt:first-of-type,&_dd:first-of-type]:pt-3xs [&_dt:last-of-type,&_dd:last-of-type]:pb-3xs [&_dd]:pe-3xs [&_dt]:ps-3xs [&_dd,&_dt]:p-4xs [&_dt,&_dd]:border-shadow [&_dt]:border-s-1 [&_dd]:border-e-1 [&_dd:last-of-type,&_dt:last-of-type]:border-b-1 [&_dt,&_dd]:border-t-1 grid w-full [&_dd]:col-start-2 [&_dt]:uppercase [&_dt]:col-start-1 [&_dt]:font-bold w-fit grid-cols-[minmax(auto,max-content)_auto]">
+					<dt>Location:</dt>
+					<dd>Vancouver, Canada</dd>
+					<dt>Occupation:</dt>
+					<dd>Graduate Student</dd>
+					<dt>Lab:</dt>
+					<dd>
+						<a class="underline hover:text-blue" href="https://github.com/STASER-Lab">
+							STASER Lab
+							<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path> </svg>
+						</a>
+					</dd>
+					<dt>Field:</dt>
+					<dd>Machine Learning (ML)</dd>
+					<dt class="row-span-3">Focus(es):</dt>
+					<dd>Natural Language Processing (NLP)</dd>
+					<dd class="!border-t-0">Reinforcement Learning (RL)</dd>
+					<dd class="!border-t-0">Explainability</dd>
+					<dt>Programming Language(s):</dt>
+					<dd>
+						<ul class="inline-flex flex-wrap [&_li]:inline gap-x-xs">
+							<li>Python</li>
+							<li>Gleam</li>
+							<li>Zig</li>
+							<li>Odin</li>
+							<li>Nix</li>
+						</ul>
+					</dd>
+				</dl>
 			</section>
-			<section>
-				<h3 class="border-b-2 border-black mb-s pe-l">My Tech</h3>
-				<ul class="grid grid-flow-row list-inside grid-cols-[repeat(auto-fit,minmax(calc(((100%-(var(--spacing-m)-4rem)*4)/4)),1fr))] list-[square] gap-x-m gap-y-2xs text-content/80">
-					<li class="h-max">Python</li>
-					<li>Gleam</li>
-					<li>Zig</li>
-					<li>Odin</li>
-					<li>Nix</li>
-				</ul>
+			<section class="border-b-2 border-black border-dashed">
+				<table class="text-left w-full [&_th]:[border-block-end:black] [&_td,&_th]:p-4xs [&_th]:pt-3xs [&_tr:last-child_td]:pb-3xs [&_tr_td:last-child,&_tr_th:last-child]:pe-3xs [&_tr_td:first-child,&_tr_th:first-child]:ps-3xs [&_td,&_th]:border-shadow [&_th,&_td]:border-1 border-collapse">
+					<thead class="uppercase bg-white">
+						<tr>
+							<th>Social Medium</th>
+							<th>Contact</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Twitter</td>
+							<td>
+								<a class="underline hover:text-blue" href="https://x.com/EthanBThoma">
+									EthanBThoma
+									<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>GitHub</td>
+							<td>
+								<a class="underline hover:text-blue" href="https://github.com/ethanthoma">
+									ethanthoma
+									<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td>E-mail</td>
+							<td>ethoma (at) mail.ubc.ca</td>
+						</tr>
+					</tbody>
+				</table>
 			</section>
-			<section class="flex col-span-2 items-center font-extrabold mt-xs gap-m">
+			<section class="flex items-center font-extrabold gap-m">
 				<a
 					class="inline-flex items-center text-base text-center border-2 border-black cursor-pointer px-3xs-2xs py-3xs-2xs gap-4xs bg-orange hover:bg-blue"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
@@ -91,9 +109,7 @@ templ (p Home) View(posts []internal.Post) {
 					preload="mouseover"
 				>
 					See projects
-					<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path>
-					</svg>
+					<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path></svg>
 				</a>
 			</section>
 		</article>
@@ -120,15 +136,13 @@ templ view_event(event internal.Post, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs">-</span>
 		<a
-			class="z-10 border-2 ease-in-out col-[3] space-y-xs px-2xs py-2xs bg-[#fff] border-shadow shadow-shadow shadow-[3px_3px_0] hover:shadow-[5px_5px_0px_shadow] hover:text-blue"
+			class="z-10 bg-white border-2 ease-in-out col-[3] space-y-xs px-2xs py-2xs border-shadow shadow-shadow shadow-[3px_3px_0] hover:text-blue"
 			href={ templ.URL("/post/" + event.Slug) }
 			preload="mouseover"
 		>
 			<heading class="inline-flex items-center">
 				<h3 class="underline">{ event.Title }</h3>
-				<svg class="ml-0.5 w-3 h-3" fill="currentColor" viewBox="0 0 16 16">
-					<path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path>
-				</svg>
+				<svg class="ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg>
 			</heading>
 			if event.TLDR != "" {
 				<p>{ event.TLDR } </p>

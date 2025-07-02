@@ -6,4 +6,5 @@ type Project struct {
 	Title, Url, Description string
 	Lang                    []string
 	Date                    time.Time
+	WIP                     bool `default:"false"`
 }
