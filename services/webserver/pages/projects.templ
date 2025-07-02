@@ -17,7 +17,14 @@ var projects = []internal.Project{
 		Title: "Gleam Mobile Game",
 		Description: `A mini-gacha rougelite game. 
 
-        Made a custome Elm-based mobile-game engine. The engine has bindings for Three.js and uses nativescript for running on mobile.`,
+        Created JS FFI bindings to nativescript core libraries. This allows compiling Gleam to mobile.
+
+        Made a custom Elm-based mobile-game engine. It has two render functions: UI and game objects.
+
+        The UI render function includes a simple 2D layout engine, primarily written in Gleam.
+
+        The game object render function has more flexibility and maps closer to Three.js primitives.
+        `,
 		Lang: []string{"Gleam", "JavaScript"},
 		WIP:  true,
 	},
@@ -27,7 +34,10 @@ var projects = []internal.Project{
 		Url:   "https://github.com/ethanthoma/nix-gleam-burrito",
 		Description: `A Nix flake that packages Gleam projects into a single, standalone executable. 
 
-		This builder injects a mix config into the Gleam project and uses the Burrito Elixir library to compile the code and all of its Erlang/Elixir dependencies into a self-contained binary.`,
+        The builder leverages the Burrito Elixir library, which lets users "compile" mix projects into a self-contained binary.
+
+        To convert a Gleam project into a mix project, the builder injects a mix config and boilerplate application code. Then, the builder installs a plugin for compiling Gleam code.
+		`,
 		Lang: []string{"Nix"},
 	},
 	{
@@ -38,14 +48,22 @@ var projects = []internal.Project{
 		
 		Canvas doesn't allow educators to easily generate unique quizzes for different student groups, this tool does!`,
 		Lang: []string{"Gleam"},
+		WIP:  true,
 	},
 	{
 		Date:  time.Date(2024, 12, 10, 0, 0, 0, 0, time.Local),
 		Title: "Zig native WebGPU Voxel Render",
 		Url:   "https://github.com/ethanthoma/graphics",
 		Description: `An exploration into voxel 3D graphics programming using Zig and WebGPU.
-		
-		I use Zig's comptime capabilities for compile-time generation of rendering logic and uses an instance buffer to efficiently render voxel chunks.`,
+
+        WebGPU is a modern graphics API. This project relies on bindings on the C headers for WebGPU.
+
+        I (ab)use Zig's comptime to generate structs and other objects for my rendering logic.
+
+        The rendering is mostly efficient, using compacted data structures. Chunking for voxels is also implemented.
+
+        The main limitation on performance is that the application is single threaded.
+		`,
 		Lang: []string{"Zig"},
 	},
 	{
@@ -53,17 +71,30 @@ var projects = []internal.Project{
 		Title: "Interaction Nets in Odin",
 		Url:   "https://github.com/ethanthoma/interaction-net",
 		Description: `A runtime for Interaction Nets, a graph-based model of computation, written in Odin.
+
+        Interaction nets are a (not-so) novel model of computation. It allows for high parallelism with ease.
+
+        Most implementations of this model are pretty slow (save for HVM).
+
+        I wanted to learn the Odin langauge (a systems language like C) and decided to build a HVM-based runtime.
 		
-		I wanted to learn the Odin language and how interaction nets work. A two for one.`,
+		This project includes a basic tokenizer, parser, semantic checks, and runtime.`,
 		Lang: []string{"Odin"},
 	},
 	{
 		Date:  time.Date(2024, 7, 8, 0, 0, 0, 0, time.Local),
 		Title: "zensor: a Zig tensor library",
 		Url:   "https://github.com/ethanthoma/zensor",
-		Description: `A tensor library for Zig that prioritizes correctness and compile-time safety. Comes with compile-time known tensor shapes and types, eliminating a class of runtime errors tensors normally have.
+		Description: `A tensor library for Zig that prioritizes correctness and compile-time safety.
 
-		Tensor operations are converted into an AST, compiled into an intermediate representation, and then executed. It also features a work-in-progress (handmade) JIT compiler for x86.`,
+        Comes with compile-time known tensor shapes and types, eliminating a class of runtime errors tensors normally have.
+
+		Tensor operations are converted into an AST. They are only executed when needed (i.e. lazy).
+
+        When executed, the AST is converted into IR. This IR gets JITed into x86 assembly, and then executed.
+
+        This library is basically a fully custom compiler for tensors.
+        `,
 		Lang: []string{"Zig"},
 		WIP:  true,
 	},
@@ -89,14 +120,14 @@ templ (p Projects) View() {
 }
 
 templ view_project(project internal.Project) {
-	<li class="col-span-2 [&_>*+*]:mx-3xs [&_>*+*]:py-3xs border-shadow border-1">
+	<li class="col-span-2 [&_>*+*]:mx-3xs border-shadow border-1">
 		<header class="flex col-span-2 justify-between bg-white border-black border-b-1 gap-s p-3xs">
 			<h2 class="font-bold">
 				{ project.Title }
 			</h2>
 			<time class="text-content/80">{ project.Date.Format("20060102") }</time>
 		</header>
-		<ol class="flex tracking-widest border-black border-dashed border-b-1 gap-3xs">
+		<ol class="flex tracking-widest border-black border-dashed py-3xs border-b-1 gap-3xs">
 			if project.WIP {
 				<li class="inline-flex items-center text-black border-black border-1 bg-gold px-4xs py-6xs">
 					<span>WIP</span>
@@ -108,11 +139,16 @@ templ view_project(project internal.Project) {
 				</li>
 			}
 		</ol>
-		<p>
-			@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
-		</p>
+		<details>
+			<summary class="cursor-pointer hover:underline ml-[1px] py-3xs">
+				Project Overview
+			</summary>
+			<p class="py-3xs mb-3xs">
+				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
+			</p>
+		</details>
 		if project.Url != "" {
-			<div>
+			<div class="pb-3xs">
 				<a
 					class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
 					href={ templ.URL(project.Url) }
