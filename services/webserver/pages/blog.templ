@@ -15,9 +15,9 @@ templ (p Blog) View(posts []internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma \\ Blog",
 	}.View() {
-		<article class="row-start-1 border-2 border-black col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none bg-white border-b-2 border-black px-xs-s py-3xs">Blogs</h1>
-			<section class="py-s px-xs-m">
+		<article class="row-start-1 col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Blogs</h1>
+			<section class="py-s">
 				<table class="w-full text-left [&_th]:[border-block-end:black] [&_td,&_th]:p-4xs [&_th]:pt-3xs [&_tr:last-child_td]:pb-3xs [&_tr_td:last-child,&_tr_th:last-child]:pe-3xs [&_tr_td:first-child,&_tr_th:first-child]:ps-3xs [&_td,&_th]:border-shadow [&_th,&_td]:border-1 border-collapse">
 					<thead class="uppercase bg-white">
 						<th>Date</th>

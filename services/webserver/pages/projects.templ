@@ -106,9 +106,9 @@ templ (p Projects) View() {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<article class="row-start-1 border-2 border-black col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none bg-white border-b-2 border-black px-xs-s py-3xs">Projects</h1>
-			<section class="py-s px-xs-m">
+		<article class="row-start-1 col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Projects</h1>
+			<section class="py-s">
 				<ol class="grid gap-y-m grid-cols-[1fr_1fr]">
 					for _, project := range projects {
 						@view_project(project)
@@ -139,11 +139,12 @@ templ view_project(project internal.Project) {
 				</li>
 			}
 		</ol>
-		<details>
+		{{ href := strings.Replace(project.Title, " ", "%20", -1) }}
+		<details name="project" hx-trigger="toggle" hx-on:toggle={ onToggle(href) }>
 			<summary class="cursor-pointer hover:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
-			<p class="py-3xs mb-3xs">
+			<p id={ href } class="py-3xs mb-3xs">
 				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
 			</p>
 		</details>
@@ -159,4 +160,12 @@ templ view_project(project internal.Project) {
 			</div>
 		}
 	</li>
+}
+
+script onToggle(href string) {
+	if (event.target.open) { 
+        history.pushState(null, '', `#${href}`); 
+    } else if (window.location.hash === `#${href}`) {
+        history.pushState(null, '', window.location.pathname + window.location.search); 
+    }
 }
