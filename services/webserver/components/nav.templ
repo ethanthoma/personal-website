@@ -12,7 +12,7 @@ templ (p Nav) View() {
 				<li class="flex-1">
 					<a
 						class={
-							"block text-center px-2xs-xs py-2xs bg-white hover:text-blue border-black cursor-pointer hover:underline text-content border-1 shadow-[4px_4px_0_0]",
+							"block text-center px-2xs-xs py-2xs bg-white active:text-blue hover:text-blue border-black cursor-pointer hover:underline active:underline text-content border-1 shadow-[4px_4px_0_0]",
 							templ.KV("shadow-black font-extrabold", p.PageCurrent == name),
 							templ.KV("shadow-black/20", p.PageCurrent != name),
 						}
