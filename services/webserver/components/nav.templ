@@ -5,19 +5,16 @@ type Nav struct {
 	Pages       []string
 }
 
-const effect = "-translate-x-3xs -translate-y-3xs shadow-content shadow-[4px_4px_0_0]"
-const hoverEffect = "group-hover:text-blue group-hover:underline group-hover:-translate-x-3xs group-hover:-translate-y-3xs group-hover:shadow-content group-hover:shadow-[4px_4px_0_0]"
-
 templ (p Nav) View() {
 	<nav id="nav" hx-swap-oob="true">
 		<ul class="flex justify-evenly items-center gap-s-2xl">
 			for _, name := range p.Pages {
-				<li class="relative flex-1 h-fit group">
+				<li class="flex-1">
 					<a
 						class={
-							"relative bg-[hsl(from_var(--color-base)_h_s_calc(l_+_10))] h-full block px-2xs-xs py-2xs border-2 text-center transition-all duration-100 ease-in-out",
-							templ.KV(hoverEffect, p.PageCurrent != name),
-							templ.KV("font-extrabold "+effect, p.PageCurrent == name),
+							"block text-center px-2xs-xs py-2xs bg-white hover:text-blue border-black cursor-pointer hover:underline text-content border-1 shadow-[4px_4px_0_0]",
+							templ.KV("shadow-black font-extrabold", p.PageCurrent == name),
+							templ.KV("shadow-black/20", p.PageCurrent != name),
 						}
 						href={ templ.URL("/" + name) }
 						hx-get={ "/" + name }
@@ -25,20 +22,7 @@ templ (p Nav) View() {
 						hx-target="main"
 						hx-select="main"
 						hx-swap="outerHTML"
-					>
-						{ name }
-					</a>
-					<a
-						class="block absolute w-full h-full bottom-[calc(var(--spacing-3xs)-4px)] right-[calc(var(--spacing-3xs)-4px)]"
-						href={ templ.URL("/" + name) }
-						hx-get={ "/" + name }
-						hx-push-url={ "/" + name }
-						hx-target="main"
-						hx-select="main"
-						hx-swap="outerHTML"
-						tabindex="-1"
-						preload="mouseover"
-					></a>
+					>{ name }</a>
 				</li>
 			}
 		</ul>
