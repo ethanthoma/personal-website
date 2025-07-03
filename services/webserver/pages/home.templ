@@ -67,7 +67,7 @@ templ (p Home) View(posts []internal.Post) {
 							<td>EthanBThoma</td>
 							<td class="w-[1%]">
 								<a
-									class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue"
+									class="inline-flex items-center font-extrabold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue"
 									href="https://x.com/EthanBThoma"
 								>
 									GoTo
@@ -80,7 +80,7 @@ templ (p Home) View(posts []internal.Post) {
 							<td>ethanthoma</td>
 							<td class="w-[1%]">
 								<a
-									class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue"
+									class="inline-flex items-center font-extrabold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue"
 									href="https://github.com/ethanthoma"
 								>
 									GoTo
@@ -98,14 +98,14 @@ templ (p Home) View(posts []internal.Post) {
 			</section>
 			<section class="flex items-center font-extrabold gap-[calc(1px+2*var(--spacing-s))]">
 				<a
-					class="inline-flex items-center text-base text-center border-2 border-black cursor-pointer shadow-shadow shadow-[4px_4px_0_0] px-3xs-2xs py-3xs-2xs gap-4xs bg-orange hover:bg-blue"
+					class="inline-flex items-center text-base text-center border-2 border-black cursor-pointer shadow-shadow shadow-[4px_4px_0_0] px-3xs-2xs py-3xs-2xs gap-4xs bg-orange hover:bg-blue active:bg-blue"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>
 					<svg class="w-4 h-4 mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
 					Download Resume
 				</a>
 				<a
-					class="items-center leading-6 hover:underline text-blue hover:text-orange"
+					class="items-center leading-6 hover:underline active:underline text-blue hover:text-orange active:text-orange"
 					href="mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry"
 				>
 					Inquiry (e‑mail)&nbsp;<svg class="inline w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path></svg>
@@ -127,7 +127,7 @@ templ view_event(event internal.Post, last bool) {
 		</div>
 		<span class="col-[2] px-3xs py-2xs text-shadow">—</span>
 		<a
-			class="z-10 bg-white border-2 ease-in-out col-[3] space-y-xs px-2xs py-2xs border-shadow shadow-shadow shadow-[3px_3px_0] hover:text-blue"
+			class="z-10 bg-white border-2 ease-in-out col-[3] space-y-xs px-2xs py-2xs border-shadow shadow-shadow shadow-[3px_3px_0] hover:text-blue active:text-blue"
 			href={ templ.URL("/post/" + event.Slug) }
 			preload="mouseover"
 		>

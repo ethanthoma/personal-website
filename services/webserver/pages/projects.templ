@@ -141,7 +141,7 @@ templ view_project(project internal.Project) {
 		</ol>
 		{{ href := strings.Replace(project.Title, " ", "%20", -1) }}
 		<details name="project" hx-trigger="toggle" hx-on:toggle={ onToggle(href) }>
-			<summary class="cursor-pointer hover:underline ml-[1px] py-3xs">
+			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
 			<p id={ href } class="py-3xs mb-3xs">
@@ -151,7 +151,7 @@ templ view_project(project internal.Project) {
 		if project.Url != "" {
 			<div class="pb-3xs">
 				<a
-					class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
+					class="inline-flex items-center font-extrabold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
 					href={ templ.URL(project.Url) }
 				>
 					GitHub

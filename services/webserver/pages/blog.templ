@@ -41,7 +41,7 @@ templ view_post(post internal.Post) {
 		<td>{ post.Title }</td>
 		<td class="w-[1%]">
 			<a
-				class="inline-flex items-center font-extrabold text-white border-black hover:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
+				class="inline-flex items-center font-extrabold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
 				href={ templ.URL("/post/" + post.Slug) }
 				hx-get={ "/post/" + post.Slug }
 				hx-target="main"
