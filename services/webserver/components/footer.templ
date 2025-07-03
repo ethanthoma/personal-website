@@ -3,14 +3,14 @@ package components
 type Footer struct{}
 
 templ (p Footer) View() {
-	<footer class="flex flex-wrap justify-center font-bold text-white border-t-2 border-black gap-m col-[1/-1] bg-blue p-m">
+	<footer class="flex flex-wrap justify-center text-white border-t-2 border-black gap-m col-[1/-1] bg-blue p-m">
 		<div class="border-black border-1 p-3xs h-fit w-fit shadow-black/20 shadow-[4px_4px_0_0]">
 			<div class="flex flex-col items-center text-center text-white border-white p-3xs border-1">
 				<span class="font-bold uppercase">Ethan Thoma</span>
 				<span class="w-max font-normal">&copy; Copyright 2024-2025</span>
 			</div>
 		</div>
-		<ul class="list-inside list-[square] space-y-xs">
+		<ul class="font-bold list-inside list-[square] space-y-xs">
 			<li>
 				<a
 					class="underline p-5xs w-fit hover:bg-black/20 active:bg-black/20"
@@ -28,5 +28,6 @@ templ (p Footer) View() {
 				</a>
 			</li>
 		</ul>
+		<span class="w-full text-center text-white/80">Design inspired by U.S. Graphics, 0x57, and Physical Intelligence</span>
 	</footer>
 }
