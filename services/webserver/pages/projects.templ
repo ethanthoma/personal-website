@@ -153,7 +153,7 @@ templ view_project(project internal.Project) {
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
-			<p id={ href } class="py-3xs mb-3xs">
+			<p id={ href } class="py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
 				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
 			</p>
 		</details>
