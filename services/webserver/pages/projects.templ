@@ -115,6 +115,15 @@ templ (p Projects) View() {
 					}
 				</ol>
 			</section>
+			<script>
+                function onToggle(href) {
+                    if (event.target.open) { 
+                        history.pushState(null, '', `#${href}`); 
+                    } else if (window.location.hash === `#${href}`) {
+                        history.pushState(null, '', window.location.pathname + window.location.search); 
+                    }
+                }
+            </script>
 		</article>
 	}
 }
@@ -140,7 +149,7 @@ templ view_project(project internal.Project) {
 			}
 		</ol>
 		{{ href := strings.Replace(project.Title, " ", "%20", -1) }}
-		<details name="project" hx-trigger="toggle" hx-on:toggle={ onToggle(href) }>
+		<details name="project" hx-trigger="toggle" hx-on:toggle={ templ.JSFuncCall("onToggle", href) }>
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
@@ -160,12 +169,4 @@ templ view_project(project internal.Project) {
 			</div>
 		}
 	</li>
-}
-
-script onToggle(href string) {
-	if (event.target.open) { 
-        history.pushState(null, '', `#${href}`); 
-    } else if (window.location.hash === `#${href}`) {
-        history.pushState(null, '', window.location.pathname + window.location.search); 
-    }
 }
