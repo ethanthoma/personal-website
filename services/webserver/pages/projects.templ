@@ -106,6 +106,15 @@ templ (p Projects) View() {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
+		<script>
+            function onToggle(href) {
+                if (window.location.hash === `#${href}`) {
+                    history.pushState(null, '', window.location.pathname + window.location.search); 
+                } else {
+                    history.pushState(null, '', `#${href}`); 
+                }
+            }
+        </script>
 		<article class="row-start-1 col-[2/-2]">
 			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Projects</h1>
 			<section class="py-s">
@@ -115,15 +124,6 @@ templ (p Projects) View() {
 					}
 				</ol>
 			</section>
-			<script>
-                function onToggle(href) {
-                    if (event.target.open) { 
-                        history.pushState(null, '', `#${href}`); 
-                    } else if (window.location.hash === `#${href}`) {
-                        history.pushState(null, '', window.location.pathname + window.location.search); 
-                    }
-                }
-            </script>
 		</article>
 	}
 }
@@ -149,7 +149,7 @@ templ view_project(project internal.Project) {
 			}
 		</ol>
 		{{ href := strings.Replace(project.Title, " ", "%20", -1) }}
-		<details name="project" hx-trigger="toggle" hx-on:toggle={ templ.JSFuncCall("onToggle", href) }>
+		<details name="project" hx-on:click={ templ.JSFuncCall("onToggle", href) }>
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
