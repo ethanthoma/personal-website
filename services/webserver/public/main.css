@@ -1,21 +1,24 @@
 @layer theme, base, components, utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Mona+Sans:ital,wdth,wght@0,112.5,200..900;1,112.5,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
 @import "tailwindcss";
 @import "tailwindcss/preflight.css" layer(base);
 
-@import "./fonts/DejaVuSans/style.css";
-@import "./fonts/LiberationMono/style.css";
+@import "./fonts/Monaspace/style.css";
 
 @theme {
-    /* @link https://utopia.fyi/type/calculator?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6|8|11|15|19,3xs-xs|2xs-s|xs-m|s-l|m-xl|l-2xl|xl-3xl|2xl-4xl|3xl-5xl|4xl-6xl|5xl-6xl|6xl-7xl&g=s,l,xl,12 */
-    --text-xs: clamp(0.6944rem, 0.6299rem + 0.3227vw, 0.88rem);
-    --text-s: clamp(0.9375rem, 0.9159rem + 0.1085vw, 1rem);
-    --text-m: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
-    --text-lg: clamp(1.35rem, 1.2767rem + 0.3688vw, 1.5625rem);
-    --text-xl: clamp(1.62rem, 1.5051rem + 0.5781vw, 1.9531rem);
-    --text-2xl: clamp(1.9438rem, 1.7722rem + 0.8633vw, 2.4413rem);
-    --text-3xl: clamp(2.3325rem, 2.0844rem + 1.2484vw, 3.0519rem);
-    --text-4xl: clamp(2.7994rem, 2.4491rem + 1.7625vw, 3.815rem);
+    /* https://utopia.fyi/type/calculator/?c=320,16,1.25,1240,18,1.25,5,2,&s=0.75%7C0.5%7C0.25,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl&g=s,l,xl,12 */
+
+    --text-xs: clamp(0.64rem, 0.6122rem + 0.1391vw, 0.72rem);
+    --text-s: clamp(0.8rem, 0.7652rem + 0.1739vw, 0.9rem);
+    --text-m: clamp(1rem, 0.9565rem + 0.2174vw, 1.125rem);
+    --text-l: clamp(1.25rem, 1.1957rem + 0.2717vw, 1.4063rem);
+    --text-xl: clamp(1.5625rem, 1.4946rem + 0.3397vw, 1.7578rem);
+    --text-2xl: clamp(1.9531rem, 1.8682rem + 0.4246vw, 2.1973rem);
+    --text-3xl: clamp(2.4414rem, 2.3353rem + 0.5307vw, 2.7466rem);
+    --text-4xl: clamp(3.0518rem, 2.9191rem + 0.6634vw, 3.4332rem);
 
     --color-base: #fbf8ef;
     --color-shadow: #c0bdad;
@@ -24,6 +27,7 @@
     --color-blue: #0064E6;
     --color-lightblue: #F0F6FF;
     --color-gold: #fab505;
+    --color-darkpurple: #191724;
 
     /* https://utopia.fyi/space/calculator/?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75%7C0.5%7C0.33333333333%7C0.25%7C0.15,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl%7Cs-2xl%7C4xs-2xs%7C5xs-3xs&g=s,l,xl,12 */
     --spacing-5xs: clamp(0.125rem, 0.1033rem + 0.1087vw, 0.1875rem);
@@ -81,8 +85,8 @@
     --spacing-content: min(clamp(320px, 100%, max(720px, 33svw)), 100svw);
 
     /* Font */
-    --font-mono: "Liberation Mono", monospace;
-    --font-sans: "DejaVu Sans", sans-serif;
+    --font-mono: "Monaspace Neon", monospace;
+    --font-sans: "Public Sans", sans-serif;
 }
 
 * {
@@ -96,7 +100,7 @@
     }
 
     & h1, & h2, & h3 {
-        @apply font-extrabold;
+        @apply font-bold;
         @apply leading-none;
         @apply tracking-tight;
     }
@@ -110,7 +114,7 @@
     }
 
     & h2 {
-        @apply text-lg;
+        @apply text-l;
 
         @apply mt-m-l;
         @apply pb-3xs-2xs;
@@ -127,13 +131,13 @@
 
     & p {
         @apply font-sans;
-        @apply font-medium;
         @apply tracking-wide;
+        @apply text-s;
 
         & code {
             @apply tracking-tight;
-            @apply font-mono;
-            @apply font-bold;
+            @apply font-[Monaspace_Krypton];
+            @apply font-semibold;
             @apply not-italic;
 
             &:after, &:before {
@@ -145,10 +149,23 @@
     & pre {
         @apply text-s;
         @apply overflow-x-auto;
-        @apply p-xs;
+        @apply p-3xs;
+        @apply font-[Monaspace_Krypton];
+        @apply text-white;
+        @apply border-white;
+        @apply border-1;
+        @apply outline-1;
+        @apply outline-black;
+        @apply bg-darkpurple;
 
         &>code {
+            @apply block;
+            @apply w-fit;
+            @apply min-w-full;
+            @apply p-3xs;
             @apply break-words;
+            @apply font-[Monaspace_Krypton];
+            @apply text-white;
 
             &>span>span {
                 @apply pr-xs;
