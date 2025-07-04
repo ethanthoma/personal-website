@@ -18,7 +18,7 @@ templ (p Blog) View(posts []internal.Post) {
 		<article class="row-start-1 col-[2/-2]">
 			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Blogs</h1>
 			<section class="py-s">
-				<table class="w-full text-left [&_th]:[border-block-end:black] [&_td,&_th]:p-4xs [&_th]:pt-3xs [&_tr:last-child_td]:pb-3xs [&_tr_td:last-child,&_tr_th:last-child]:pe-3xs [&_tr_td:first-child,&_tr_th:first-child]:ps-3xs [&_td,&_th]:border-shadow [&_th,&_td]:border-1 border-collapse">
+				<table class="font-mono w-full text-left [&_th]:[border-block-end:black] [&_td,&_th]:p-4xs [&_th]:pt-3xs [&_tr:last-child_td]:pb-3xs [&_tr_td:last-child,&_tr_th:last-child]:pe-3xs [&_tr_td:first-child,&_tr_th:first-child]:ps-3xs [&_td,&_th]:border-shadow [&_th,&_td]:border-1 border-collapse">
 					<thead class="uppercase bg-white">
 						<th>Date</th>
 						<th>Article Name</th>
@@ -41,7 +41,7 @@ templ view_post(post internal.Post) {
 		<td>{ post.Title }</td>
 		<td class="w-[1%]">
 			<a
-				class="inline-flex items-center font-extrabold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
+				class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
 				href={ templ.URL("/post/" + post.Slug) }
 				hx-get={ "/post/" + post.Slug }
 				hx-target="main"
