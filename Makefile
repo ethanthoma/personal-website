@@ -49,13 +49,14 @@ live/sync_assets:
 	@sleep 1000
 	@air \
 		--build.cmd "templ generate --notify-proxy" \
-		--build.bin "rsync -a ./services/webserver/public/* ./public --exclude='*.css'" \
+		--build.bin "rsync -a ./services/webserver/public/ ./public --exclude='*.css'" \
 		--build.delay "100" \
 		--build.exclude_dir "" \
 		--build.include_dir "./public" \
 		--build.include_ext "js,css"
 
 live: 
+	@rsync -a ./services/webserver/public/ ./public --exclude='*.css'
 	make -j4 \
 		live/server \
 		live/templ \
