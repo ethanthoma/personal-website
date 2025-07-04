@@ -11,6 +11,7 @@ type Projects struct {
 	Pages []string
 }
 
+// TODO: we need something a bit more sophisticated
 var projects = []internal.Project{
 	{
 		Date:  time.Date(2025, 3, 5, 0, 0, 0, 0, time.Local),
@@ -100,21 +101,14 @@ var projects = []internal.Project{
 	},
 }
 
+var handle = templ.NewOnceHandle()
+
 templ (p Projects) View() {
 	@layouts.Base{
 		Pages:       p.Pages,
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
-		<script>
-            function onToggle(href) {
-                if (window.location.hash === `#${href}`) {
-                    history.pushState(null, '', window.location.pathname + window.location.search); 
-                } else {
-                    history.pushState(null, '', `#${href}`); 
-                }
-            }
-        </script>
 		<article class="row-start-1 col-[2/-2]">
 			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Projects</h1>
 			<section class="py-s">
@@ -125,6 +119,29 @@ templ (p Projects) View() {
 				</ol>
 			</section>
 		</article>
+		@handle.Once() {
+			<script type="text/javascript">
+                function openTarget() {
+                    var hash = location.hash.substring(1);
+                    if (hash) { 
+                        var details = document.getElementById(hash);
+                        if (details) var details = details.closest("details")
+                        if (details) details.open = true;
+                    }
+                }
+                window.addEventListener('hashchange', openTarget);
+                openTarget();
+
+                function onToggle(href) {
+                    if (window.location.hash === `#${href}`) {
+                        history.pushState(null, '', window.location.pathname + window.location.search); 
+                    } else {
+                        history.pushState(null, '', `#${href}`); 
+                    }
+                }
+                window.onToggle = onToggle;
+            </script>
+		}
 	}
 }
 
