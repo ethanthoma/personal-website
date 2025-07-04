@@ -122,24 +122,17 @@ templ (p Projects) View() {
 		@handle.Once() {
 			<script type="text/javascript">
                 function openTarget() {
-                    var hash = location.hash.substring(1);
+                    const hash = location.hash.substring(1);
                     if (hash) { 
-                        var details = document.getElementById(hash);
-                        if (details) var details = details.closest("details")
-                        if (details) details.open = true;
+                        me(`#${hash}`).closest("details").open = true; 
+                    } else {
+                        any("details").forEach((el) => {
+                            el.open = false;
+                        });
                     }
                 }
                 window.addEventListener('hashchange', openTarget);
                 openTarget();
-
-                function onToggle(href) {
-                    if (window.location.hash === `#${href}`) {
-                        history.pushState(null, '', window.location.pathname + window.location.search); 
-                    } else {
-                        history.pushState(null, '', `#${href}`); 
-                    }
-                }
-                window.onToggle = onToggle;
             </script>
 		}
 	}
@@ -165,10 +158,22 @@ templ view_project(project internal.Project) {
 				</li>
 			}
 		</ol>
-		{{ href := strings.Replace(project.Title, " ", "%20", -1) }}
-		<details name="project" hx-on:click={ templ.JSFuncCall("onToggle", href) }>
-			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
+		{{ href := strings.Replace(project.Title, " ", "_", -1) }}
+		<details name="project">
+			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs" data-href={ href }>
 				Project Overview
+				<script defer>
+                    me().on("click", ev => {  
+                        const href = me(ev).getAttribute("data-href");
+                        if (window.location.hash === `#${href}`) {
+                            history.pushState(null, '', window.location.pathname + window.location.search); 
+                            me(ev).closest("details").open = true;
+                        } else {
+                            history.pushState(null, '', `#${href}`); 
+                            me(ev).closest("details").open = false;
+                        }
+                    });
+                </script>
 			</summary>
 			<p id={ href } class="py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
 				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
