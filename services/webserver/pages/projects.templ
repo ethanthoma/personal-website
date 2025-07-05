@@ -162,7 +162,7 @@ templ view_project(project internal.Project) {
 		<details name="project">
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs" data-href={ href }>
 				Project Overview
-				<script defer>
+				<script>
                     me().on("click", ev => {  
                         const href = me(ev).getAttribute("data-href");
                         if (window.location.hash === `#${href}`) {
