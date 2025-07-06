@@ -131,8 +131,12 @@ templ (p Projects) View() {
                         });
                     }
                 }
-                window.addEventListener('hashchange', openTarget);
+                me().on("hashchange", openTarget)
                 openTarget();
+
+                me().on("htmx:load", () => any("script").forEach((el) => 
+                    document.body.appendChild(el)
+                ));
             </script>
 		}
 	}
@@ -173,7 +177,6 @@ templ view_project(project internal.Project) {
                             me(ev).closest("details").open = false;
                         }
                     });
-                    console.log("script frag loaded");
                 </script>
 			</summary>
 			<p id={ href } class="py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">

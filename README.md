@@ -15,16 +15,19 @@
 
 ## GoTH Stack
 
-| Tech | Stack | |-------|----------| | GO | Backend | | Htmx | Frontend | |
-Turso | Database |
+The backend is written in Go using [templ](https://github.com/a-h/templ) and
+using stdlib HTTP.
 
-We use [templ](https://github.com/a-h/templ) for templating and
-[tailwindcss](https://github.com/tailwindlabs/tailwindcss) for styles. So it is
-technically more like the GoTTTH stack...
+Styling is done via [tailwindcss](https://github.com/tailwindlabs/tailwindcss).
+
+Reactivity is done thanks to [htmx](https://htmx.org/) and
+[surreal](https://github.com/gnat/surreal).
 
 ## Building + Running
 
-The nix flake has four derivations:
+All building is managed via nix.
+
+Use `nix build .#<name>` to run a build command. The names are:
 
 - #default: this produces the webserver binary
 - #container: docker image containing the webserver binary
