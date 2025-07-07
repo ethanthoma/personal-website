@@ -120,7 +120,7 @@ templ (p Projects) View() {
 			</section>
 		</article>
 		@handle.Once() {
-			<script type="text/javascript">
+			<script>
                 function openTarget() {
                     const hash = location.hash.substring(1);
                     if (hash) { 
@@ -133,10 +133,6 @@ templ (p Projects) View() {
                 }
                 me().on("hashchange", openTarget)
                 openTarget();
-
-                me().on("htmx:load", () => any("script").forEach((el) => 
-                    document.body.appendChild(el)
-                ));
             </script>
 		}
 	}
@@ -166,7 +162,7 @@ templ view_project(project internal.Project) {
 		<details name="project">
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs" data-href={ href }>
 				Project Overview
-				<script type="text/javascript">
+				<script>
                     me().on("click", ev => {  
                         const href = me(ev).getAttribute("data-href");
                         if (window.location.hash === `#${href}`) {
