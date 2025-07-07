@@ -1,0 +1,33 @@
+package components
+
+type ToTop struct{}
+
+templ (p ToTop) View() {
+	<div id="to_top" class="fixed inset-0 z-1" data-prevScrollPos="0">
+		<button type="button" class="absolute border-black cursor-pointer shadow-black/20 shadow-[4px_4px_0_0] right-m-xl bottom-m-xl border-1 p-3xs bg-blue hover:bg-darkblue">
+			<div class="text-white border-white aspect-square p-3xs border-1">
+				<svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v13m0-13 4 4m-4-4-4 4"></path> </svg>
+			</div>
+		</button>
+		<script type="text/javascript">
+            me().on("click", () => {
+                window.scrollTo(0, 0);
+            });
+
+            me().on("scrolling", (ev) => {
+                var prevScrollpos = me(ev).attribute("data-prevScrollPos");
+                var currentScrollPos = window.pageYOffset;
+
+                if (prevScrollpos > currentScrollPos) {
+                    me(ev).removeClass("hidden");
+                } else {
+                me(ev).addClass("hidden");
+                }
+
+                me(ev).attribute("data-prevScrollPos", currentScrollPos);
+            });
+
+            window.onscroll = () => me("#to_top")?.send("scrolling");
+        </script>
+	</div>
+}
