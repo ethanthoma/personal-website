@@ -175,7 +175,7 @@ templ view_project(project internal.Project) {
                     });
                 </script>
 			</summary>
-			<p id={ href } class="py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
+			<p id={ href } class="font-sans py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
 				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
 			</p>
 		</details>
