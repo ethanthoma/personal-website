@@ -38,7 +38,8 @@ Use `nix build .#<name>` to run a build command. The names are:
 The [make file](./Makefile) in root is setup for running air w/ livereload. It
 will run tailwindcss, templ, and air. Simply run `make live`.
 
-> \[!TIP\] You can also locally deploy the docker image using `make docker`.
+> [!TIP]
+> You can also locally deploy the docker image using `make docker`.
 
 The webserver port is set in the [flake](./flake.nix). You also need a dotenv
 file. It should contain:

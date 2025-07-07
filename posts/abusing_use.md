@@ -102,12 +102,11 @@ use query: Dynamic <- result.map(query)
 let users: List(User) = decode_to_user(decode.list(query))
 
 echo users
-}
 ```
 
-This we can call callback heaven.
+We call this callback heaven.
 
-Another common way for using `use` is for early returns. Lets take this example:
+Another common way for using `use` is for early returns. For example:
 
 ```gleam
 let should_return_early = True
@@ -118,7 +117,7 @@ case should_return_early {
 }
 ```
 
-Using `bool.guard`, we can simplify this:
+Using `bool.guard`, we can simplify to:
 
 ```gleam
 let should_return_early = True
@@ -128,10 +127,10 @@ use <- bool.guard(should_return_early, ReturnedEarly)
 ReturnedAsPlanned
 ```
 
-The beauty of this is that it _feels_ like an early return. And sure, it only
+The beauty of it is that it _feels_ like an early return. And sure, it only
 works with bools but there are libraries that open that up too.
 
-## The Ugliness of Case Statements
+## The `Case` for Ugliness
 
 Aesthetically, gleam's weakness is the case statement.
 
@@ -141,9 +140,24 @@ Everyone seems to love gleam's pipes, `|>`, for composing function calls. To
 cater for this, a lot of stdlib functions are pretty simple. In fact, a lot of
 them simply wrap a case statement.
 
-Case statements kinda suck. They don't feel very composable. Take an if
-statement in gleam. Many FP langs have the `ifelse` sort of function. One can
-write it in gleam like:
+Case statements kinda suck in that they somehow feel very imperative. In
+otherwords, they aren't very composable. Take a ternary statement in gleam:
+
+```gleam
+let positive_num = case num > 0 {
+    True -> num
+    False -> 0
+}
+```
+
+Where as most languages would have this built-in:
+
+```gleam
+let num = -23
+let positive_num = ifelse(num > 0, num, 0)
+```
+
+Which is supercomposable with `|>` and even `use`. We can emulate it via:
 
 ```gleam
 fn ifelse(condition, true, false) {
@@ -152,35 +166,29 @@ fn ifelse(condition, true, false) {
         False -> false
     }
 }
-
-let num = -23
-let positive_num = ifelse(num > 0, num, 0)
 ```
 
-It's nice! But then again, all it does is replace a case statement. People (imo)
-like the `ifelse`. I literally avoid checking boolean conditions because writing
-an `ifelse` using a case sucks.
+Which is nice! But then again, all it does is replace a case statement...
 
-That's why I **abuse** use.
+Personally, I literally avoid matching against boolean conditions because
+statements just feel super janky. That's why I **abuse** use (I typically use
+the [given library](https://github.com/inoas/gleam-given), but it is hardly the
+_worst_ way to use `use`).
 
-I love the [given library](https://github.com/inoas/gleam-given). But it is
-hardly the _worst_ way to use `use`.
+## Beginner's Guide to Abuse
 
-## Introduction to Abuse
-
-First, let us get some of the simpler ones. A common useful one is `param` and
-`defer`.
+Let us learn about some of the simpler uses. A common pattern with `use` is
+`param` and `defer`.
 
 ### param
 
-`param` is used in a couple gleam libraries and its primary use case is for
-making curried functions. Gleam doesn't natively auto-curry functions (you can a
-smidge with function captures but it isn't the same). There used to be helpers
-in the stdlib for making functions curried but they have long since been
-removed. I think part of the issue was that you cannot make a simple function
-that will curry any function. Instead, the stdlib had to make a curry function
-for all possible function arities...which if we had some metaprogramming,
-wouldn't have been a problem...
+`param` makes its appearance in a couple gleam libraries. It is primarily used
+for making curried functions as Gleam doesn't do auto-currying. There used to be
+helpers in the stdlib for making functions curried but they have long since been
+removed...but mostly because there was no easy way to generalize over the number
+of parameters (and Gleam seems to be moving away from the super functional
+side). If the lang had some metaprogramming, maybe it the currying-helper
+functions (and the former tuple helpers) would still be in the stdlib...
 
 `param` looks like this:
 
@@ -190,8 +198,8 @@ fn param(f: fn(a) -> b) -> fn(a) -> b {
 }
 ```
 
-At first, `param` seems useless; it just returns the function it's given. But
-when combined with `use`, it acts as a placeholder:
+At first look, `param` seems useless; it just returns the function it's given.
+But, when we combine it with `use`, we get:
 
 ```gleam
 let f: fn(List(a)) -> fn(fn(a) -> b) -> List(b) = {
@@ -222,7 +230,7 @@ fn some_func(tuple: Tuple(some_type_a, some_type_b)) {
 }
 ```
 
-Which is kind of annoying. We can solve this with
+Which is kind of annoying (if not redundant). We can solve this with
 
 ```gleam
 let some_func = {
@@ -235,7 +243,8 @@ let some_func = {
 
 The `defer` function is meant for side-effect code. Gleam doesn't have a good
 way for typing side-effects (flix my beloved) but there are times where one
-needs to do something at the end of function like clean up memory.
+needs to do something at the end of function like clean up memory or close a DB
+connection.
 
 Take for example:
 
@@ -278,9 +287,9 @@ Otherwise, we would call it immediately.
 
 ## Graduate Abuser
 
-The `use` context _wraps_ context. Wouldn't be useful to _unwrap_?
+The `use` context _wraps_ context. Wouldn't it be useful to _unwrap_?
 
-Introducing, my friend, `apply_with`:
+Introducing, my, and now our, friend, `apply_with`:
 
 ```gleam
 fn apply_with(to a: fn(a) -> b, with b: fn() -> a) -> b {
@@ -302,7 +311,8 @@ fn some_func(route) -> Response {
         _ -> Error(InvalidRoute)
     }
 
-    use view: View <- result.map(result) // <- this is a type error!!!
+    // this is a type error!!!
+    use view: View <- result.map(result) 
 
     case view {
         Home -> "this my home page"
@@ -311,8 +321,10 @@ fn some_func(route) -> Response {
 }
 ```
 
-Obviously, this returns a `Result(String, PageError)`, not a `Response`.
-Typically, we can quick-fix this by wrapping everything:
+The `result.map` means the that the function still returns a `Result` type (a
+`Result(String, PageError)`) and not a `Response`.
+
+A typical solution would be to wrap everything:
 
 ```gleam
 fn some_func(route) -> Response {
@@ -333,12 +345,15 @@ fn some_func(route) -> Response {
 
     case body {
         Ok(body) -> Response(200, body)
-        Error(page_error) -> Response(400, string.inspect(page_error))
+        Error(page_error) -> 
+            Response(400, string.inspect(page_error))
     }
 }
 ```
 
-Which is...ew. Instead, let's use our `apply_with`:
+Which is...ew.
+
+Instead, let's use our `apply_with`:
 
 ```gleam
 fn some_func(route) -> Response {
@@ -347,7 +362,8 @@ fn some_func(route) -> Response {
 
         case body {
             Ok(body) -> Response(200, body)
-            Error(page_error) -> Response(400, string.inspect(page_error))
+            Error(page_error) -> 
+                Response(400, string.inspect(page_error))
         }
     })
 
@@ -366,19 +382,22 @@ fn some_func(route) -> Response {
 }
 ```
 
-et voilà. You can we still get the niceness of using `use` with `result.map` but
-instead of the function returning that, we unwrap it with our `apply_with`,
-turning our `Result` into a `Response`. Admittedly, the order in which the code
-runs is confusing. The `use` syntax tends to wraps types as we go _down_ the
-function but our `apply_with` does the opposite; it unwraps as we go _up_. You
-can mix-and-match a whole lot of these to cause maximal psychic damage to gleam
-noobies.
+et voilà. We still get the niceness of using `use` with `result.map` but instead
+of the function returning the mapped result, we unwrap it with our `apply_with`,
+turning it into a `Response`.
 
-## Professional Abuser
+Admittedly, the order in which the code runs is confusing. The `use` syntax
+tends to wraps types as we go _down_ the function but our `apply_with` does the
+opposite; it unwraps as we go _up_. You can mix-and-match a whole lot of these
+to cause maximal psychic damage to Gleam noobies. Aka, the abuse.
 
-Recently, I have been building an UI library for a gleam mobile app. The problem
-I had is that the only UI API I know of for gleam is
-[lustre](https://github.com/lustre-labs/lustre)'s
+## Senior Director of Abuse
+
+But, we can still go further.
+
+Recently, I have been building an UI library for a Gleam mobile app (more blogs
+about this to come...). The problem I had is that the only UI API (in Gleam)
+that I know of is [lustre](https://github.com/lustre-labs/lustre)'s
 
 ```gleam
 fn view(model) {
@@ -394,19 +413,24 @@ fn view(model) {
 
 (from their readme)
 
-And, to be honest, I hate it. It's how people recommend doing webdev in Ocaml as
-well and I hated it then too. In fact, I setup `dune` to compile
-[reasonml](https://reasonml.github.io/) with a JSX preprocessor just to have
-something more HTML-like.
+And, to be honest, I hate it.
 
-Unfortunately, gleam doesn't have anything preprocessor like (i.e.
-metaprogramming). Some libraries get around this by shipping an application that
-will do preprocessing for you, like turning SQL files into gleam types with
-decoders.
+It is also how people in OCaml recommend doing webdev as well...and I hated it
+then too. In fact, I setup `dune` to compile
+[reasonml](https://reasonml.github.io/) with a JSX preprocessor just to **not**
+do this.
 
-Instead, I decided to go full on the other way. No need to conform to one-to-one
-mapping with the web. The lustre example above shows how to do 2 buttons with
-text in the middle. My UI library is like so:
+Unfortunately, Gleam doesn't have anything preprocessor like (metaprogramming
+rears its ugly head again). Some libraries get around this by shipping an
+application that will do preprocessing for you, like turning SQL files into
+Gleam types with decoders.
+
+Instead, I decided to go full on the other way. There is no need to conform to
+HTML and CSS dogma. We don't have to map one-to-one with the web's many poor
+choices.
+
+The lustre example above shows how to do 2 buttons with text in the middle. My
+UI library is like so:
 
 ```gleam
 fn view(model) {
@@ -430,9 +454,13 @@ fn view(model) {
 }
 ```
 
-The reason I like this is because it isn't as nested but I still keep the listed
-things on the same context level. The `done` value stops the user from mixing UI
-element specific functions, like the `has` function, in the top level scope.
+This, this I like.
+
+This code isn't as nested. We clearly see we are making a list and append to it
+three times. We can pass expressions without having everything cramped up next
+to each other in a list. The `done` value stops the user from mixing UI element
+specific functions, like the `has` function, in the top level scope, making the
+API safe and pretty.
 
 Another thing is attributes. In lustre, it is a list that the user defines, the
 first parameter passed to all the elements in the example. My UI library is done
@@ -445,7 +473,7 @@ use <- color(Background, color.green)
 text("Tower")
 ```
 
-This makes a button with the text "Tower", have a font_size of 20 and a
+This makes a button with the text "Tower", have a font size of 20, and a
 background color of green. You can even apply it for things like orientation and
 gap:
 
@@ -474,7 +502,8 @@ use <- append({
 done
 ```
 
-The `list` function I introduce looks like
+Of course, pretty APIs almost always come with the library dev cost. This is the
+cost:
 
 ```gleam
 pub opaque type Done(msg) {
@@ -503,29 +532,32 @@ pub fn group(elements children: List(Element(msg))) {
 }
 ```
 
-What really makes it complex is returning another callback function...in the
-callback function.
+Beautiful type signatures all around.
+
+What makes it complex is simple. All we are doing is returning another callback
+function...in the callback function. Easy.
 
 Lets break it down real quick. The `list` function takes a single callback, `f`.
 This callback has two parameters: `append` and `done`. `append` is a function
-that takes in the element we want to append and a callback.
+that takes in the element we want to append and a callback (so we can use
+`use`).
 
 The callback expects the user to return a `Done` type. The user can do this in
 two ways. One, they use `append` again, as its return type is also `Done`. This
 lets us nest our `append` calls. Or two, we simply return the `done` we were
 provided by the `list` function, which is also the only way to end the `list`
-`use` context.
+`use` context. I.e. safety ensured. This is why we make `Done` opaque.
 
-## A Forewarning
+## A Forewarning (aka abuse has consequences)
 
 The main problem with `use` is that it confuses readers.
 
-Of course, with time, it becomes easier and easier to parse which, in turn, you
-eventually start making incredibly cursed functions to fulfill your perverse
-desires.
+Of course, with time and like all things, it becomes easier to parse. This has
+the added bonus where you eventually start making incredibly cursed functions
+that fulfill your perverse desires.
 
-Mix in some mutability and you can write code that seemingly does nothing while
-doing too much:
+Mix in some cold, hard mutability and you can write code that seemingly does
+nothing and do too much:
 
 ```gleam
 let current_ids =
@@ -546,10 +578,16 @@ let current_ids =
     |> option.unwrap(current_ids)
 ```
 
-...yeah. This has a lot of mutable state. Worse yet, there is no type system in
-Gleam to represent this (or other effects). Perhaps one day I will figure out a
-nice way to type guard it, like a region type or something...
+Mwah, perfection.
+
+This has a lot of mutable state. Worse yet, there is no type system in Gleam to
+represent this (or effects or regions). Perhaps one day I will figure out a nice
+way to type guard it, like a region type (or even Gleam's own
+[Ref library](https://github.com/lpil/javascript-mutable-reference)).
 
 But the point is to **manage your abuse**. Too far, and you'll be caught out,
-dazed and unmaintainable. I imagine that if [Louis](https://lpil.uk/) ever saw
-my code, he would nuke this feature in a heartbeat...
+dazed and unmaintainable. Too little, and you will be crawling your way through
+callback hell.
+
+I imagine that if [Louis](https://lpil.uk/) ever saw my code, he would nuke this
+feature in a heartbeat...
