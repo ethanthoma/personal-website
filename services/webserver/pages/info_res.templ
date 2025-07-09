@@ -1,0 +1,253 @@
+package pages
+
+import (
+	"personal-website/services/webserver/layouts"
+)
+
+type InfoRes struct {
+	Pages []string
+}
+
+type Item struct {
+	Title string
+	URL   string
+}
+
+var items_ml = []Item{
+	{
+		Title: "Don't Pay Attention",
+		URL:   "https://arxiv.org/abs/2506.11305",
+	},
+	{
+		Title: "LayerSkip: Enabling Early Exit Inference and Self-Speculative Decoding",
+		URL:   "https://arxiv.org/abs/2404.16710",
+	},
+	{
+		Title: "RWKV: Reinventing RNNs for the Transformer Era",
+		URL:   "https://arxiv.org/abs/2305.13048",
+	},
+	{
+		Title: "A Theory of Usable Information Under Computational Constraints",
+		URL:   "https://arxiv.org/abs/2002.10689",
+	},
+	{
+		Title: "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach",
+		URL:   "https://arxiv.org/abs/2502.05171",
+	},
+	{
+		Title: "Universal Approximation Under Constraints is Possible with Transformers",
+		URL:   "https://arxiv.org/abs/2110.03303",
+	},
+	{
+		Title: "Neural Functional Transformers",
+		URL:   "https://arxiv.org/abs/2305.13546",
+	},
+	{
+		Title: "Are Transformers universal approximators of sequence-to-sequence functions?",
+		URL:   "https://arxiv.org/abs/1912.10077",
+	},
+	{
+		Title: "Learning to Reason for Long-Form Story Generation",
+		URL:   "https://arxiv.org/abs/2503.22828",
+	},
+	{
+		Title: "Learning Discrete State Abstractions With Deep Variational Inference",
+		URL:   "https://arxiv.org/abs/2003.04300",
+	},
+	{
+		Title: "Discrete and Continuous Action Representation for Practical RL in Video Games",
+		URL:   "https://arxiv.org/abs/1912.11077",
+	},
+	{
+		Title: "Neural Discrete Representation Learning",
+		URL:   "https://arxiv.org/abs/1711.00937",
+	},
+	{
+		Title: "Q*: Improving Multi-step Reasoning for LLMs with Deliberative Planning",
+		URL:   "https://arxiv.org/abs/2406.14283",
+	},
+	{
+		Title: "Parallel Instance Query Network for Named Entity Recognition",
+		URL:   "https://aclanthology.org/2022.acl-long.67/",
+	},
+	{
+		Title: "Neural Module Networks",
+		URL:   "https://arxiv.org/abs/1511.02799",
+	},
+	{
+		Title: "Learning Structured Output Representation using Deep Conditional Generative Models",
+		URL:   "https://papers.nips.cc/paper_files/paper/2015/hash/8d55a249e6baa5c06772297520da2051-Abstract.html",
+	},
+	{
+		Title: "Recurrent Neural Networks Meet Context-Free Grammar: Two Birds with One Stone",
+		URL:   "https://ieeexplore.ieee.org/document/9679033",
+	},
+	{
+		Title: "Pointer Networks",
+		URL:   "https://arxiv.org/abs/1506.03134",
+	},
+	{
+		Title: "Capability-Aware Shared Hypernetworks for Flexible Heterogeneous Multi-Robot Coordination",
+		URL:   "https://arxiv.org/abs/2501.06058",
+	},
+	{
+		Title: "TC-MoE: Augmenting Mixture of Experts with Ternary Expert Choice",
+		URL:   "https://openreview.net/forum?id=dsP91M4hDL",
+	},
+	{
+		Title: "Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations",
+		URL:   "https://arxiv.org/abs/2405.18392v1",
+	},
+	{
+		Title: "A Unified Temporal Knowledge Graph Reasoning Model Towards Interpolation and Extrapolation",
+		URL:   "https://arxiv.org/abs/2405.18106",
+	},
+	{
+		Title: "NanoGPT Speedrun Living Worklog",
+		URL:   "https://www.tylerromero.com/posts/nanogpt-speedrun-worklog/",
+	},
+	{
+		Title: "Uncensor any LLM with abliteration",
+		URL:   "https://huggingface.co/blog/mlabonne/abliteration",
+	},
+}
+
+var items_plt = []Item{
+	{
+		Title: "Effekt Language: Research Papers",
+		URL:   "https://effekt-lang.org/publications.html",
+	},
+	{
+		Title: "Garnet -- what if Rust was small?",
+		URL:   "https://sr.ht/~icefox/garnet/",
+	},
+	{
+		Title: "Refinement Types: A Tutorial",
+		URL:   "https://arxiv.org/abs/2010.07763",
+	},
+	{
+		Title: "1ML – core and modules united (F-ing first-class modules)",
+		URL:   "https://dl.acm.org/doi/10.1145/2858949.2784738",
+	},
+	{
+		Title: "Hylo Language: Specification",
+		URL:   "https://github.com/hylo-lang/specification/blob/main/spec.md",
+	},
+	{
+		Title: "The Scopes Programming Infrastructure",
+		URL:   "https://scopes.readthedocs.io/en/latest/",
+	},
+	{
+		Title: "Terra Language",
+		URL:   "https://terralang.org/",
+	},
+	{
+		Title: "Swift: Ownership Manifesto",
+		URL:   "https://github.com/swiftlang/swift/blob/01c22b718cfc80a10feaefaf598aa1087f3766c8/docs/OwnershipManifesto.md",
+	},
+	{
+		Title: "Notes on a smaller Rust",
+		URL:   "https://without.boats/blog/notes-on-a-smaller-rust/",
+	},
+	{
+		Title: "Links Language",
+		URL:   "https://links-lang.org/",
+	},
+	{
+		Title: "An implementation of charity",
+		URL:   "https://ucalgary.scholaris.ca/items/8617652a-fcce-4de8-8f70-44245fbfd087",
+	},
+	{
+		Title: "Helix Language",
+		URL:   "https://www.helix-lang.com/",
+	},
+	{
+		Title: "Carp Language",
+		URL:   "https://github.com/carp-lang/Carp",
+	},
+	{
+		Title: "Second-Class References",
+		URL:   "https://borretti.me/article/second-class-references",
+	},
+	{
+		Title: "Borrow checking without lifetimes",
+		URL:   "https://smallcultfollowing.com/babysteps/blog/2024/03/04/borrow-checking-without-lifetimes/",
+	},
+	{
+		Title: "Inko Langauge",
+		URL:   "https://inko-lang.org/",
+	},
+	{
+		Title: "Memory Management in Lobster",
+		URL:   "https://aardappel.github.io/lobster/memory_management.html",
+	},
+	{
+		Title: "The Granule Language",
+		URL:   "https://granule-project.github.io/granule.html",
+	},
+	{
+		Title: "Unison: Abilities",
+		URL:   "https://www.unison-lang.org/docs/fundamentals/abilities/",
+	},
+	{
+		Title: "Zero-Cost Borrowing with Vale Regions (Preview)",
+		URL:   "https://verdagon.dev/blog/zero-cost-borrowing-regions-overview",
+	},
+	{
+		Title: "Project Cambria: Translate your data with lenses",
+		URL:   "https://www.inkandswitch.com/cambria/",
+	},
+}
+
+templ (t InfoRes) View() {
+	@layouts.Base{
+		Pages:       t.Pages,
+		PageCurrent: "resources",
+		Title:       "Ethan Thoma \\ Info. Res.",
+	}.View() {
+		<article class="row-start-1 col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+				Informational Resources
+			</h1>
+			<section class="py-s">
+				<p>
+					This is a collection of resource links on machine learning 
+					(ML) and programming languages that I am interested. Some of 
+					have been read, some have not.
+				</p>
+				<p class="pt-2xs">
+					The ML section is mostly research papers, so they may not be 
+					accessible to most readers due to assumed context. The 
+					programming language section mostly contains links to 
+					project pages and is more developer friendly.
+				</p>
+			</section>
+			<section>
+				<h2 class="font-bold text-m pb-5xs">Machine Learning (ML)</h2>
+				<ul class="list-inside list-[square] space-y-5xs">
+					for _, i := range items_ml {
+						@i.View()
+					}
+				</ul>
+				<h2 class="font-bold text-m pb-5xs mt-m">Programming Language(s) and Theory</h2>
+				<ul class="list-inside list-[square] space-y-5xs">
+					for _, i := range items_plt {
+						@i.View()
+					}
+				</ul>
+			</section>
+		</article>
+	}
+}
+
+templ (i Item) View() {
+	<li>
+		<a
+			class="items-center font-semibold hover:underline active:underline text-blue gap-[0.2em] hover:text-darkblue active:text-darkblue"
+			href={ templ.URL(i.URL) }
+			preload="mouseover"
+		>
+			{ i.Title }<span class="whitespace-nowrap">&nbsp;<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg></span>
+		</a>
+	</li>
+}

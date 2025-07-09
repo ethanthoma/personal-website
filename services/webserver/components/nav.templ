@@ -1,15 +1,28 @@
 package components
 
+import "fmt"
+
 type Nav struct {
 	PageCurrent string
 	Pages       []string
 }
 
 templ (p Nav) View() {
+	{{
+	char_count := 0
+	for _, s := range p.Pages {
+		if len(s) > char_count {
+			char_count = len(s)
+		}
+	}
+	}}
 	<nav id="nav" hx-swap-oob="true">
-		<ul class="flex justify-evenly items-center gap-s-2xl">
+		<ul
+			style={ fmt.Sprintf("grid-template-columns: repeat(auto-fit, minmax(calc(%dch + 2 * var(--spacing-2xs)), 1fr))", char_count) }
+			class="grid gap-m"
+		>
 			for _, name := range p.Pages {
-				<li class="flex-1">
+				<li class="flex-[1_1_0]">
 					<a
 						class={
 							"block text-center px-2xs-xs py-2xs bg-white active:text-blue hover:text-blue border-black cursor-pointer hover:underline active:underline text-content border-1 shadow-[4px_4px_0_0]",

@@ -36,7 +36,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "blog", "projects"}
+	navList := []string{"home", "blog", "resources", "projects"}
 
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
@@ -72,7 +72,7 @@ func main() {
 
 	http.Handle("GET /projects", templ.Handler(pages.Projects{Pages: navList}.View()))
 
-	http.Handle("GET /reading", templ.Handler(pages.Reading{Pages: navList}.View()))
+	http.Handle("GET /resources", templ.Handler(pages.InfoRes{Pages: navList}.View()))
 
 	// static
 
