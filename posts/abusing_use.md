@@ -175,7 +175,7 @@ statements just feel super janky. That's why I **abuse** use (I typically use
 the [given library](https://github.com/inoas/gleam-given), but it is hardly the
 _worst_ way to use `use`).
 
-## Beginner's Guide to Abuse
+## Beginner's Guide to Abusing `use`
 
 Let us learn about some of the simpler uses. A common pattern with `use` is
 `param` and `defer`.
@@ -285,7 +285,7 @@ print_mem(mem:)
 The reason we wrap the deferred code in a function is to make it **lazy**.
 Otherwise, we would call it immediately.
 
-## Graduate Abuser
+## Unwrapping Upwards
 
 The `use` context _wraps_ context. Wouldn't it be useful to _unwrap_?
 
@@ -391,7 +391,7 @@ tends to wraps types as we go _down_ the function but our `apply_with` does the
 opposite; it unwraps as we go _up_. You can mix-and-match a whole lot of these
 to cause maximal psychic damage to Gleam noobies. Aka, the abuse.
 
-## Senior Director of Abuse
+## `use`-based UI
 
 But, we can still go further.
 
@@ -548,7 +548,7 @@ lets us nest our `append` calls. Or two, we simply return the `done` we were
 provided by the `list` function, which is also the only way to end the `list`
 `use` context. I.e. safety ensured. This is why we make `Done` opaque.
 
-## A Forewarning (aka abuse has consequences)
+## A Forewarning (AKA Abuse Has Consequences)
 
 The main problem with `use` is that it confuses readers.
 
