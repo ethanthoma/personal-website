@@ -24,7 +24,9 @@ templ (p Home) View(posts []internal.Post) {
 		Title:       "Ethan Thoma",
 	}.View() {
 		<article class="[&_section]:py-s row-start-1 col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Ethan Thoma</h1>
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+				Ethan Thoma
+			</h1>
 			<section class="border-b-2 border-black border-dashed">
 				<dl class="font-mono [&_dt:first-of-type,&_dd:first-of-type]:pt-3xs [&_dt:last-of-type,&_dd:last-of-type]:pb-3xs [&_dd]:pe-3xs [&_dt]:ps-3xs [&_dd,&_dt]:p-4xs [&_dt,&_dd]:border-shadow [&_dt]:border-s-1 [&_dd]:border-e-1 [&_dd,&_dt]:border-b-1 grid w-full [&_dd]:col-start-2 [&_dt]:uppercase [&_dt]:col-start-1 [&_dt]:font-bold w-fit grid-cols-[minmax(auto,max-content)_auto]">
 					<dt class="col-span-2 bg-white border-t-1 border-e-1 !border-b-black">Personal Information</dt>
@@ -67,7 +69,7 @@ templ (p Home) View(posts []internal.Post) {
 							<td>EthanBThoma</td>
 							<td class="w-[1%]">
 								<a
-									class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue hover:bg-darkblue"
+									class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue hover:bg-darkblue active:bg-darkblue"
 									href="https://x.com/EthanBThoma"
 								>
 									View
@@ -80,7 +82,7 @@ templ (p Home) View(posts []internal.Post) {
 							<td>ethanthoma</td>
 							<td class="w-[1%]">
 								<a
-									class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue hover:bg-darkblue"
+									class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue hover:bg-darkblue active:bg-darkblue"
 									href="https://github.com/ethanthoma"
 								>
 									View
@@ -105,7 +107,7 @@ templ (p Home) View(posts []internal.Post) {
 					Download Resume
 				</a>
 				<a
-					class="items-center leading-6 hover:underline active:underline text-blue hover:text-darkblue active:text-orange"
+					class="items-center leading-6 hover:underline active:underline text-blue hover:text-darkblue active:text-darkblue"
 					href="mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry"
 				>
 					Inquiry (e‑mail)&nbsp;<svg class="inline w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path></svg>

@@ -110,7 +110,9 @@ templ (p Projects) View() {
 		Title:       "Ethan Thoma \\ Projects",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">Projects</h1>
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+				Projects
+			</h1>
 			<section class="py-s">
 				<ol class="grid gap-y-m grid-cols-[1fr_1fr]">
 					for _, project := range projects {
@@ -182,7 +184,7 @@ templ view_project(project internal.Project) {
 		if project.Url != "" {
 			<div class="pb-3xs">
 				<a
-					class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue"
+					class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue active:bg-blue"
 					href={ templ.URL(project.Url) }
 				>
 					GitHub

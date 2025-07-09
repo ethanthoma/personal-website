@@ -1,0 +1,153 @@
+package pages
+
+import (
+	"personal-website/services/webserver/layouts"
+)
+
+type Reading struct {
+	Pages []string
+}
+
+type Item struct {
+	Title string
+	URL   string
+}
+
+var items_ml = []Item{
+	{
+		Title: "Don't Pay Attention",
+		URL:   "https://arxiv.org/abs/2506.11305",
+	},
+	{
+		Title: "LayerSkip: Enabling Early Exit Inference and Self-Speculative Decoding",
+		URL:   "https://arxiv.org/abs/2404.16710",
+	},
+	{
+		Title: "RWKV: Reinventing RNNs for the Transformer Era",
+		URL:   "https://arxiv.org/abs/2305.13048",
+	},
+	{
+		Title: "A Theory of Usable Information Under Computational Constraints",
+		URL:   "https://arxiv.org/abs/2002.10689",
+	},
+	{
+		Title: "Scaling up Test-Time Compute with Latent Reasoning: A Recurrent Depth Approach",
+		URL:   "https://arxiv.org/abs/2502.05171",
+	},
+	{
+		Title: "Universal Approximation Under Constraints is Possible with Transformers",
+		URL:   "https://arxiv.org/abs/2110.03303",
+	},
+	{
+		Title: "Neural Functional Transformers",
+		URL:   "https://arxiv.org/abs/2305.13546",
+	},
+	{
+		Title: "Are Transformers universal approximators of sequence-to-sequence functions?",
+		URL:   "https://arxiv.org/abs/1912.10077",
+	},
+	{
+		Title: "Learning to Reason for Long-Form Story Generation",
+		URL:   "https://arxiv.org/abs/2503.22828",
+	},
+	{
+		Title: "Learning Discrete State Abstractions With Deep Variational Inference",
+		URL:   "https://arxiv.org/abs/2003.04300",
+	},
+	{
+		Title: "Discrete and Continuous Action Representation for Practical RL in Video Games",
+		URL:   "https://arxiv.org/abs/1912.11077",
+	},
+	{
+		Title: "Neural Discrete Representation Learning",
+		URL:   "https://arxiv.org/abs/1711.00937",
+	},
+	{
+		Title: "Q*: Improving Multi-step Reasoning for LLMs with Deliberative Planning",
+		URL:   "https://arxiv.org/abs/2406.14283",
+	},
+	{
+		Title: "Parallel Instance Query Network for Named Entity Recognition",
+		URL:   "https://aclanthology.org/2022.acl-long.67/",
+	},
+	{
+		Title: "Neural Module Networks",
+		URL:   "https://arxiv.org/abs/1511.02799",
+	},
+	{
+		Title: "Learning Structured Output Representation using Deep Conditional Generative Models",
+		URL:   "https://papers.nips.cc/paper_files/paper/2015/hash/8d55a249e6baa5c06772297520da2051-Abstract.html",
+	},
+	{
+		Title: "Recurrent Neural Networks Meet Context-Free Grammar: Two Birds with One Stone",
+		URL:   "https://ieeexplore.ieee.org/document/9679033",
+	},
+	{
+		Title: "Pointer Networks",
+		URL:   "https://arxiv.org/abs/1506.03134",
+	},
+	{
+		Title: "Capability-Aware Shared Hypernetworks for Flexible Heterogeneous Multi-Robot Coordination",
+		URL:   "https://arxiv.org/abs/2501.06058",
+	},
+	{
+		Title: "TC-MoE: Augmenting Mixture of Experts with Ternary Expert Choice",
+		URL:   "https://openreview.net/forum?id=dsP91M4hDL",
+	},
+}
+
+var items_plt = []Item{}
+
+templ (t Reading) View() {
+	@layouts.Base{
+		Pages:       t.Pages,
+		PageCurrent: "reading",
+		Title:       "Ethan Thoma \\ Reading",
+	}.View() {
+		<article class="row-start-1 col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+				Reading List
+			</h1>
+			<section class="py-s">
+				<table class="font-mono text-left w-full [&_th]:[border-block-end:black] [&_td,&_th]:p-4xs [&_th]:pt-3xs [&_tr:last-child_td]:pb-3xs [&_tr_td:last-child,&_tr_th:last-child]:pe-3xs [&_tr_td:first-child,&_tr_th:first-child]:ps-3xs [&_td,&_th]:border-shadow [&_th,&_td]:border-1 border-collapse">
+					<thead class="uppercase bg-white">
+						<th>Machine Learning (ML)</th>
+						<th>Link</th>
+					</thead>
+					<tbody>
+						for _, i := range items_ml {
+							@i.View()
+						}
+					</tbody>
+					<thead class="uppercase bg-white">
+						<th>Programming Language Theory (PLT)</th>
+						<th>Link</th>
+					</thead>
+					<tbody>
+						for _, i := range items_plt {
+							@i.View()
+						}
+					</tbody>
+				</table>
+			</section>
+		</article>
+	}
+}
+
+templ (i Item) View() {
+	<tr>
+		<td>
+			{ i.Title }
+		</td>
+		<td class="w-[1%]">
+			<a
+				class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue active:bg-blue"
+				href={ templ.URL(i.URL) }
+				preload="mouseover"
+			>
+				Read
+				<svg class="ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path> </svg>
+			</a>
+		</td>
+	</tr>
+}

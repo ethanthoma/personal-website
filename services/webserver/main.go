@@ -38,29 +38,26 @@ func main() {
 
 	navList := []string{"home", "blog", "projects"}
 
-	pageHome := pages.Home{Pages: navList}
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		pageHome.View(posts).Render(r.Context(), w)
+		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
 
-	pageBlog := pages.Blog{Pages: navList}
 	http.Handle("GET /blog", middlewareCache(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		pageBlog.View(posts).Render(r.Context(), w)
+		pages.Blog{Pages: navList}.View(posts).Render(r.Context(), w)
 	})))
 
-	pagePost := pages.Post{Pages: navList}
 	http.HandleFunc("GET /post/{slug}", func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
 
@@ -70,11 +67,12 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		pagePost.View(post).Render(r.Context(), w)
+		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
 	})
 
-	pageProjects := pages.Projects{Pages: navList}
-	http.Handle("GET /projects", templ.Handler(pageProjects.View()))
+	http.Handle("GET /projects", templ.Handler(pages.Projects{Pages: navList}.View()))
+
+	http.Handle("GET /reading", templ.Handler(pages.Reading{Pages: navList}.View()))
 
 	// static
 
