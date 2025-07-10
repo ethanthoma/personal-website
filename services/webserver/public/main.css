@@ -240,6 +240,13 @@ dl {
     @apply grid;
     @apply grid-cols-[minmax(auto,max-content)_auto];
 
+    & dt, & dd {
+        @apply border-shadow;
+        @apply border-b-1;
+
+        @apply p-4xs;
+    }
+
     & dt:first-of-type, & dd:first-of-type {
         @apply pt-3xs;
     }
@@ -268,10 +275,12 @@ dl {
         @apply uppercase;
     }
 
-    & dd, & dt {
-        @apply border-shadow;
-        @apply border-b-1;
+    & dt[colspan="2"] {
+        @apply col-span-2; 
+        @apply bg-white; 
 
-        @apply p-4xs;
+        @apply border-t-1; 
+        @apply border-e-1;
+        @apply border-b-black;
     }
 }
