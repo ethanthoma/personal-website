@@ -15,16 +15,12 @@ type Projects struct {
 var projects = []internal.Project{
 	{
 		Date:  time.Date(2025, 3, 5, 0, 0, 0, 0, time.Local),
-		Title: "Gleam Mobile Game",
-		Description: `A mini-gacha rougelite game. 
+		Title: "Glum: Mobile Game Engine in Gleam",
+		Description: `Elm-based mobile-game engine written in Gleam.  
 
         Created JS FFI bindings to nativescript core libraries. This allows compiling Gleam to mobile.
 
-        Made a custom Elm-based mobile-game engine. It has two render functions: UI and game objects.
-
-        The UI render function includes a simple 2D layout engine, primarily written in Gleam.
-
-        The game object render function has more flexibility and maps closer to Three.js primitives.
+        It has two render functions: UI and game objects. The UI render function includes a simple 2D layout engine, primarily written in Gleam. The game object render function has more flexibility and maps closer to Three.js primitives.
         `,
 		Lang: []string{"Gleam", "JavaScript"},
 		WIP:  true,
