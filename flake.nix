@@ -15,19 +15,18 @@
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      flake-utils,
-      gomod2nix,
-      templ,
-    }:
-    (flake-utils.lib.eachDefaultSystem (
+    inputs@{ self, ... }:
+
+    (inputs.flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-        gopkgs = gomod2nix.legacyPackages.${system};
-        templpkgs = templ.packages.${system}.templ;
+        pkgs = import inputs.nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        };
+
+        gopkgs = inputs.gomod2nix.legacyPackages.${system};
+        templpkgs = inputs.templ.packages.${system}.templ;
 
         webserverPort = "8080";
 
@@ -89,11 +88,11 @@
               pkgs.biome
               pkgs.mago
               pkgs.superhtml
+              pkgs.claude-code
             ];
 
             env.WEBSERVER_PORT = webserverPort;
           };
-
       }
     ));
 }
