@@ -9,7 +9,7 @@
 
 <p align="center">
     <img src="https://img.shields.io/github/last-commit/ethanthoma/personal-website/main?style=for-the-badge&labelColor=%231f1d2e&color=%23c4a7e7">
-    <img src="https://img.shields.io/github/actions/workflow/status/ethanthoma/personal-website/docker.yml?style=for-the-badge&labelColor=%231f1d2e&color=%239ccfd8">
+    <img src="https://img.shields.io/github/actions/workflow/status/ethanthoma/personal-website/deploy.yml?style=for-the-badge&labelColor=%231f1d2e&color=%239ccfd8">
     <img src="https://img.shields.io/github/languages/count/ethanthoma/personal-website?style=for-the-badge&labelColor=%231f1d2e&color=%23ebbcba">
 </p>
 
