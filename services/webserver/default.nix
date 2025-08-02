@@ -4,7 +4,6 @@
   buildGoApplication,
   tailwindcss,
   templpkgs,
-  port,
 }:
 let
   htmxVersion = "2.0.3";
@@ -26,7 +25,6 @@ buildGoApplication rec {
   pwd = ./.;
   modules = ../../gomod2nix.toml;
   subPackages = [ "services/${pname}" ];
-  env.port = port;
   nativeBuildInputs = [
     makeWrapper
     tailwindcss
@@ -50,7 +48,6 @@ buildGoApplication rec {
 
     mv $out/bin/${pname} $out/bin/.${pname}-unwrapped
     makeWrapper $out/bin/.${pname}-unwrapped $out/bin/${pname} \
-        --set WEBSERVER_PORT "${port}" \
         --chdir $out
   '';
 }

@@ -1,14 +1,14 @@
 {
-  description = "A basic gomod2nix flake";
+  description = "Go Webserver Flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    devshell.url = "github:numtide/devshell";
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
       };
     };
     templ.url = "github:a-h/templ";
@@ -17,70 +17,38 @@
   outputs =
     inputs@{ self, ... }:
 
-    (inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import inputs.nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        };
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [ inputs.devshell.flakeModule ];
 
-        gopkgs = inputs.gomod2nix.legacyPackages.${system};
-        templpkgs = inputs.templ.packages.${system}.templ;
+      systems = [ "x86_64-linux" ];
 
-        webserverPort = "8080";
+      perSystem =
+        { system, ... }:
 
-        callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
-      in
-      rec {
-        packages.default = callPackage ./services/webserver {
-          port = webserverPort;
-          inherit (pkgs) makeWrapper;
-          inherit (gopkgs) buildGoApplication;
-          inherit templpkgs;
-          tailwindcss = pkgs.tailwindcss_4;
-        };
-
-        packages.uploader = callPackage ./cmd/uploader { inherit (gopkgs) buildGoApplication; };
-
-        packages.blob = callPackage ./services/blob { inherit (gopkgs) buildGoApplication; };
-
-        packages.container = pkgs.dockerTools.buildImage {
-          name = packages.default.pname;
-          tag = packages.default.version;
-          created = "now";
-          copyToRoot = pkgs.buildEnv {
-            name = "image-root";
-            paths = [ packages.default ];
-            pathsToLink = [
-              "/bin"
-              "/public"
+        let
+          pkgs = import inputs.nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+            overlays = [
+              inputs.gomod2nix.overlays.default
             ];
           };
-          config = {
-            Cmd = [ "${packages.default}/bin/${packages.default.pname}" ];
-            Env = [ "SSL_CERT_FILE=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt" ];
-            ExposedPorts = {
-              "${webserverPort}/tcp" = { };
-            };
-          };
-        };
 
-        devShells.default =
-          let
-            goEnv = gopkgs.mkGoEnv { pwd = ./.; };
-          in
-          pkgs.mkShell {
+          templpkgs = inputs.templ.packages.${system}.templ;
+
+          callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
+        in
+        {
+          _module.args.pkgs = pkgs;
+
+          devshells.default = {
             packages = [
-              goEnv
-              gopkgs.gomod2nix
               pkgs.air
               pkgs.turso-cli
               pkgs.gopls
               pkgs.tailwindcss_4
               pkgs.watchman
               pkgs.tailwindcss-language-server
-              packages.uploader
               templpkgs
               pkgs.mdformat
               pkgs.rustywind
@@ -88,11 +56,38 @@
               pkgs.biome
               pkgs.mago
               pkgs.superhtml
-              pkgs.claude-code
             ];
 
-            env.WEBSERVER_PORT = webserverPort;
+            commands = [
+              {
+                name = "claude";
+                package = pkgs.claude-code;
+              }
+              {
+                name = "make";
+                package = pkgs.gnumake;
+              }
+              {
+                package = pkgs.gomod2nix;
+              }
+              {
+                package = pkgs.go;
+              }
+            ];
+
+            env = [
+              {
+                name = "WEBSERVER_PORT";
+                value = "8080";
+              }
+            ];
           };
-      }
-    ));
+
+          packages.default = callPackage ./services/webserver {
+            inherit (pkgs) makeWrapper buildGoApplication;
+            inherit templpkgs;
+            tailwindcss = pkgs.tailwindcss_4;
+          };
+        };
+    };
 }

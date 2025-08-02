@@ -31,7 +31,6 @@ services/**/*_templ.go
 !.air.toml
 !services/webserver/public/**/*
 services/webserver/**/*.js
-!posts/**
 
 !internal/
 !internal/**/*.go
