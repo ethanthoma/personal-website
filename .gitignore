@@ -3,6 +3,7 @@
 !README.md
 !LICENSE
 !.gitignore
+!.github/workflows/*
 
 # go 
 !internal/
@@ -10,15 +11,10 @@
 !go.sum
 !gomod2nix.toml
 
-# uploader
-!cmd/uploader
-!cmd/uploader/default.nix
-
 # nix code
 !nix/*
 !flake.*
 
-# docker
 !Makefile
 
 # services
