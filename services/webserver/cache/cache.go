@@ -24,13 +24,7 @@ var Cache = &PostCache{
 func (c *PostCache) updateCache() error {
 	log.Println("Cache: Updating...")
 
-	db, err := internal.CreateConnection()
-	defer db.Close()
-	if err != nil {
-		return err
-	}
-
-	posts, err := internal.GetPosts(db)
+	posts, err := internal.GetPostsFromGitHub()
 	if err != nil {
 		return err
 	}

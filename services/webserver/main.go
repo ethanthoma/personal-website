@@ -85,8 +85,12 @@ func main() {
 func slugToHTML(slug string) (internal.Post, error) {
 	post, err := cache.Cache.GetPost(slug)
 	if err != nil {
-		log.Printf("error getting post %s (%v)", slug, err)
-		return post, err
+		log.Printf("error getting post %s from cache, trying GitHub directly (%v)", slug, err)
+		post, err = internal.GetPostFromGitHub(slug)
+		if err != nil {
+			log.Printf("error getting post %s from GitHub (%v)", slug, err)
+			return post, err
+		}
 	}
 
 	mdRenderer := goldmark.New(

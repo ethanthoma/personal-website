@@ -35,8 +35,6 @@
           };
 
           templpkgs = inputs.templ.packages.${system}.templ;
-
-          callPackage = pkgs.darwin.apple_sdk_11_0.callPackage or pkgs.callPackage;
         in
         {
           _module.args.pkgs = pkgs;
@@ -83,7 +81,7 @@
             ];
           };
 
-          packages.default = callPackage ./services/webserver {
+          packages.default = pkgs.callPackage ./services/webserver {
             inherit (pkgs) makeWrapper buildGoApplication;
             inherit templpkgs;
             tailwindcss = pkgs.tailwindcss_4;

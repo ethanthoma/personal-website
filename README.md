@@ -31,18 +31,48 @@ Use `nix build .#<name>` to run a build command. The names are:
 
 - #default: this produces the webserver binary
 - #container: docker image containing the webserver binary
-- #uploader: simple CLI to upload my markdown blogs
 
 ## Developing
 
 The [make file](./Makefile) in root is setup for running air w/ livereload. It
 will run tailwindcss, templ, and air. Simply run `make live`.
 
-> [!TIP]
-> You can also locally deploy the docker image using `make docker`.
+The webserver port is set via environment variable `WEBSERVER_PORT`.
 
-The webserver port is set in the [flake](./flake.nix). You also need a dotenv
-file. It should contain:
+## Blog Configuration
 
-- TURSO_DATABASE_URL
-- TURSO_AUTH_TOKEN
+The website fetches blog posts from configurable sources using the `BLOG_SOURCE`
+environment variable:
+
+Local Directory:
+
+```bash
+BLOG_SOURCE="~/projects/blogs/"
+BLOG_SOURCE="/absolute/path/to/blogs/"
+BLOG_SOURCE="./relative/path/"
+```
+
+Git Repositories (Nix-style format):
+
+```bash
+BLOG_SOURCE="github:owner/repo"
+BLOG_SOURCE="gitlab:owner/repo"
+```
+
+Default: If no `BLOG_SOURCE` is set, defaults to my blogs
+(`github:ethanthoma/blogs`).
+
+## Blog Post Format
+
+Blog posts are in markdown. They support YAML frontmatter:
+
+```yaml
+---
+title: "Post Title"
+date: "2024-01-15T10:30:00Z"
+slug: "post-slug"
+---
+
+# Post Title
+Content here...
+```
