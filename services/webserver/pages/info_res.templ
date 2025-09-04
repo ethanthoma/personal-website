@@ -2,10 +2,13 @@ package pages
 
 import (
 	"personal-website/services/webserver/layouts"
+	"time"
+	"personal-website/services/webserver/components"
 )
 
 type InfoRes struct {
-	Pages []string
+	Pages        []string
+	LastModified time.Time
 }
 
 type Item struct {
@@ -203,9 +206,9 @@ var items_plt = []Item{
 	},
 }
 
-templ (t InfoRes) View() {
+templ (p InfoRes) View() {
 	@layouts.Base{
-		Pages:       t.Pages,
+		Pages:       p.Pages,
 		PageCurrent: "resources",
 		Title:       "Ethan Thoma \\ Info. Res.",
 	}.View() {
@@ -241,6 +244,7 @@ templ (t InfoRes) View() {
 				</ul>
 			</section>
 		</article>
+		@components.LastModified{Time: p.LastModified}.View()
 	}
 }
 

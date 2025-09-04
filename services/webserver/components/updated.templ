@@ -1,0 +1,15 @@
+package components
+
+import "time"
+
+type LastModified struct {
+	Time time.Time
+}
+
+templ (p LastModified) View() {
+	if !p.Time.IsZero() {
+		<div class="font-semibold col-[2/-2] text-content/80 text-s pb-3xs">
+			Last updated: { p.Time.Format("2006-01-02 15:04 MST") }
+		</div>
+	}
+}

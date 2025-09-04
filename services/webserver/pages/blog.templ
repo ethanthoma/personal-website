@@ -3,10 +3,13 @@ package pages
 import (
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
+	"personal-website/services/webserver/components"
+	"time"
 )
 
 type Blog struct {
-	Pages []string
+	Pages        []string
+	LastModified time.Time
 }
 
 templ (p Blog) View(posts []internal.Post) {
@@ -34,6 +37,7 @@ templ (p Blog) View(posts []internal.Post) {
 				</table>
 			</section>
 		</article>
+		@components.LastModified{Time: p.LastModified}.View()
 	}
 }
 

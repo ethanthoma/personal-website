@@ -3,10 +3,12 @@ package pages
 import (
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
+	"time"
 )
 
 type Post struct {
-	Pages []string
+	Pages        []string
+	LastModified time.Time
 }
 
 templ (p Post) View(post internal.Post) {
@@ -16,7 +18,13 @@ templ (p Post) View(post internal.Post) {
 		Title:       "Ethan Thoma \\ " + post.Title,
 	}.View() {
 		<article class="row-start-1 col-[2/-2] content">
-			<time class="text-content/60">{ post.Date.Format("20060102") }</time>
+			<div class="text-content/60 text-s mb-3xs">
+				<time>Created: { post.Date.Format("2006-01-02") }</time>
+				if post.IsUpdatedAfterCreation() {
+					<span class="ml-[1ch]">•</span>
+					<time class="ml-[1ch]">Updated: { post.LastModified.Format("2006-01-02") }</time>
+				}
+			</div>
 			@templ.Raw(post.HTML)
 		</article>
 	}

@@ -79,7 +79,7 @@
     --spacing-s-2xl: clamp(1rem, -0.5652rem + 7.8261vw, 5.5rem);
     --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
-    --spacing-content: min(clamp(320px, 100%, max(720px, 33svw)), 100svw);
+    --spacing-content: 60rem;
 
     /* Font */
     --font-mono: "Monaspace Neon", monospace;
@@ -201,6 +201,8 @@ table {
     @apply font-mono;
     @apply text-left;
     @apply border-collapse;
+    @apply w-max;
+    @apply max-w-full;
     font-variant-numeric: lining-nums tabular-nums;
 
     & th {
@@ -236,6 +238,8 @@ dl {
     @apply font-mono; 
     @apply grid;
     @apply grid-cols-[minmax(auto,max-content)_auto];
+    @apply w-max;
+    @apply max-w-full;
 
     & dt, & dd {
         @apply border-shadow;

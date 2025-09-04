@@ -1,6 +1,8 @@
 package layouts
 
-import "personal-website/services/webserver/components"
+import (
+	"personal-website/services/webserver/components"
+)
 
 type Base struct {
 	Pages       []string
@@ -33,7 +35,7 @@ templ (p Base) View() {
 			<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
 		</head>
 		<body
-			style="grid-template-columns: minmax(0, calc((100% - 720px) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - 720px) / 2));"
+			style="grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));"
 			class="grid overflow-x-hidden relative max-w-full min-h-full font-mono antialiased text-s grid-rows-[auto_1fr_auto] gap-x-xs-xl bg-base text-content"
 			lang="en-GB"
 			hx-ext="preload"
@@ -42,7 +44,7 @@ templ (p Base) View() {
 				PageCurrent: p.PageCurrent,
 				Pages:       p.Pages,
 			}.View()
-			<main class="grid auto-rows-min grid-cols-subgrid col-[1/-1] gap-y-2xl py-2xl">
+			<main class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-2xl">
 				{ children... }
 			</main>
 			@components.Footer{}.View()

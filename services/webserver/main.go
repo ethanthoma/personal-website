@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
-	"github.com/a-h/templ"
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
@@ -38,7 +38,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "blog", "resources", "projects"}
+	navList := []string{"home", "blog", "resources", "projects", "sitemap"}
 
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
@@ -46,7 +46,8 @@ func main() {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
+		lastMod := getFileModTime("services/webserver/pages/home.templ")
+		pages.Home{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
@@ -57,7 +58,8 @@ func main() {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		pages.Blog{Pages: navList}.View(posts).Render(r.Context(), w)
+		lastMod := getFileModTime("services/webserver/pages/blog.templ")
+		pages.Blog{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
 	})))
 
 	http.HandleFunc("GET /post/{slug}", func(w http.ResponseWriter, r *http.Request) {
@@ -69,12 +71,32 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
+		lastMod := getFileModTime("services/webserver/pages/post.templ")
+		pages.Post{Pages: navList, LastModified: lastMod}.View(post).Render(r.Context(), w)
 	})
 
-	http.Handle("GET /projects", templ.Handler(pages.Projects{Pages: navList}.View()))
+	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
+		lastMod := getFileModTime("services/webserver/pages/projects.templ")
+		pages.Projects{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
+	}
+	http.HandleFunc("GET /projects", projectsHandler)
 
-	http.Handle("GET /resources", templ.Handler(pages.InfoRes{Pages: navList}.View()))
+	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
+		lastMod := getFileModTime("services/webserver/pages/info_res.templ")
+		pages.InfoRes{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
+	}
+	http.HandleFunc("GET /resources", resourcesHandler)
+
+	sitemapHandler := func(w http.ResponseWriter, r *http.Request) {
+		posts, err := cache.Cache.GetPosts()
+		if err != nil {
+			log.Printf("failed to fetch posts from cache (%v)", err)
+		}
+
+		lastMod := getFileModTime("services/webserver/pages/sitemap.templ")
+		pages.Sitemap{Pages: navList, Posts: posts, LastModified: lastMod}.View().Render(r.Context(), w)
+	}
+	http.HandleFunc("GET /sitemap", sitemapHandler)
 
 	// static
 
@@ -82,6 +104,15 @@ func main() {
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, middlewareCache(logRequests)))
+}
+
+func getFileModTime(filepath string) time.Time {
+	info, err := os.Stat(filepath)
+	if err != nil {
+		log.Printf("Error getting file info for %s: %v", filepath, err)
+		return time.Now()
+	}
+	return info.ModTime()
 }
 
 func slugToHTML(slug string) (internal.Post, error) {

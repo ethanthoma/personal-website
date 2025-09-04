@@ -1,0 +1,92 @@
+package pages
+
+import (
+	"fmt"
+	"personal-website/internal"
+	"personal-website/services/webserver/layouts"
+	"personal-website/services/webserver/components"
+	"time"
+)
+
+type Sitemap struct {
+	Pages        []string
+	Posts        []internal.Post
+	LastModified time.Time
+}
+
+templ (p Sitemap) View() {
+	{{
+	totalPages := len(p.Pages) + len(p.Posts)
+	}}
+	@layouts.Base{
+		Pages:       p.Pages,
+		PageCurrent: "sitemap",
+		Title:       "Site Map | Ethan Thoma",
+	}.View() {
+		<article class="[&_section]:py-s row-start-1 col-[2/-2]">
+			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+				Site Map
+			</h1>
+			<section class="border-b-2 border-black border-dashed">
+				<dl class="w-max">
+					<dt colspan="2">Main Navigation</dt>
+					<dt><a href="/home" class="hover:underline text-blue" preload="mouseover">Home</a>:</dt>
+					<dd>Personal information, contact details, and recent posts</dd>
+					<dt><a href="/blog" class="hover:underline text-blue" preload="mouseover">Blog</a>:</dt>
+					<dd>Technical posts, research notes, and thoughts</dd>
+					<dt><a href="/resources" class="hover:underline text-blue" preload="mouseover">Resources</a>:</dt>
+					<dd>Useful links, tools, and references</dd>
+					<dt><a href="/projects" class="hover:underline text-blue" preload="mouseover">Projects</a>:</dt>
+					<dd>Software projects, experiments, and code repositories</dd>
+					<dt><a href="/sitemap" class="hover:underline text-blue" preload="mouseover">Site Map</a>:</dt>
+					<dd>This page - complete site structure and navigation</dd>
+				</dl>
+			</section>
+			<section class="border-b-2 border-black border-dashed">
+				<dl class="w-max">
+					<dt colspan="2">Resources & Files</dt>
+					<dt><a href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf" class="hover:underline text-blue">Resume</a>:</dt>
+					<dd>Current resume (PDF format)</dd>
+					<dt><a href="/robots.txt" class="hover:underline text-blue" preload="mouseover">robots.txt</a>:</dt>
+					<dd>Web crawler instructions</dd>
+					<dt><a href="/public/seo/sitemap.xml" class="hover:underline text-blue" preload="mouseover">sitemap.xml</a>:</dt>
+					<dd>XML sitemap for search engines</dd>
+				</dl>
+			</section>
+			<section class="border-b-2 border-black border-dashed">
+				<dl class="w-max">
+					<dt colspan="2">External Links</dt>
+					<dt><a href="https://x.com/EthanBThoma" class="hover:underline text-blue">Twitter/X</a>:</dt>
+					<dd>"@EthanBThoma - Updates and thoughts"</dd>
+					<dt><a href="https://github.com/ethanthoma" class="hover:underline text-blue">GitHub</a>:</dt>
+					<dd>Source code, repositories, and contributions</dd>
+					<dt><a href="mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry" class="hover:underline text-blue">Email</a>:</dt>
+					<dd>Professional and academic inquiries</dd>
+				</dl>
+			</section>
+			<section class="border-b-2 border-black border-dashed">
+				<dl class="w-max">
+					<dt colspan="2">Technical Information</dt>
+					<dt>Built with:</dt>
+					<dd>Go, Templ, TailwindCSS, HTMX</dd>
+					<dt>Fonts:</dt>
+					<dd>Public Sans (body), Monaspace family (mono)</dd>
+					<dt>Hosting:</dt>
+					<dd>VPS deployment via Nix flakes</dd>
+					<dt>Source:</dt>
+					<dd><a href="https://github.com/ethanthoma/personal-website" class="hover:underline text-blue">GitHub Repository</a></dd>
+				</dl>
+			</section>
+			<section class="flex items-center font-semibold gap-[calc(1px+2*var(--spacing-s))]">
+				<div class="text-content/80 text-s">
+					<p class="mt-2xs">
+						<span class="font-mono">$</span> find /site -type f -name "*.html" | wc -l
+						<br/>
+						<span class="ml-[1.5ch] text-content/60">→ { fmt.Sprintf("%d", totalPages) }</span>
+					</p>
+				</div>
+			</section>
+		</article>
+		@components.LastModified{Time: p.LastModified}.View()
+	}
+}

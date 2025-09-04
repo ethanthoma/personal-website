@@ -2,13 +2,15 @@ package pages
 
 import (
 	"personal-website/services/webserver/layouts"
+	"personal-website/services/webserver/components"
 	"personal-website/internal"
 	"strings"
 	"time"
 )
 
 type Projects struct {
-	Pages []string
+	Pages        []string
+	LastModified time.Time
 }
 
 // TODO: we need something a bit more sophisticated
@@ -118,6 +120,7 @@ templ (p Projects) View() {
 				</ol>
 			</section>
 		</article>
+		@components.LastModified{Time: p.LastModified}.View()
 		@handle.Once() {
 			<script type="text/javascript">
                 function openTarget() {
@@ -157,7 +160,7 @@ templ view_project(project internal.Project) {
 				</li>
 			}
 		</ol>
-		{{ href := strings.Replace(project.Title, " ", "_", -1) }}
+		{{ href := strings.ReplaceAll(project.Title, " ", "_") }}
 		<details name="project">
 			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs" data-href={ href }>
 				Project Overview
