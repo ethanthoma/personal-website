@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -22,9 +23,10 @@ type GitHubFile struct {
 }
 
 type FrontMatter struct {
-	Title string    `json:"title"`
-	Date  time.Time `json:"date"`
-	Slug  string    `json:"slug"`
+	Title        string     `json:"title"`
+	Date         time.Time  `json:"date"`
+	LastModified *time.Time `json:"last_modified,omitempty"`
+	Slug         string     `json:"slug"`
 }
 
 type BlogConfig struct {
@@ -207,7 +209,7 @@ func fetchPostFromLocal(localPath, filename string) (Post, error) {
 		return Post{}, fmt.Errorf("failed to read local file %s: %v", filename, err)
 	}
 
-	post, err := parseMarkdownWithFrontmatter(string(content))
+	post, err := parseMarkdownWithFrontmatter(string(content), localPath, filename)
 	if err != nil {
 		return Post{}, fmt.Errorf("failed to parse markdown: %v", err)
 	}
@@ -242,7 +244,7 @@ func fetchPostFromGitAPI(config BlogConfig, filename string) (Post, error) {
 		return Post{}, fmt.Errorf("failed to read file content: %v", err)
 	}
 
-	post, err := parseMarkdownWithFrontmatter(content.String())
+	post, err := parseMarkdownWithFrontmatter(content.String(), "", filename)
 	if err != nil {
 		return Post{}, fmt.Errorf("failed to parse markdown: %v", err)
 	}
@@ -257,13 +259,20 @@ func fetchPostFromGitAPI(config BlogConfig, filename string) (Post, error) {
 	return post, nil
 }
 
-func parseMarkdownWithFrontmatter(content string) (Post, error) {
+func parseMarkdownWithFrontmatter(content, repoPath, filename string) (Post, error) {
 	var post Post
 
 	if !strings.HasPrefix(content, "---") {
 		post.Title = extractTitleFromMarkdown(content)
 		post.Content = content
 		post.Date = time.Now()
+
+		if repoPath != "" && filename != "" {
+			if gitTime := getGitLastModified(repoPath, filename); !gitTime.IsZero() {
+				post.LastModified = gitTime
+			}
+		}
+
 		return post, nil
 	}
 
@@ -285,6 +294,18 @@ func parseMarkdownWithFrontmatter(content string) (Post, error) {
 	post.Slug = frontmatter.Slug
 	post.Content = markdownContent
 
+	if frontmatter.LastModified != nil {
+		post.LastModified = *frontmatter.LastModified
+	} else if repoPath != "" && filename != "" {
+		if gitTime := getGitLastModified(repoPath, filename); !gitTime.IsZero() {
+			post.LastModified = gitTime
+		}
+	}
+
+	if post.LastModified.IsZero() {
+		post.LastModified = post.Date
+	}
+
 	if post.Title == "" {
 		post.Title = extractTitleFromMarkdown(markdownContent)
 	}
@@ -294,8 +315,7 @@ func parseMarkdownWithFrontmatter(content string) (Post, error) {
 
 func extractTitleFromMarkdown(content string) string {
 	re := regexp.MustCompile(`^#\s+(.+)$`)
-	lines := strings.Split(content, "\n")
-	for _, line := range lines {
+	for line := range strings.SplitSeq(content, "\n") {
 		if matches := re.FindStringSubmatch(strings.TrimSpace(line)); matches != nil {
 			return strings.TrimSpace(matches[1])
 		}
@@ -303,3 +323,30 @@ func extractTitleFromMarkdown(content string) string {
 	return "Untitled"
 }
 
+func getGitLastModified(repoPath, filename string) time.Time {
+	if repoPath == "" || filename == "" {
+		return time.Time{}
+	}
+
+	cmd := exec.Command("git", "log", "-1", "--format=%ct", "--", filename)
+	cmd.Dir = repoPath
+
+	output, err := cmd.Output()
+	if err != nil {
+		log.Printf("Git: failed to get last modified time for %s: %v", filename, err)
+		return time.Time{}
+	}
+
+	timestamp := strings.TrimSpace(string(output))
+	if timestamp == "" {
+		return time.Time{}
+	}
+
+	var unixTime int64
+	if _, err := fmt.Sscanf(timestamp, "%d", &unixTime); err != nil {
+		log.Printf("Git: failed to parse timestamp %s: %v", timestamp, err)
+		return time.Time{}
+	}
+
+	return time.Unix(unixTime, 0)
+}

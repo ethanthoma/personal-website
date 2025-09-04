@@ -15,7 +15,7 @@ templ (p Post) View(post internal.Post) {
 	@layouts.Base{
 		Pages:       p.Pages,
 		PageCurrent: "blog",
-		Title:       "Ethan Thoma \\ " + post.Title,
+		Title:       "Ethan Thoma / Blog / " + post.Title,
 	}.View() {
 		<article class="row-start-1 col-[2/-2] content">
 			<div class="text-content/60 text-s mb-3xs">

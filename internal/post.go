@@ -13,14 +13,14 @@ import (
 )
 
 type Post struct {
-	Slug    string
-	Title   string
-	Content string
-	Date    time.Time
-	HTML    template.HTML
-	TLDR    string
+	Slug         string
+	Title        string
+	Content      string
+	Date         time.Time
+	LastModified time.Time
+	HTML         template.HTML
+	TLDR         string
 }
-
 
 func extract_tldr(content string) string {
 	lines := strings.Split(content, "\n")
@@ -83,4 +83,12 @@ func extract_tldr(content string) string {
 	content = strings.TrimSpace(strip.StripTags(string(template.HTML(buf.String()))))
 
 	return content
+}
+
+func (p *Post) IsUpdatedAfterCreation() bool {
+	if p.LastModified.IsZero() {
+		return false
+	}
+
+	return p.LastModified.Sub(p.Date) > time.Hour
 }
