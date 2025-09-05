@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
-	"personal-website/services/webserver/components"
 	"time"
 )
 
@@ -16,77 +15,85 @@ type Sitemap struct {
 
 templ (p Sitemap) View() {
 	{{
-	totalPages := len(p.Pages) + len(p.Posts)
+	totalPages := len(p.Pages) + len(p.Posts) + 3
 	}}
 	@layouts.Base{
 		Pages:       p.Pages,
 		PageCurrent: "sitemap",
 		Title:       "Ethan Thoma / Site Map",
 	}.View() {
-		<article class="[&_section]:py-s flex flex-col w-max row-start-1 col-[2/-2]">
-			<h1 class="text-xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
-				Site Map
-			</h1>
-			<section class="border-b-2 border-black border-dashed">
-				<dl class="!w-full">
-					<dt colspan="2">Main Navigation</dt>
-					<dt><a href="/home" class="hover:underline text-blue" preload="mouseover">Home</a>:</dt>
-					<dd>Personal information, contact details, and recent posts</dd>
-					<dt><a href="/blog" class="hover:underline text-blue" preload="mouseover">Blog</a>:</dt>
-					<dd>Technical posts, research notes, and thoughts</dd>
-					<dt><a href="/resources" class="hover:underline text-blue" preload="mouseover">Resources</a>:</dt>
-					<dd>Useful links, tools, and references</dd>
-					<dt><a href="/projects" class="hover:underline text-blue" preload="mouseover">Projects</a>:</dt>
-					<dd>Software projects, experiments, and code repositories</dd>
-					<dt><a href="/sitemap" class="hover:underline text-blue" preload="mouseover">Site Map</a>:</dt>
-					<dd>This page - complete site structure and navigation</dd>
-				</dl>
+		<article class="row-start-1 col-[2/-2]">
+			<header class="font-mono">
+				<h1 class="font-bold">
+					ETHAN THOMA - SITE MAP
+				</h1>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+				<ul class="font-semibold text-content/80 text-s">
+					<li>Last Updated: { time.Now().Format("2006-01-02 15:04 MST") }</li>
+					<li>Page: sitemap</li>
+					<li>Items: { fmt.Sprintf("%d", totalPages) }</li>
+				</ul>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+			</header>
+			<section>
+				<p>
+					Complete directory of all pages, resources, and external 
+					links available on this website. Use this index to navigate 
+					to any section or find specific content.
+				</p>
 			</section>
-			<section class="border-b-2 border-black border-dashed">
-				<dl class="!w-full">
-					<dt colspan="2">Resources & Files</dt>
-					<dt><a href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf" class="hover:underline text-blue">Resume</a>:</dt>
-					<dd>Current resume (PDF format)</dd>
-					<dt><a href="/robots.txt" class="hover:underline text-blue" preload="mouseover">robots.txt</a>:</dt>
-					<dd>Web crawler instructions</dd>
-					<dt><a href="/public/seo/sitemap.xml" class="hover:underline text-blue" preload="mouseover">sitemap.xml</a>:</dt>
-					<dd>XML sitemap for search engines</dd>
-				</dl>
-			</section>
-			<section class="border-b-2 border-black border-dashed">
-				<dl class="!w-full">
-					<dt colspan="2">External Links</dt>
-					<dt><a href="https://x.com/EthanBThoma" class="hover:underline text-blue">Twitter/X</a>:</dt>
-					<dd>{ "@EthanBThoma - Updates and thoughts" }</dd>
-					<dt><a href="https://github.com/ethanthoma" class="hover:underline text-blue">GitHub</a>:</dt>
-					<dd>Source code, repositories, and contributions</dd>
-					<dt><a href="mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry" class="hover:underline text-blue">Email</a>:</dt>
-					<dd>Professional and academic inquiries</dd>
-				</dl>
-			</section>
-			<section class="border-b-2 border-black border-dashed">
-				<dl class="!w-full">
-					<dt colspan="2">Technical Information</dt>
-					<dt>Built with:</dt>
-					<dd>Go, Templ, TailwindCSS, HTMX</dd>
-					<dt>Fonts:</dt>
-					<dd>Public Sans (body), Monaspace family (mono)</dd>
-					<dt>Hosting:</dt>
-					<dd>VPS deployment via Nix flakes</dd>
-					<dt>Source:</dt>
-					<dd><a href="https://github.com/ethanthoma/personal-website" class="hover:underline text-blue">GitHub Repository</a></dd>
-				</dl>
-			</section>
-			<section class="flex items-center font-semibold gap-[calc(1px+2*var(--spacing-s))]">
-				<div class="text-content/80 text-s">
-					<p class="mt-2xs">
-						<span class="font-mono">$</span> find /site -type f -name "*.html" | wc -l
-						<br/>
-						<span class="ml-[1.5ch] text-content/60">→ { fmt.Sprintf("%d", totalPages) }</span>
-					</p>
-				</div>
+			<br/>
+			<hr class="border-t-2 border-black border-dashed"/>
+			<br/>
+			<section class="grid gap-x-4 grid-cols-[4ch_max-content_1fr]">
+				<h2 class="col-span-3 font-bold">Main Navigation</h2>
+				<div class="col-span-3"><br/></div>
+				@sitemapItem(0, "/home", "Home", "Personal information, contact details, and recent posts")
+				@sitemapItem(1, "/blog", "Blog", "Technical posts, research notes, and thoughts")
+				@sitemapItem(2, "/resources", "Resources", "Useful links, tools, and references")
+				@sitemapItem(3, "/projects", "Projects", "Software projects, experiments, and code repositories")
+				@sitemapItem(4, "/sitemap", "Site Map", "This page - complete site structure and navigation")
+				<div class="col-span-3"><br/></div>
+				<hr class="col-span-3 border-t-2 border-black border-dashed"/>
+				<div class="col-span-3"><br/></div>
+				<h2 class="col-span-3 font-bold">Resources & Files</h2>
+				<div class="col-span-3"><br/></div>
+				@sitemapItem(5, "https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf", "Resume", "Current resume (PDF format)")
+				@sitemapItem(6, "/robots.txt", "robots.txt", "Web crawler instructions")
+				@sitemapItem(7, "/public/seo/sitemap.xml", "sitemap.xml", "XML sitemap for search engines")
+				<div class="col-span-3"><br/></div>
+				<hr class="col-span-3 border-t-2 border-black border-dashed"/>
+				<div class="col-span-3"><br/></div>
+				<h2 class="col-span-3 font-bold">Blog Posts</h2>
+				<div class="col-span-3"><br/></div>
+				for index, post := range p.Posts {
+					@sitemapItem(8+index, "/blog/"+post.Slug, post.Title, fmt.Sprintf("Posted %s", post.Date.Format("2006-01-02")))
+				}
+				<div class="col-span-3"><br/></div>
+				<hr class="col-span-3 border-t-2 border-black border-dashed"/>
+				<div class="col-span-3"><br/></div>
+				<h2 class="col-span-3 font-bold">External Links</h2>
+				<div class="col-span-3"><br/></div>
+				@sitemapItemLetter(0, "https://x.com/EthanBThoma", "Twitter/X", "@EthanBThoma - Updates and thoughts")
+				@sitemapItemLetter(1, "https://github.com/ethanthoma", "GitHub", "Source code, repositories, and contributions")
+				@sitemapItemLetter(2, "mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry", "Email", "Professional and academic inquiries")
 			</section>
 		</article>
-		@components.LastModified{Time: p.LastModified}.View()
 	}
+}
+
+templ sitemapItem(index int, url string, title string, description string) {
+	<span class="font-mono">{ fmt.Sprintf("%03d", index) }</span>
+	<a href={ templ.URL(url) } class="font-semibold hover:underline text-blue hover:text-darkblue" preload="mouseover">{ title }</a>
+	<span class="text-content/80">{ description }</span>
+}
+
+templ sitemapItemLetter(index int, url string, title string, description string) {
+	<span class="font-mono">{ fmt.Sprintf("A%02d", index) }</span>
+	<a href={ templ.URL(url) } class="font-semibold hover:underline text-blue hover:text-darkblue" preload="mouseover">{ title }</a>
+	<span class="text-content/80">{ description }</span>
 }

@@ -17,7 +17,7 @@
     --text-3xl: clamp(2.4414rem, 2.3353rem + 0.5307vw, 2.7466rem);
     --text-4xl: clamp(3.0518rem, 2.9191rem + 0.6634vw, 3.4332rem);
 
-    --color-base: #fbf8ef;
+    --color-base: #eeeeee;
     --color-shadow: color-mix(in oklab, var(--color-black) 20%, var(--color-base));
     --color-content: #141413;
     --color-orange: #f96b06;
