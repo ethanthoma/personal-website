@@ -23,12 +23,12 @@ templ (p Sitemap) View() {
 		PageCurrent: "sitemap",
 		Title:       "Ethan Thoma / Site Map",
 	}.View() {
-		<article class="[&_section]:py-s row-start-1 col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
+		<article class="[&_section]:py-s flex flex-col w-max row-start-1 col-[2/-2]">
+			<h1 class="text-xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
 				Site Map
 			</h1>
 			<section class="border-b-2 border-black border-dashed">
-				<dl class="w-max">
+				<dl class="!w-full">
 					<dt colspan="2">Main Navigation</dt>
 					<dt><a href="/home" class="hover:underline text-blue" preload="mouseover">Home</a>:</dt>
 					<dd>Personal information, contact details, and recent posts</dd>
@@ -43,7 +43,7 @@ templ (p Sitemap) View() {
 				</dl>
 			</section>
 			<section class="border-b-2 border-black border-dashed">
-				<dl class="w-max">
+				<dl class="!w-full">
 					<dt colspan="2">Resources & Files</dt>
 					<dt><a href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf" class="hover:underline text-blue">Resume</a>:</dt>
 					<dd>Current resume (PDF format)</dd>
@@ -54,7 +54,7 @@ templ (p Sitemap) View() {
 				</dl>
 			</section>
 			<section class="border-b-2 border-black border-dashed">
-				<dl class="w-max">
+				<dl class="!w-full">
 					<dt colspan="2">External Links</dt>
 					<dt><a href="https://x.com/EthanBThoma" class="hover:underline text-blue">Twitter/X</a>:</dt>
 					<dd>{ "@EthanBThoma - Updates and thoughts" }</dd>
@@ -65,7 +65,7 @@ templ (p Sitemap) View() {
 				</dl>
 			</section>
 			<section class="border-b-2 border-black border-dashed">
-				<dl class="w-max">
+				<dl class="!w-full">
 					<dt colspan="2">Technical Information</dt>
 					<dt>Built with:</dt>
 					<dd>Go, Templ, TailwindCSS, HTMX</dd>

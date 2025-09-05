@@ -3,7 +3,7 @@ package pages
 import (
 	"personal-website/services/webserver/layouts"
 	"time"
-	"personal-website/services/webserver/components"
+	"fmt"
 )
 
 type InfoRes struct {
@@ -212,44 +212,67 @@ templ (p InfoRes) View() {
 		PageCurrent: "resources",
 		Title:       "Ethan Thoma / Resources",
 	}.View() {
-		<article class="row-start-1 col-[2/-2] mb-s">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
-				Informational Resources
-			</h1>
-			<section class="py-s">
+		<article class="row-start-1 col-[2/-2]">
+			<header class="font-mono">
+				<h1 class="font-bold">
+					ETHAN THOMA - INFORMATIONAL RESOURCES
+				</h1>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+				<ul class="font-semibold text-content/80 text-s">
+					<li>Last Updated: { time.Now().Format("2006-01-02 15:04 MST") }</li>
+					<li>Page: { "resources" }</li>
+					<li>Items: { fmt.Sprintf("%d", len(items_ml) + len(items_plt)) }</li>
+				</ul>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+			</header>
+			<section>
 				<p>
-					This is a collection of resource links on machine learning 
-					(ML) and programming languages that I am interested in. Some 
-					of the resources have been read, some have not.
+					This page is a collection of resource links about machine 
+					learning (ML), programming language theory, and so-called 
+					"toy" languages that I find interesting. Some of these 
+					resources have been read, some them have not.
 				</p>
-				<p class="pt-2xs">
-					The ML section mostly consists of research papers, so they 
-					may not be accessible to all readers. The programming 
-					language section is mostly contained of links to project 
-					pages.
+				<br/>
+				<p>
+					The ML section consists almost entirely of research papers, 
+					so they may not be generally accessible. The programming 
+					language (theory) section is mostly comprised of links to 
+					project pages or GitHub; thus, more developer friendly.
 				</p>
 			</section>
+			<br/>
+			<hr class="border-t-2 border-black border-dashed"/>
+			<br/>
 			<section>
-				<h2 class="font-bold text-m pb-5xs">Machine Learning (ML)</h2>
-				<ul class="list-inside list-[square] space-y-5xs">
-					for _, i := range items_ml {
-						@i.View()
+				<h2 class="font-bold">Machine Learning (ML)</h2>
+				<br/>
+				<ol class="list-none list-inside">
+					for index, item := range items_ml {
+						@item.View(index)
 					}
-				</ul>
-				<h2 class="font-bold text-m pb-5xs mt-m">Programming Language(s) and Theory</h2>
-				<ul class="list-inside list-[square] space-y-5xs">
-					for _, i := range items_plt {
-						@i.View()
+				</ol>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+				<h2 class="font-bold">Programming Language(s) and Theory (PLT)</h2>
+				<br/>
+				<ol class="list-none list-inside">
+					for index, i := range items_plt {
+						@i.View(index)
 					}
-				</ul>
+				</ol>
 			</section>
 		</article>
-		@components.LastModified{Time: p.LastModified}.View()
 	}
 }
 
-templ (i Item) View() {
-	<li>
+templ (i Item) View(index int) {
+	<li class="flex">
+		<span class="flex-none mr-4 font-mono w-[4ch]">{ fmt.Sprintf("%03d", index) }</span>
 		<a
 			class="items-center font-semibold hover:underline active:underline text-blue gap-[0.2em] hover:text-darkblue active:text-darkblue"
 			href={ templ.URL(i.URL + "?ref=www.ethanthoma.com") }
