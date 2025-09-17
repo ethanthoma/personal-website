@@ -2,7 +2,6 @@ package pages
 
 import (
 	"personal-website/services/webserver/layouts"
-	"personal-website/services/webserver/components"
 	"personal-website/internal"
 	"strings"
 	"time"
@@ -109,10 +108,15 @@ templ (p Projects) View() {
 		Title:       "Ethan Thoma / Projects",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<h1 class="text-2xl font-extrabold tracking-tight leading-none border-b-2 border-black py-3xs">
-				Projects
-			</h1>
-			<section class="py-s">
+			<header class="font-mono">
+				<h1 class="font-bold">
+					ETHAN THOMA - PROJECTS
+				</h1>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+			</header>
+			<section>
 				<ol class="grid gap-y-m grid-cols-[1fr_1fr]">
 					for _, project := range projects {
 						@view_project(project)
@@ -120,7 +124,6 @@ templ (p Projects) View() {
 				</ol>
 			</section>
 		</article>
-		@components.LastModified{Time: p.LastModified}.View()
 		@handle.Once() {
 			<script type="text/javascript">
                 function openTarget() {
@@ -141,7 +144,7 @@ templ (p Projects) View() {
 }
 
 templ view_project(project internal.Project) {
-	<li class="col-span-2 [&_>*+*]:mx-3xs border-shadow border-1">
+	<li class="col-span-2 [&_>*+*]:mx-3xs border-black border-1">
 		<header class="flex col-span-2 justify-between bg-white border-black border-b-1 gap-s p-3xs">
 			<h2 class="font-bold">
 				{ project.Title }
@@ -184,7 +187,7 @@ templ view_project(project internal.Project) {
 		if project.Url != "" {
 			<div class="pb-3xs">
 				<a
-					class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-orange hover:bg-blue active:bg-blue"
+					class="inline-flex items-center font-semibold text-white border-black hover:underline active:underline border-1 w-fit gap-[0.2em] px-xs py-5xs bg-blue hover:bg-darkblue active:bg-darkblue"
 					href={ templ.URL(project.Url) }
 				>
 					GitHub

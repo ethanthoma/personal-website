@@ -26,14 +26,6 @@ templ (p Blog) View(posts []internal.Post) {
 				<br/>
 				<hr class="border-t-2 border-black border-dashed"/>
 				<br/>
-				<ul class="font-semibold text-content/80 text-s">
-					<li>Last Updated: { time.Now().Format("2006-01-02 15:04 MST") }</li>
-					<li>Page: blog</li>
-					<li>Items: { fmt.Sprintf("%d", len(posts)) }</li>
-				</ul>
-				<br/>
-				<hr class="border-t-2 border-black border-dashed"/>
-				<br/>
 			</header>
 			<section>
 				<p>
@@ -44,19 +36,20 @@ templ (p Blog) View(posts []internal.Post) {
 			<br/>
 			<hr class="border-t-2 border-black border-dashed"/>
 			<br/>
-			<section class="grid gap-x-[3ch] grid-cols-[3ch_max-content_1fr]">
-				<h2 class="col-span-3 font-bold">Posts</h2>
-				<div class="col-span-3"><br/></div>
-				for index, post := range posts {
-					@blogPostItem(index, post)
-				}
+			<section>
+				<table class="table-fixed [&_td]:align-top table-gap-x-[3ch]">
+					<thead><tr><th colspan="3" class="pb-[1em]">Posts</th></tr></thead>
+					<tbody>
+						for index, post := range posts {
+							<tr>
+								<td scope="col" class="w-[1%]">{ fmt.Sprintf("%03d", index) }</td>
+								<td scope="col" class="w-[auto]" style="white-space: nowrap;"><a href={ templ.URL("/post/" + post.Slug) } class="font-semibold hover:underline text-blue hover:text-darkblue" preload="mouseover">{ post.Title }</a></td>
+								<td scope="col" class="w-full text-content/80"><time>{ post.Date.Format("2006-01-02") }</time></td>
+							</tr>
+						}
+					</tbody>
+				</table>
 			</section>
 		</article>
 	}
-}
-
-templ blogPostItem(index int, post internal.Post) {
-	<span class="font-mono">{ fmt.Sprintf("%03d", index) }</span>
-	<a href={ templ.URL("/post/" + post.Slug) } class="font-semibold hover:underline text-blue hover:text-darkblue" preload="mouseover">{ post.Title }</a>
-	<span class="text-content/80">Posted { post.Date.Format("2006-01-02") }</span>
 }

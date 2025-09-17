@@ -17,7 +17,7 @@
     --text-3xl: clamp(2.4414rem, 2.3353rem + 0.5307vw, 2.7466rem);
     --text-4xl: clamp(3.0518rem, 2.9191rem + 0.6634vw, 3.4332rem);
 
-    --color-base: #eeeeee;
+    --color-base: #FBF8EF;
     --color-shadow: color-mix(in oklab, var(--color-black) 20%, var(--color-base));
     --color-content: #141413;
     --color-orange: #f96b06;
@@ -79,7 +79,7 @@
     --spacing-s-2xl: clamp(1rem, -0.5652rem + 7.8261vw, 5.5rem);
     --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
-    --spacing-content: 60rem;
+    --spacing-content: 50rem;
 
     /* Font */
     --font-mono: "Monaspace Neon", monospace;
@@ -197,40 +197,34 @@
     }
 }
 
+@utility table-gap-x-* {
+    & tr > td:not(:last-child), & tr > th:not(:last-child) {
+        padding-inline-end: --value(--table-gap-x-*, [length]);
+    }
+}
+
+@utility table-gap-y-* {
+    & tr:not(:last-child) > td, & tr > th {
+        padding-block-end: --value(--table-gap-y-*, [length]);
+    }
+}
+
 table {
     @apply font-mono;
     @apply text-left;
     @apply border-collapse;
-    @apply w-max;
-    @apply max-w-full;
     font-variant-numeric: lining-nums tabular-nums;
 
-    & th {
-        @apply border-shadow;
-        @apply border-b-black;
-        @apply border-1;
-
-        @apply p-4xs;
-        @apply pt-3xs;
-    }
-    
-    & td {
-        @apply border-shadow;
-        @apply border-1;
-
-        @apply p-4xs;
+    & thead {
+        @apply font-bold;
     }
 
-    & tr:last-child td {
-        @apply pb-3xs;
+    & tr[colspan="2"] {
+        @apply col-span-2; 
     }
 
-    & tr td:last-child, & tr th:last-child {
-        @apply pe-3xs;
-    }
-
-    & tr td:first-child, & tr th:first-child {
-        @apply ps-3xs;
+    & tr[colspan="3"] {
+        @apply col-span-3; 
     }
 }
 
