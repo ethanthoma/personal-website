@@ -25,7 +25,9 @@ templ (p Sitemap) View() {
 				<h1 class="font-bold">
 					ETHAN THOMA - SITE MAP
 				</h1>
-				<hr class="border-t-2 border-black border-dashed my-[1em]"/>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
 			</header>
 			<section>
 				<p>
@@ -34,10 +36,12 @@ templ (p Sitemap) View() {
 					to any section or find specific content.
 				</p>
 			</section>
-			<hr class="border-t-2 border-black border-dashed my-[1em]"/>
+			<br/>
+			<hr class="border-t-2 border-black border-dashed"/>
+			<br/>
 			<section>
 				<table class="table-fixed [&_td]:align-top table-gap-x-[3ch] table-gap-y-[1em]">
-					<thead><tr><th colspan="3">Main Navigation</th></tr></thead>
+					<thead><tr><th colspan="3" class="pb-[1em]">Main Navigation</th></tr></thead>
 					<tbody>
 						@tableRow(0, "/home", "Home", "Personal information, contact details, and recent posts")
 						@tableRow(1, "/blog", "Blog", "Technical posts, research notes, and thoughts")
@@ -53,14 +57,14 @@ templ (p Sitemap) View() {
 						@tableRow(7, "/public/seo/sitemap.xml", "sitemap.xml", "XML sitemap for search engines")
 					</tbody>
 					<td colspan="3"><hr class="border-t-2 border-black border-dashed my-[1em]"/></td>
-					<thead><tr><th colspan="3">Blog Posts</th></tr></thead>
+					<thead><tr><th colspan="3" class="pb-[1em]">Blog Posts</th></tr></thead>
 					<tbody>
 						for index, post := range p.Posts {
 							@tableRow(8+index, "/blog/"+post.Slug, post.Title, fmt.Sprintf("Posted %s", post.Date.Format("2006-01-02")))
 						}
 					</tbody>
 					<td colspan="3"><hr class="border-t-2 border-black border-dashed my-[1em]"/></td>
-					<thead><tr><th colspan="3">External Links</th></tr></thead>
+					<thead><tr><th colspan="3" class="pb-[1em]">External Links</th></tr></thead>
 					<tbody>
 						@tableRowLetter(0, "https://x.com/EthanBThoma", "Twitter/X", "Updates and thoughts; handle is @EthanBThoma ")
 						@tableRowLetter(1, "https://github.com/ethanthoma", "GitHub", "Source code, repositories, and contributions")
