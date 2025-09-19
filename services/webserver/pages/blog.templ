@@ -18,6 +18,7 @@ templ (p Blog) View(posts []internal.Post) {
 		PageCurrent: "blog",
 		Title:       "Ethan Thoma / Blog",
 	}.View() {
+		<!-- DEBUG: posts count { fmt.Sprintf("%d", len(posts)) } -->
 		<article class="row-start-1 col-[2/-2]">
 			<header class="font-mono">
 				<h1 class="font-bold">
