@@ -47,7 +47,7 @@ func main() {
 		}
 		log.Printf("Home handler: rendering with %d posts", len(posts))
 
-		lastMod := getFileModTime("services/webserver/pages/home.templ")
+		lastMod := getFileModTime("pages/home.templ")
 		pages.Home{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /", handlerHome)
@@ -60,7 +60,7 @@ func main() {
 		}
 		log.Printf("Blog handler: rendering with %d posts", len(posts))
 
-		lastMod := getFileModTime("services/webserver/pages/blog.templ")
+		lastMod := getFileModTime("pages/blog.templ")
 		pages.Blog{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
 	})))
 
@@ -73,18 +73,18 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		lastMod := getFileModTime("services/webserver/pages/post.templ")
+		lastMod := getFileModTime("pages/post.templ")
 		pages.Post{Pages: navList, LastModified: lastMod}.View(post).Render(r.Context(), w)
 	})
 
 	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
-		lastMod := getFileModTime("services/webserver/pages/projects.templ")
+		lastMod := getFileModTime("pages/projects.templ")
 		pages.Projects{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /projects", projectsHandler)
 
 	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
-		lastMod := getFileModTime("services/webserver/pages/info_res.templ")
+		lastMod := getFileModTime("pages/info_res.templ")
 		pages.InfoRes{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /resources", resourcesHandler)
@@ -95,7 +95,7 @@ func main() {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		lastMod := getFileModTime("services/webserver/pages/sitemap.templ")
+		lastMod := getFileModTime("pages/sitemap.templ")
 		pages.Sitemap{Pages: navList, Posts: posts, LastModified: lastMod}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /sitemap", sitemapHandler)
