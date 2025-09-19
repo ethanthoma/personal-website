@@ -46,6 +46,8 @@ buildGoApplication rec {
     cp ${htmx} $static/js/htmx.min.js
     cp ${preload} $static/js/preload.min.js
 
+    cp -r ./services/${pname}/pages $out/
+
     mv $out/bin/${pname} $out/bin/.${pname}-unwrapped
     makeWrapper $out/bin/.${pname}-unwrapped $out/bin/${pname} \
         --chdir $out
