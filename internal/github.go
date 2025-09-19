@@ -40,8 +40,10 @@ type BlogConfig struct {
 
 func getBlogConfig() BlogConfig {
 	blogSource := os.Getenv("BLOG_SOURCE")
+	log.Printf("Blog: BLOG_SOURCE environment variable: '%s'", blogSource)
 	if blogSource == "" {
 		blogSource = "github:ethanthoma/blogs"
+		log.Printf("Blog: Using default blog source: '%s'", blogSource)
 	}
 
 	if strings.HasPrefix(blogSource, "/") || strings.HasPrefix(blogSource, "~/") || strings.HasPrefix(blogSource, "./") || strings.HasPrefix(blogSource, "../") {
@@ -91,13 +93,16 @@ func getBlogConfig() BlogConfig {
 		gitHost = "github"
 	}
 
-	return BlogConfig{
+	config := BlogConfig{
 		IsLocal:    false,
 		GitHost:    gitHost,
 		GitRepo:    gitRepo,
 		GitHubAPI:  apiURL,
 		RawBaseURL: rawURL,
 	}
+	log.Printf("Blog: Configured API URL: %s", apiURL)
+	log.Printf("Blog: Configured Raw URL: %s", rawURL)
+	return config
 }
 
 func GetPostsFromGitHub() ([]Post, error) {
@@ -148,6 +153,7 @@ func getPostsFromLocal(localPath string) ([]Post, error) {
 
 func getPostsFromGitAPI(config BlogConfig) ([]Post, error) {
 	log.Printf("Blog: fetching posts from %s...", config.GitHost)
+	log.Printf("Blog: Making request to: %s", config.GitHubAPI)
 
 	resp, err := http.Get(config.GitHubAPI)
 	if err != nil {
@@ -155,6 +161,12 @@ func getPostsFromGitAPI(config BlogConfig) ([]Post, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	log.Printf("Blog: GitHub API response status: %d", resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Blog: GitHub API returned non-200 status: %d", resp.StatusCode)
+		return nil, fmt.Errorf("GitHub API returned status %d", resp.StatusCode)
+	}
 
 	var files []GitHubFile
 	if err := json.NewDecoder(resp.Body).Decode(&files); err != nil {
