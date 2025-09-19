@@ -47,8 +47,16 @@ func (c *PostCache) GetPosts() ([]internal.Post, error) {
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
 
+	log.Printf("Cache: GetPosts called, have %d posts, last fetch: %v", len(c.allPosts), c.lastFetch)
+
 	if time.Since(c.lastFetch) > 5*time.Minute {
+		log.Printf("Cache: Cache expired, triggering async update")
 		go c.updateCache() // Update cache asynchronously
+	}
+
+	if len(c.allPosts) == 0 && c.lastFetch.IsZero() {
+		log.Printf("Cache: No posts and never fetched, this is likely an initialization issue")
+		return nil, fmt.Errorf("cache not initialized")
 	}
 
 	return c.allPosts, nil

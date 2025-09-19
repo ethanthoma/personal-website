@@ -45,6 +45,7 @@ func main() {
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
+		log.Printf("Home handler: rendering with %d posts", len(posts))
 
 		lastMod := getFileModTime("services/webserver/pages/home.templ")
 		pages.Home{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
@@ -57,6 +58,7 @@ func main() {
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
+		log.Printf("Blog handler: rendering with %d posts", len(posts))
 
 		lastMod := getFileModTime("services/webserver/pages/blog.templ")
 		pages.Blog{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
