@@ -41,9 +41,6 @@ templ (p Blog) View(posts []internal.Post) {
 				<table class="table-fixed [&_td]:align-top table-gap-x-[3ch]">
 					<thead><tr><th colspan="3" class="pb-[1em]">Posts</th></tr></thead>
 					<tbody>
-						if len(posts) == 0 {
-							<tr><td colspan="3">No posts found</td></tr>
-						}
 						for index, post := range posts {
 							<tr>
 								<td scope="col" class="w-[1%]">{ fmt.Sprintf("%03d", index) }</td>
