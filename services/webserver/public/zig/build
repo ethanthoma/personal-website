@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-zig build-exe add_two.zig -target wasm32-freestanding -fno-entry -rdynamic -O ReleaseSmall

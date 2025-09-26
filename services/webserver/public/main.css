@@ -279,3 +279,12 @@ dl {
         @apply border-b-black;
     }
 }
+
+hr {
+    border: none;
+    background-image: radial-gradient(circle at center, black 0.5px, transparent 1px);
+    background-size: 0.25rem 0.25rem;
+    background-position: left top;
+    background-repeat: round;
+    height: 1em;
+}
