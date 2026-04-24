@@ -68,7 +68,10 @@ templ spaRuntime() {
 			let displayedPath = location.pathname;
 			let inPopstate = false;
 			window.goTo = (path) => {
-				if (!inPopstate) history.pushState(null, '', path);
+				if (!inPopstate) {
+					history.pushState(null, '', path);
+					scrollTo(0, 0);
+				}
 				displayedPath = path;
 			};
 			addEventListener("popstate", () => {
