@@ -1,0 +1,38 @@
+package pages
+
+import (
+	"personal-website/services/webserver/layouts"
+)
+
+type NotFound struct {
+	Pages []string
+	Path  string
+}
+
+templ (p NotFound) View() {
+	@layouts.Base{
+		Pages:       p.Pages,
+		PageCurrent: "",
+		Title:       "Ethan Thoma / Not Found",
+	}.View() {
+		<article class="row-start-1 col-[2/-2]">
+			<header class="font-mono">
+				<h1 class="font-bold">
+					404 - NOT FOUND
+				</h1>
+				<br/>
+				<hr class="border-t-2 border-black border-dashed"/>
+				<br/>
+			</header>
+			<section>
+				<p>
+					Nothing lives at <code class="font-semibold">{ p.Path }</code>.
+				</p>
+				<br/>
+				<p>
+					Try the nav above, or head <a href="/home" class="font-semibold hover:underline text-blue hover:text-darkblue" data-on:click__prevent="goTo('/home'); @get('/fragment/home')">home</a>.
+				</p>
+			</section>
+		</article>
+	}
+}

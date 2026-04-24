@@ -91,7 +91,7 @@ func main() {
 		"sitemap":   sitemapHandler,
 	}
 
-	http.HandleFunc("GET /", handlerHome)
+	http.HandleFunc("GET /{$}", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
 	http.Handle("GET /blog", middlewareCache(http.HandlerFunc(blogHandler)))
 	http.HandleFunc("GET /projects", projectsHandler)
@@ -134,6 +134,12 @@ func main() {
 		asFragment(h)(w, r)
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
+
+	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		pages.NotFound{Pages: navList, Path: r.URL.Path}.View().Render(r.Context(), w)
+	}
+	http.HandleFunc("GET /", notFoundHandler)
 
 	// static
 
