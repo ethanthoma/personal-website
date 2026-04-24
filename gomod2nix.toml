@@ -1,24 +1,30 @@
 schema = 3
 
 [mod]
-  [mod."github.com/a-h/templ"]
-    version = "v0.3.924"
-    hash = "sha256-ld9xCga0w+xSUtXraqOsdqxNrb2+Ya0Sj/87ZZbYyCw="
-  [mod."github.com/alecthomas/chroma/v2"]
-    version = "v2.15.0"
-    hash = "sha256-vpYgavp9sAjP541UrPDDP10gBetbPKV6+owJ5Z01YXk="
-  [mod."github.com/dlclark/regexp2"]
-    version = "v1.11.5"
-    hash = "sha256-jN5+2ED+YbIoPIuyJ4Ou5pqJb2w1uNKzp5yTjKY6rEQ="
-  [mod."github.com/grokify/html-strip-tags-go"]
-    version = "v0.1.0"
-    hash = "sha256-0dmC6txGHXxHwQdkwUk2Qbsx3x5JDjGeioEYgoOz1+c="
-  [mod."github.com/yuin/goldmark"]
-    version = "v1.7.8"
-    hash = "sha256-SNJMPPiXkRDLVOldrHN0ErC3bUB2VoWaLDkd9zmMATw="
-  [mod."github.com/yuin/goldmark-highlighting/v2"]
-    version = "v2.0.0-20230729083705-37449abec8cc"
-    hash = "sha256-HpiwU7jIeDUAg2zOpTIiviQir8dpRPuXYh2nqFFccpg="
-  [mod."gopkg.in/yaml.v3"]
-    version = "v3.0.1"
-    hash = "sha256-FqL9TKYJ0XkNwJFnq9j0VvJ5ZUU1RvH/52h/f5bkYAU="
+  [mod.'github.com/a-h/templ']
+    version = 'v0.3.1001'
+    hash = 'sha256-OkQlS/HNZqBo+W60UHPl977ZN+C08eCNJyZcF7JLcL4='
+
+  [mod.'github.com/alecthomas/chroma/v2']
+    version = 'v2.15.0'
+    hash = 'sha256-vpYgavp9sAjP541UrPDDP10gBetbPKV6+owJ5Z01YXk='
+
+  [mod.'github.com/dlclark/regexp2']
+    version = 'v1.11.5'
+    hash = 'sha256-jN5+2ED+YbIoPIuyJ4Ou5pqJb2w1uNKzp5yTjKY6rEQ='
+
+  [mod.'github.com/grokify/html-strip-tags-go']
+    version = 'v0.1.0'
+    hash = 'sha256-0dmC6txGHXxHwQdkwUk2Qbsx3x5JDjGeioEYgoOz1+c='
+
+  [mod.'github.com/yuin/goldmark']
+    version = 'v1.7.8'
+    hash = 'sha256-SNJMPPiXkRDLVOldrHN0ErC3bUB2VoWaLDkd9zmMATw='
+
+  [mod.'github.com/yuin/goldmark-highlighting/v2']
+    version = 'v2.0.0-20230729083705-37449abec8cc'
+    hash = 'sha256-HpiwU7jIeDUAg2zOpTIiviQir8dpRPuXYh2nqFFccpg='
+
+  [mod.'gopkg.in/yaml.v3']
+    version = 'v3.0.1'
+    hash = 'sha256-FqL9TKYJ0XkNwJFnq9j0VvJ5ZUU1RvH/52h/f5bkYAU='

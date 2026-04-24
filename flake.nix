@@ -7,15 +7,16 @@
     devshell.url = "github:numtide/devshell";
     gomod2nix = {
       url = "github:nix-community/gomod2nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-      };
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-    templ.url = "github:a-h/templ";
+    templ = {
+      url = "github:a-h/templ?ref=v0.3.1001";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    inputs@{ self, ... }:
+    inputs:
 
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [ inputs.devshell.flakeModule ];
@@ -23,31 +24,23 @@
       systems = [ "x86_64-linux" ];
 
       perSystem =
-        { system, ... }:
+        { system, pkgs, ... }:
 
         let
-          pkgs = import inputs.nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-            overlays = [
-              inputs.gomod2nix.overlays.default
-            ];
-          };
-
           templpkgs = inputs.templ.packages.${system}.templ;
+          gomod2nixpkgs = inputs.gomod2nix.packages.${system}.default;
+          buildGoApplication = inputs.gomod2nix.legacyPackages.${system}.buildGoApplication;
         in
         {
-          _module.args.pkgs = pkgs;
-
           devshells.default = {
             packages = [
               pkgs.air
               pkgs.turso-cli
               pkgs.gopls
               pkgs.tailwindcss_4
-              pkgs.watchman
               pkgs.tailwindcss-language-server
               templpkgs
+
               pkgs.mdformat
               pkgs.rustywind
               pkgs.stylelint
@@ -57,20 +50,8 @@
             ];
 
             commands = [
-              {
-                name = "claude";
-                package = pkgs.claude-code;
-              }
-              {
-                name = "make";
-                package = pkgs.gnumake;
-              }
-              {
-                package = pkgs.gomod2nix;
-              }
-              {
-                package = pkgs.go;
-              }
+              { package = gomod2nixpkgs; }
+              { package = pkgs.go; }
             ];
 
             env = [
@@ -78,12 +59,15 @@
                 name = "WEBSERVER_PORT";
                 value = "8080";
               }
+              {
+                name = "CGO_ENABLED";
+                value = "0";
+              }
             ];
           };
 
           packages.default = pkgs.callPackage ./services/webserver {
-            inherit (pkgs) makeWrapper buildGoApplication;
-            inherit templpkgs;
+            inherit templpkgs buildGoApplication;
             tailwindcss = pkgs.tailwindcss_4;
           };
         };

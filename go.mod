@@ -3,7 +3,7 @@ module personal-website
 go 1.24
 
 require (
-	github.com/a-h/templ v0.3.924
+	github.com/a-h/templ v0.3.1001
 	github.com/alecthomas/chroma/v2 v2.15.0
 	github.com/grokify/html-strip-tags-go v0.1.0
 	github.com/yuin/goldmark v1.7.8
