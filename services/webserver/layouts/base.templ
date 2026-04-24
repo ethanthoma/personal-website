@@ -37,7 +37,7 @@ templ (p Base) View() {
 				<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png"/>
 				<link rel="manifest" href="/public/favicon/site.webmanifest"/>
 				@prefetchNav(p.Pages, p.PageCurrent)
-				<script>addEventListener("popstate", () => location.reload());</script>
+				@spaRuntime()
 				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
 				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
 				<link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -60,6 +60,55 @@ templ (p Base) View() {
 			</body>
 		</html>
 	}
+}
+
+templ spaRuntime() {
+	<script>
+		(() => {
+			let displayedPath = location.pathname;
+			let inPopstate = false;
+			window.goTo = (path) => {
+				if (!inPopstate) history.pushState(null, '', path);
+				displayedPath = path;
+			};
+			addEventListener("popstate", () => {
+				if (location.pathname === displayedPath) return;
+				const link = document.querySelector(`[href="${location.pathname}"]`);
+				if (!link) { location.reload(); return; }
+				inPopstate = true;
+				link.click();
+				inPopstate = false;
+			});
+
+			let syncingHash = false;
+			function syncHash() {
+				syncingHash = true;
+				const hash = location.hash.slice(1);
+				document.querySelectorAll("details").forEach(d => {
+					const content = d.querySelector("[id]");
+					const shouldOpen = !!hash && content && content.id === hash;
+					if (d.open !== shouldOpen) d.open = shouldOpen;
+				});
+				queueMicrotask(() => queueMicrotask(() => { syncingHash = false; }));
+			}
+			document.addEventListener("toggle", (ev) => {
+				if (syncingHash) return;
+				if (ev.target.tagName !== "DETAILS") return;
+				const content = ev.target.querySelector("[id]");
+				if (!content) return;
+				if (ev.target.open) {
+					if (location.hash !== "#" + content.id) {
+						history.pushState(null, '', "#" + content.id);
+					}
+				} else if (location.hash === "#" + content.id) {
+					history.pushState(null, '', location.pathname + location.search);
+				}
+			}, true);
+			addEventListener("hashchange", syncHash);
+			addEventListener("datastar-patch-elements", syncHash);
+			syncHash();
+		})();
+	</script>
 }
 
 // prefetchNav warms the browser's HTTP cache for every nav fragment except

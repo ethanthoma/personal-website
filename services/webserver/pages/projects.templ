@@ -104,11 +104,7 @@ templ (p Projects) View() {
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma / Projects",
 	}.View() {
-		<article
-			class="row-start-1 col-[2/-2]"
-			data-signals="{openHash: location.hash.slice(1)}"
-			data-on:hashchange__window="$openHash = location.hash.slice(1)"
-		>
+		<article class="row-start-1 col-[2/-2]">
 			<header class="font-mono">
 				<h1 class="font-bold">
 					ETHAN THOMA - PROJECTS
@@ -149,11 +145,8 @@ templ view_project(project internal.Project) {
 			}
 		</ol>
 		{{ href := strings.ReplaceAll(project.Title, " ", "_") }}
-		<details name="project" data-attr-open={ "$openHash === '" + href + "'" }>
-			<summary
-				class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs"
-				data-on:click__prevent={ "$openHash = $openHash === '" + href + "' ? '' : '" + href + "'; history.pushState(null, '', $openHash ? '#' + $openHash : location.pathname + location.search)" }
-			>
+		<details name="project">
+			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs">
 				Project Overview
 			</summary>
 			<p id={ href } class="font-sans py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
