@@ -7,16 +7,19 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 PORT="${WEBSERVER_PORT:-8080}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAIN_BIN="${SCRIPT_DIR}/tmp/main"
+PROXY_PATTERN="templ generate --watch --proxy=http://localhost:${PORT}"
 
-# Kill any leftover processes
-pkill -f "tmp/main" 2>/dev/null || true
-pkill -f "templ generate --watch" 2>/dev/null || true
+# Kill any leftover processes from this project
+pkill -f "${MAIN_BIN}" 2>/dev/null || true
+pkill -f "${PROXY_PATTERN}" 2>/dev/null || true
 sleep 0.5
 
 cleanup() {
     echo -e "\n${YELLOW}Shutting down...${NC}"
     jobs -p | xargs -r kill 2>/dev/null || true
-    pkill -f "tmp/main" 2>/dev/null || true
+    pkill -f "${MAIN_BIN}" 2>/dev/null || true
     sleep 1
     echo -e "${GREEN}Done${NC}"
 }
@@ -59,7 +62,7 @@ tailwindcss \
 # 4. air: watch static assets, sync to ./public/ and notify templ proxy to reload
 air \
     --build.cmd "rsync -a ./services/webserver/public/ ./public --exclude='*.css' && curl -s http://localhost:7331/_templ/reload > /dev/null 2>&1" \
-    --build.bin "/run/current-system/sw/bin/true" \
+    --build.bin "$(command -v true)" \
     --build.include_dir "services/webserver/public" \
     --build.include_ext "js,css,svg,png,jpg,ico,woff,woff2,ttf" \
     --build.exclude_dir "tmp" \
