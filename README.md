@@ -20,8 +20,7 @@ using stdlib HTTP.
 
 Styling is done via [tailwindcss](https://github.com/tailwindlabs/tailwindcss).
 
-Reactivity is done thanks to [htmx](https://htmx.org/) and
-[surreal](https://github.com/gnat/surreal).
+Reactivity is done thanks to [datastar](https://data-star.dev/).
 
 ## Building + Running
 
