@@ -24,8 +24,11 @@ kill_port() {
 kill_stragglers() {
     pkill -9 -f "${MAIN_BIN}" 2>/dev/null || true
     pkill -9 -f "${PROXY_PATTERN}" 2>/dev/null || true
-    # Orphaned air watchers from a previous abrupt exit of this script
+    # Orphaned air watchers from a previous abrupt exit of this script —
+    # match both absolute (this session's MAIN_BIN) and relative (./tmp/main
+    # from a prior session whose cwd is now gone) paths.
     pkill -9 -f "air.*${MAIN_BIN}" 2>/dev/null || true
+    pkill -9 -f "air.*\./tmp/main" 2>/dev/null || true
     pkill -9 -f "air.*services/webserver/public" 2>/dev/null || true
     kill_port
 }
@@ -44,7 +47,19 @@ cleanup() {
 trap cleanup EXIT
 
 export DEV=1
-mkdir -p tmp
+mkdir -p tmp public/js
+
+# Fetch datastar.js into public/js/ so the Go server serves it. Cached in
+# tmp/ so restarts don't re-download. Version must match the pin in
+# services/webserver/default.nix.
+DATASTAR_VERSION="1.0.1"
+DATASTAR_CACHE="${SCRIPT_DIR}/tmp/datastar-v${DATASTAR_VERSION}.js"
+DATASTAR_TARGET="${SCRIPT_DIR}/public/js/datastar.js"
+if [[ ! -f "$DATASTAR_CACHE" ]]; then
+    echo -e "${GREEN}Fetching datastar v${DATASTAR_VERSION}...${NC}"
+    curl -sfL "https://raw.githubusercontent.com/starfederation/datastar/v${DATASTAR_VERSION}/bundles/datastar.js" -o "$DATASTAR_CACHE"
+fi
+cp "$DATASTAR_CACHE" "$DATASTAR_TARGET"
 
 echo -e "${GREEN}Starting dev server...${NC}\n"
 
