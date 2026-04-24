@@ -19,7 +19,9 @@ type responseWriter struct {
 
 func (rw *responseWriter) WriteHeader(code int) {
 	rw.status = code
-	rw.ResponseWriter.WriteHeader(code)
+	// Do not commit headers to the underlying writer yet. The middlewareCache
+	// needs to add ETag (and possibly short-circuit to 304) before the
+	// status line is flushed.
 }
 
 func (rw *responseWriter) Write(b []byte) (int, error) {
@@ -47,17 +49,14 @@ func middlewareCache(next http.Handler) http.Handler {
 		next.ServeHTTP(crw, r)
 
 		bodyBytes := crw.body.Bytes()
-		eTag := eTag(bodyBytes)
+		tag := eTag(bodyBytes)
 
-		ifNoneMatch := strings.TrimPrefix(strings.Trim(r.Header.Get("If-None-Match"), "\""), "W/")
-		contentHash := strings.TrimPrefix(eTag, "W/")
-
-		if ifNoneMatch == strings.Trim(contentHash, "\"") {
+		if etagMatch(r.Header.Get("If-None-Match"), tag) {
 			w.WriteHeader(http.StatusNotModified)
 			return
 		}
 
-		w.Header().Set("ETag", eTag)
+		w.Header().Set("ETag", tag)
 		w.WriteHeader(crw.status)
 		w.Write(bodyBytes)
 	})
@@ -68,4 +67,25 @@ func eTag(content []byte) string {
 	hasher.Write(content)
 	hash := hex.EncodeToString(hasher.Sum(nil))
 	return fmt.Sprintf("W/\"%s\"", hash)
+}
+
+// etagMatch performs weak comparison per RFC 7232 §2.3.2: the opaque-tag
+// bodies must match, ignoring W/ prefix. Also handles comma-separated lists
+// (If-None-Match: W/"a", W/"b") and the wildcard "*".
+func etagMatch(ifNoneMatch, serverTag string) bool {
+	if ifNoneMatch == "" {
+		return false
+	}
+	if strings.TrimSpace(ifNoneMatch) == "*" {
+		return true
+	}
+	server := strings.TrimPrefix(serverTag, "W/")
+	for _, candidate := range strings.Split(ifNoneMatch, ",") {
+		candidate = strings.TrimSpace(candidate)
+		candidate = strings.TrimPrefix(candidate, "W/")
+		if candidate == server {
+			return true
+		}
+	}
+	return false
 }
