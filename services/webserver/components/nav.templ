@@ -30,8 +30,7 @@ templ (p Nav) View() {
 							templ.KV("shadow-black/20", p.PageCurrent != name),
 						}
 						href={ templ.URL("/" + name) }
-						data-on:click__prevent={ "@get('/fragment/" + name + "')" }
-						data-replace-url={ "`/" + name + "`" }
+						data-on:click__prevent={ "history.pushState(null, '', '/" + name + "'); @get('/fragment/" + name + "')" }
 					>{ name }</a>
 				</li>
 			}
