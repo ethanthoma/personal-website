@@ -66,8 +66,10 @@ templ spaRuntime() {
 	<script>
 		(() => {
 			let displayedPath = location.pathname;
+			let pendingPath = null;
 			let inPopstate = false;
 			window.goTo = (path) => {
+				pendingPath = path;
 				if (!inPopstate) {
 					history.pushState(null, '', path);
 					scrollTo(0, 0);
@@ -81,6 +83,16 @@ templ spaRuntime() {
 				inPopstate = true;
 				link.click();
 				inPopstate = false;
+			});
+			// If the fragment fetch dies (5xx, network drop, retries exhausted),
+			// fall back to a full-page navigation so the user at least lands on
+			// the right URL with fresh content instead of stale DOM.
+			document.addEventListener("datastar-fetch", (evt) => {
+				if (!pendingPath) return;
+				const t = evt.detail && evt.detail.type;
+				if (t === "error" || t === "retries-failed") {
+					location.href = pendingPath;
+				}
 			});
 
 			let syncingHash = false;
