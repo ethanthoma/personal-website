@@ -98,17 +98,31 @@ func main() {
 	http.HandleFunc("GET /resources", resourcesHandler)
 	http.HandleFunc("GET /sitemap", sitemapHandler)
 
-	http.HandleFunc("GET /post/{slug}", func(w http.ResponseWriter, r *http.Request) {
+	postHandler := func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
 
 		post, err := slugToHTML(slug)
 		if err != nil {
 			log.Printf("failed to get post %s from cache (%v)", slug, err)
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 
 		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
-	})
+	}
+	http.HandleFunc("GET /post/{slug}", postHandler)
+
+	// Explicit Content-Type: fragments don't start with <!DOCTYPE html>, so
+	// Go's auto-sniffer labels them text/plain, which datastar's @get() can't
+	// HTML-patch and which browsers may skip the prefetch cache for.
+	asFragment := func(h http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.Header().Set("Cache-Control", "public, max-age=60")
+			ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
+			h(w, r.WithContext(ctx))
+		}
+	}
 
 	http.HandleFunc("GET /fragment/{name}", func(w http.ResponseWriter, r *http.Request) {
 		name := r.PathValue("name")
@@ -117,14 +131,9 @@ func main() {
 			http.NotFound(w, r)
 			return
 		}
-		// Explicit Content-Type: fragments don't start with <!DOCTYPE html>, so
-		// Go's auto-sniffer labels them text/plain, which datastar's @get()
-		// can't HTML-patch and which browsers may skip the prefetch cache for.
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Header().Set("Cache-Control", "public, max-age=60")
-		ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
-		h(w, r.WithContext(ctx))
+		asFragment(h)(w, r)
 	})
+	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
 
 	// static
 

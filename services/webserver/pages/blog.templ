@@ -42,7 +42,7 @@ templ (p Blog) View(posts []internal.Post) {
 						for index, post := range posts {
 							<tr>
 								<td scope="col" class="w-[1%]">{ fmt.Sprintf("%03d", len(posts) - index - 1) }</td>
-								<td scope="col" class="w-[auto]" style="white-space: nowrap;"><a href={ templ.URL("/post/" + post.Slug) } class="font-semibold hover:underline text-blue hover:text-darkblue">{ post.Title }</a></td>
+								<td scope="col" class="w-[auto]" style="white-space: nowrap;"><a href={ templ.URL("/post/" + post.Slug) } class="font-semibold hover:underline text-blue hover:text-darkblue" data-on:click__prevent={ "history.pushState(null, '', '/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')" }>{ post.Title }</a></td>
 								<td scope="col" class="w-full text-content/80"><time>{ post.Date.Format("2006-01-02") }</time></td>
 							</tr>
 						}
