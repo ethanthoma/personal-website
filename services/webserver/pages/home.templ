@@ -4,12 +4,10 @@ import (
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
 	"sort"
-	"time"
 )
 
 type Home struct {
-	Pages        []string
-	LastModified time.Time
+	Pages []string
 }
 
 templ (p Home) View(posts []internal.Post) {

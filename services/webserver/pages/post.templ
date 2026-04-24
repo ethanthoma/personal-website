@@ -3,12 +3,10 @@ package pages
 import (
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
-	"time"
 )
 
 type Post struct {
-	Pages        []string
-	LastModified time.Time
+	Pages []string
 }
 
 templ (p Post) View(post internal.Post) {

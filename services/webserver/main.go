@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
@@ -47,8 +46,7 @@ func main() {
 		}
 		log.Printf("Home handler: rendering with %d posts", len(posts))
 
-		lastMod := getFileModTime("pages/home.templ")
-		pages.Home{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
+		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
@@ -60,8 +58,7 @@ func main() {
 		}
 		log.Printf("Blog handler: rendering with %d posts", len(posts))
 
-		lastMod := getFileModTime("pages/blog.templ")
-		pages.Blog{Pages: navList, LastModified: lastMod}.View(posts).Render(r.Context(), w)
+		pages.Blog{Pages: navList}.View(posts).Render(r.Context(), w)
 	})))
 
 	http.HandleFunc("GET /post/{slug}", func(w http.ResponseWriter, r *http.Request) {
@@ -73,19 +70,16 @@ func main() {
 			w.WriteHeader(http.StatusInternalServerError)
 		}
 
-		lastMod := getFileModTime("pages/post.templ")
-		pages.Post{Pages: navList, LastModified: lastMod}.View(post).Render(r.Context(), w)
+		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
 	})
 
 	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
-		lastMod := getFileModTime("pages/projects.templ")
-		pages.Projects{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
+		pages.Projects{Pages: navList}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /projects", projectsHandler)
 
 	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
-		lastMod := getFileModTime("pages/info_res.templ")
-		pages.InfoRes{Pages: navList, LastModified: lastMod}.View().Render(r.Context(), w)
+		pages.InfoRes{Pages: navList}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /resources", resourcesHandler)
 
@@ -95,8 +89,7 @@ func main() {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
 
-		lastMod := getFileModTime("pages/sitemap.templ")
-		pages.Sitemap{Pages: navList, Posts: posts, LastModified: lastMod}.View().Render(r.Context(), w)
+		pages.Sitemap{Pages: navList, Posts: posts}.View().Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /sitemap", sitemapHandler)
 
@@ -106,15 +99,6 @@ func main() {
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, middlewareCache(logRequests)))
-}
-
-func getFileModTime(filepath string) time.Time {
-	info, err := os.Stat(filepath)
-	if err != nil {
-		log.Printf("Error getting file info for %s: %v", filepath, err)
-		return time.Now()
-	}
-	return info.ModTime()
 }
 
 func slugToHTML(slug string) (internal.Post, error) {

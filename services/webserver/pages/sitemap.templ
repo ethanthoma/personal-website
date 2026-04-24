@@ -3,15 +3,12 @@ package pages
 import (
 	"fmt"
 	"personal-website/internal"
-	"personal-website/services/webserver/components"
 	"personal-website/services/webserver/layouts"
-	"time"
 )
 
 type Sitemap struct {
-	Pages        []string
-	Posts        []internal.Post
-	LastModified time.Time
+	Pages []string
+	Posts []internal.Post
 }
 
 templ (p Sitemap) View() {
@@ -72,8 +69,6 @@ templ (p Sitemap) View() {
 					</tbody>
 				</table>
 			</section>
-			<br/>
-			@components.LastModified{Time: p.LastModified}.View()
 		</article>
 	}
 }
