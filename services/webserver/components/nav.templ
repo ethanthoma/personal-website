@@ -16,7 +16,7 @@ templ (p Nav) View() {
 		}
 	}
 	}}
-	<nav id="nav" hx-swap-oob="true">
+	<nav id="nav">
 		<ul
 			style={ fmt.Sprintf("grid-template-columns: repeat(auto-fit, minmax(calc(%dch + 2 * var(--spacing-2xs)), 1fr))", char_count) }
 			class="grid gap-m"
@@ -30,12 +30,8 @@ templ (p Nav) View() {
 							templ.KV("shadow-black/20", p.PageCurrent != name),
 						}
 						href={ templ.URL("/" + name) }
-						hx-get={ "/" + name }
-						hx-push-url={ "/" + name }
-						hx-target="main"
-						hx-select="main"
-						hx-swap="outerHTML"
-						preload="mouseover"
+						data-on:click__prevent={ "@get('/fragment/" + name + "')" }
+						data-replace-url={ "`/" + name + "`" }
 					>{ name }</a>
 				</li>
 			}

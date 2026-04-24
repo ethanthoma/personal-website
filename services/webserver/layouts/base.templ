@@ -11,43 +11,77 @@ type Base struct {
 }
 
 templ (p Base) View() {
-	<!DOCTYPE html>
-	<html lang="en" class="h-full w-[100svw] scroll-smooth">
-		<head>
-			<meta charset="UTF-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<meta name="description" content="Ethan Thoma's personal website"/>
-			<title>{ p.Title }</title>
-			<script type="text/javascript" src="/public/js/htmx.min.js"></script>
-			<script type="text/javascript" src="/public/js/preload.min.js" crossorigin="anonymous"></script>
-			<link rel="stylesheet" type="text/css" href="/public/main.css"/>
-			<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png"/>
-			<link rel="icon" type="image/png" sizes="512x512" href="/public/favicon/android-chrome-512x512.png"/>
-			<link rel="icon" type="image/png" sizes="192x192" href="/public/favicon/android-chrome-192x192.png"/>
-			<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon-32x32.png"/>
-			<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png"/>
-			<link rel="manifest" href="/public/favicon/site.webmanifest"/>
-			<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/gnat/surreal@main/surreal.js"></script>
-			<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
-			<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
-			<link rel="preconnect" href="https://fonts.googleapis.com"/>
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
-		</head>
-		<body
-			style="grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));"
-			class="grid overflow-x-hidden relative max-w-full min-h-full font-mono antialiased text-s grid-rows-[auto_1fr_auto] gap-x-xs-xl bg-base text-content"
-			lang="en-GB"
-			hx-ext="preload"
-		>
-			@components.Header{
-				PageCurrent: p.PageCurrent,
-				Pages:       p.Pages,
-			}.View()
-			<main class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-xl pb-2xl">
-				{ children... }
-			</main>
-			@components.Footer{}.View()
-		</body>
-	</html>
+	if IsFragment(ctx) {
+		@components.Nav{
+			PageCurrent: p.PageCurrent,
+			Pages:       p.Pages,
+		}.View()
+		<main id="main" class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-xl pb-2xl">
+			{ children... }
+		</main>
+	} else {
+		<!DOCTYPE html>
+		<html lang="en" class="h-full w-[100svw] scroll-smooth">
+			<head>
+				<meta charset="UTF-8"/>
+				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+				<meta name="description" content="Ethan Thoma's personal website"/>
+				<title>{ p.Title }</title>
+				<script type="module" src="/public/js/datastar.js"></script>
+				<link rel="stylesheet" type="text/css" href="/public/main.css"/>
+				<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png"/>
+				<link rel="icon" type="image/png" sizes="512x512" href="/public/favicon/android-chrome-512x512.png"/>
+				<link rel="icon" type="image/png" sizes="192x192" href="/public/favicon/android-chrome-192x192.png"/>
+				<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon-32x32.png"/>
+				<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png"/>
+				<link rel="manifest" href="/public/favicon/site.webmanifest"/>
+				<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/gnat/surreal@main/surreal.js"></script>
+				@prefetchNav(p.Pages, p.PageCurrent)
+				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
+				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
+				<link rel="preconnect" href="https://fonts.googleapis.com"/>
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+				<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"/>
+			</head>
+			<body
+				style="grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));"
+				class="grid overflow-x-hidden relative max-w-full min-h-full font-mono antialiased text-s grid-rows-[auto_1fr_auto] gap-x-xs-xl bg-base text-content"
+				lang="en-GB"
+			>
+				@components.Header{
+					PageCurrent: p.PageCurrent,
+					Pages:       p.Pages,
+				}.View()
+				<main id="main" class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-xl pb-2xl">
+					{ children... }
+				</main>
+				@components.Footer{}.View()
+			</body>
+		</html>
+	}
+}
+
+// prefetchNav warms the browser's HTTP cache for every nav fragment except
+// the current page, using the exact Accept header datastar's @get() will
+// later send. This guarantees the subsequent click-triggered fetch() reuses
+// the cached response instead of issuing a fresh network request.
+templ prefetchNav(pages []string, current string) {
+	{{
+		targets := make([]string, 0, len(pages))
+		for _, p := range pages {
+			if p != current {
+				targets = append(targets, "/fragment/"+p)
+			}
+		}
+	}}
+	@templ.JSONScript("nav-prefetch-urls", targets)
+	<script>
+		addEventListener("DOMContentLoaded", () => {
+			const urls = JSON.parse(document.getElementById("nav-prefetch-urls").textContent);
+			const opts = { headers: { "Accept": "text/event-stream, text/html, application/json" } };
+			const warm = () => urls.forEach(u => fetch(u, opts).catch(() => {}));
+			if ("requestIdleCallback" in window) requestIdleCallback(warm);
+			else setTimeout(warm, 0);
+		});
+	</script>
 }

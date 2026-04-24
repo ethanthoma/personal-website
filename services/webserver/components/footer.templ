@@ -6,12 +6,8 @@ templ (p Footer) View() {
 	<footer class="flex flex-wrap justify-center text-white border-t-2 border-black gap-m col-[1/-1] bg-blue p-m">
 		<a
 			href="/home"
-			hx-get="/home"
-			hx-push-url="/home"
-			hx-target="main"
-			hx-select="main"
-			hx-swap="outerHTML"
-			preload="mouseover"
+			data-on:click__prevent="@get('/fragment/home')"
+			data-replace-url="`/home`"
 		>
 			<div class="border-black border-1 p-3xs h-fit w-fit shadow-black/20 shadow-[4px_4px_0_0]">
 				<div class="flex flex-col items-center text-center text-white border-white p-3xs border-1">

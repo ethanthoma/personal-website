@@ -2,8 +2,10 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"html/template"
 	"log"
+	"mime"
 	"net/http"
 	"os"
 
@@ -14,6 +16,7 @@ import (
 
 	"personal-website/internal"
 	"personal-website/services/webserver/cache"
+	"personal-website/services/webserver/layouts"
 	"personal-website/services/webserver/pages"
 )
 
@@ -28,6 +31,10 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 
 func main() {
 	log.Printf("Starting server on %s...", port)
+
+	// Register MIME types explicitly
+	mime.AddExtensionType(".js", "text/javascript")
+	mime.AddExtensionType(".css", "text/css")
 
 	cache.InitCache()
 
@@ -48,10 +55,8 @@ func main() {
 
 		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
 	}
-	http.HandleFunc("GET /", handlerHome)
-	http.HandleFunc("GET /home", handlerHome)
 
-	http.Handle("GET /blog", middlewareCache(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	blogHandler := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
@@ -59,7 +64,39 @@ func main() {
 		log.Printf("Blog handler: rendering with %d posts", len(posts))
 
 		pages.Blog{Pages: navList}.View(posts).Render(r.Context(), w)
-	})))
+	}
+
+	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
+		pages.Projects{Pages: navList}.View().Render(r.Context(), w)
+	}
+
+	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
+		pages.InfoRes{Pages: navList}.View().Render(r.Context(), w)
+	}
+
+	sitemapHandler := func(w http.ResponseWriter, r *http.Request) {
+		posts, err := cache.Cache.GetPosts()
+		if err != nil {
+			log.Printf("failed to fetch posts from cache (%v)", err)
+		}
+
+		pages.Sitemap{Pages: navList, Posts: posts}.View().Render(r.Context(), w)
+	}
+
+	navHandlers := map[string]http.HandlerFunc{
+		"home":      handlerHome,
+		"blog":      blogHandler,
+		"projects":  projectsHandler,
+		"resources": resourcesHandler,
+		"sitemap":   sitemapHandler,
+	}
+
+	http.HandleFunc("GET /", handlerHome)
+	http.HandleFunc("GET /home", handlerHome)
+	http.Handle("GET /blog", middlewareCache(http.HandlerFunc(blogHandler)))
+	http.HandleFunc("GET /projects", projectsHandler)
+	http.HandleFunc("GET /resources", resourcesHandler)
+	http.HandleFunc("GET /sitemap", sitemapHandler)
 
 	http.HandleFunc("GET /post/{slug}", func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
@@ -73,25 +110,21 @@ func main() {
 		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
 	})
 
-	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
-		pages.Projects{Pages: navList}.View().Render(r.Context(), w)
-	}
-	http.HandleFunc("GET /projects", projectsHandler)
-
-	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
-		pages.InfoRes{Pages: navList}.View().Render(r.Context(), w)
-	}
-	http.HandleFunc("GET /resources", resourcesHandler)
-
-	sitemapHandler := func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("failed to fetch posts from cache (%v)", err)
+	http.HandleFunc("GET /fragment/{name}", func(w http.ResponseWriter, r *http.Request) {
+		name := r.PathValue("name")
+		h, ok := navHandlers[name]
+		if !ok {
+			http.NotFound(w, r)
+			return
 		}
-
-		pages.Sitemap{Pages: navList, Posts: posts}.View().Render(r.Context(), w)
-	}
-	http.HandleFunc("GET /sitemap", sitemapHandler)
+		// Explicit Content-Type: fragments don't start with <!DOCTYPE html>, so
+		// Go's auto-sniffer labels them text/plain, which datastar's @get()
+		// can't HTML-patch and which browsers may skip the prefetch cache for.
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "public, max-age=60")
+		ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
+		h(w, r.WithContext(ctx))
+	})
 
 	// static
 

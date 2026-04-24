@@ -89,6 +89,6 @@ templ homeInfoItem(label string, value string) {
 }
 
 templ homeContactItem(platform string, handle string, url string) {
-	<a href={ templ.URL(url) } class="font-semibold hover:underline text-blue hover:text-darkblue" preload="mouseover">{ platform }</a>
+	<a href={ templ.URL(url) } class="font-semibold hover:underline text-blue hover:text-darkblue">{ platform }</a>
 	<span class="text-content/80">{ handle }</span>
 }
