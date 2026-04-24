@@ -4,6 +4,7 @@
 !LICENSE
 !.gitignore
 !.github/workflows/*
+!dev.sh
 
 # go 
 !internal/
@@ -15,7 +16,6 @@
 !nix/*
 !flake.*
 
-!Makefile
 
 # services
 !services/**/default.nix
