@@ -98,15 +98,17 @@ var projects = []internal.Project{
 	},
 }
 
-var handle = templ.NewOnceHandle()
-
 templ (p Projects) View() {
 	@layouts.Base{
 		Pages:       p.Pages,
 		PageCurrent: "projects",
 		Title:       "Ethan Thoma / Projects",
 	}.View() {
-		<article class="row-start-1 col-[2/-2]">
+		<article
+			class="row-start-1 col-[2/-2]"
+			data-signals="{openHash: location.hash.slice(1)}"
+			data-on:hashchange__window="$openHash = location.hash.slice(1)"
+		>
 			<header class="font-mono">
 				<h1 class="font-bold">
 					ETHAN THOMA - PROJECTS
@@ -123,22 +125,6 @@ templ (p Projects) View() {
 				</ol>
 			</section>
 		</article>
-		@handle.Once() {
-			<script type="text/javascript">
-                function openTarget() {
-                    const hash = location.hash.substring(1);
-                    if (hash) { 
-                        me(`#${hash}`).closest("details").open = true; 
-                    } else {
-                        any("details").forEach((el) => {
-                            el.open = false;
-                        });
-                    }
-                }
-                me().on("hashchange", openTarget)
-                openTarget();
-            </script>
-		}
 	}
 }
 
@@ -163,21 +149,12 @@ templ view_project(project internal.Project) {
 			}
 		</ol>
 		{{ href := strings.ReplaceAll(project.Title, " ", "_") }}
-		<details name="project">
-			<summary class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs" data-href={ href }>
+		<details name="project" data-attr-open={ "$openHash === '" + href + "'" }>
+			<summary
+				class="cursor-pointer hover:underline active:underline ml-[1px] py-3xs"
+				data-on:click__prevent={ "$openHash = $openHash === '" + href + "' ? '' : '" + href + "'; history.pushState(null, '', $openHash ? '#' + $openHash : location.pathname + location.search)" }
+			>
 				Project Overview
-				<script type="text/javascript">
-                    me().on("click", ev => {  
-                        const href = me(ev).getAttribute("data-href");
-                        if (window.location.hash === `#${href}`) {
-                            history.pushState(null, '', window.location.pathname + window.location.search); 
-                            me(ev).closest("details").open = true;
-                        } else {
-                            history.pushState(null, '', `#${href}`); 
-                            me(ev).closest("details").open = false;
-                        }
-                    });
-                </script>
 			</summary>
 			<p id={ href } class="font-sans py-3xs mb-3xs scroll-mt-[calc(2*var(--spacing-3xs)+var(--spacing-3xl))]">
 				@templ.Raw(strings.ReplaceAll(project.Description, "\n", "<br>"))
