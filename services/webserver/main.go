@@ -8,6 +8,7 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 
@@ -46,7 +47,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "resources", "projects", "sitemap"}
+	navList := []string{"home", "resources", "sitemap"}
 
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
@@ -79,8 +80,22 @@ func main() {
 		pages.PostsList(posts[:end], len(posts)).Render(r.Context(), w)
 	}
 
-	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
-		pages.Projects{Pages: navList}.View().Render(r.Context(), w)
+	projectsListHandler := func(w http.ResponseWriter, r *http.Request) {
+		offset, err := strconv.Atoi(r.PathValue("offset"))
+		if err != nil || offset < 0 {
+			http.Error(w, "bad offset", http.StatusBadRequest)
+			return
+		}
+		projects := slices.Clone(internal.Projects)
+		sort.SliceStable(projects, func(i, j int) bool {
+			return projects[i].Date.After(projects[j].Date)
+		})
+		end := offset + pages.ProjectsPageSize
+		end = min(end, len(projects))
+		if offset > end {
+			offset = end
+		}
+		pages.ProjectsList(projects[:end], len(projects)).Render(r.Context(), w)
 	}
 
 	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -98,20 +113,21 @@ func main() {
 
 	navHandlers := map[string]http.HandlerFunc{
 		"home":      handlerHome,
-		"projects":  projectsHandler,
 		"resources": resourcesHandler,
 		"sitemap":   sitemapHandler,
 	}
 
 	http.HandleFunc("GET /{$}", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
-	http.HandleFunc("GET /projects", projectsHandler)
 	http.HandleFunc("GET /resources", resourcesHandler)
 	http.HandleFunc("GET /sitemap", sitemapHandler)
 
-	// /blog used to be a dedicated page; the post list now lives on /home.
-	// 301 keeps any external bookmarks working.
+	// /blog and /projects used to be dedicated pages; both lists now live on
+	// /home. 301 keeps any external bookmarks working.
 	http.HandleFunc("GET /blog", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+	})
+	http.HandleFunc("GET /projects", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 	})
 
@@ -152,6 +168,7 @@ func main() {
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
 	http.HandleFunc("GET /fragment/posts/{offset}", asFragment(postsListHandler))
+	http.HandleFunc("GET /fragment/projects-list/{offset}", asFragment(projectsListHandler))
 
 	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
