@@ -1,33 +1,19 @@
 package components
 
-import "fmt"
-
 type Nav struct {
 	PageCurrent string
 	Pages       []string
 }
 
 templ (p Nav) View() {
-	{{
-	char_count := 0
-	for _, s := range p.Pages {
-		if len(s) > char_count {
-			char_count = len(s)
-		}
-	}
-	}}
 	<nav id="nav">
-		<ul
-			style={ fmt.Sprintf("grid-template-columns: repeat(auto-fit, minmax(calc(%dch + 2 * var(--spacing-2xs)), 1fr))", char_count) }
-			class="grid gap-m"
-		>
+		<ul class="flex flex-wrap gap-x-s gap-y-2xs">
 			for _, name := range p.Pages {
-				<li class="flex-[1_1_0]">
+				<li>
 					<a
 						class={
-							"block text-center px-2xs-xs py-2xs bg-white active:text-blue hover:text-blue border-black cursor-pointer hover:underline active:underline text-content border-1 shadow-[4px_4px_0_0]",
-							templ.KV("shadow-black font-extrabold", p.PageCurrent == name),
-							templ.KV("shadow-black/20", p.PageCurrent != name),
+							templ.KV("font-bold", p.PageCurrent == name),
+							templ.KV("text-content/60 hover:text-blue", p.PageCurrent != name),
 						}
 						href={ templ.URL("/" + name) }
 						data-on:click__prevent={ "goTo('/" + name + "'); @get('/fragment/" + name + "')" }

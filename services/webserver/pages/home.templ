@@ -3,6 +3,7 @@ package pages
 import (
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
+	"slices"
 	"sort"
 )
 
@@ -12,11 +13,16 @@ type Home struct {
 
 templ (p Home) View(posts []internal.Post) {
 	{{
-	sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].GetDate()) })
+		sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
+		if len(posts) >= 3 {
+			posts = posts[:3]
+		}
 
-	if len(posts) >= 3 {
-		posts = posts[:3]
-	}
+		recentProjects := slices.Clone(internal.Projects)
+		sort.SliceStable(recentProjects, func(i, j int) bool { return recentProjects[i].Date.After(recentProjects[j].Date) })
+		if len(recentProjects) >= 3 {
+			recentProjects = recentProjects[:3]
+		}
 	}}
 	@layouts.Base{
 		Pages:       p.Pages,
@@ -24,71 +30,68 @@ templ (p Home) View(posts []internal.Post) {
 		Title:       "Ethan Thoma",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<header class="font-mono">
-				<h1 class="font-bold">
-					ETHAN THOMA - HOME
-				</h1>
-				<br/>
-				<hr class="border-t-2 border-black border-dashed"/>
-				<br/>
+			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
+				<h1 class="font-bold text-l text-content/70 leading-none">Ethan Thoma</h1>
+				<p class="text-content/60 leading-none">Cofounder at a stealth startup.</p>
 			</header>
-			<section>
-				<p>
-					Graduate student at UBC STASER Lab focusing on machine learning, 
-					natural language processing, and reinforcement learning with emphasis on explainability.
-				</p>
-			</section>
-			<br/>
-			<hr class="border-t-2 border-black border-dashed"/>
-			<br/>
-			<section class="grid gap-x-[3ch] grid-cols-[max-content_1fr]">
-				<h2 class="col-span-2 font-bold">Personal Information</h2>
-				<div class="col-span-2"><br/></div>
-				@homeInfoItem("Location", "Vancouver, Canada")
-				@homeInfoItem("Occupation", "Graduate Student")
-				@homeInfoItem("Employer", "UBC, STASER Lab")
-				@homeInfoItem("Field", "Machine Learning (ML)")
-				@homeInfoItem("Focus", "Natural Language Processing (NLP)")
-				@homeInfoItem("", "Reinforcement Learning (RL)")
-				@homeInfoItem("", "Explainability")
-				@homeInfoItem("Languages", "Python, Gleam, Zig, Odin, Nix")
-				<div class="col-span-2"><br/></div>
-				<hr class="col-span-2 border-t-2 border-black border-dashed"/>
-				<div class="col-span-2"><br/></div>
-				<h2 class="col-span-2 font-bold">Contact Information</h2>
-				<div class="col-span-2"><br/></div>
-				@homeContactItem("Twitter", "EthanBThoma", "https://x.com/EthanBThoma")
-				@homeContactItem("GitHub", "ethanthoma", "https://github.com/ethanthoma")
-				@homeInfoItem("Email", "ethoma@mail.ubc.ca")
-			</section>
-			<br/>
-			<hr class="border-t-2 border-black border-dashed"/>
-			<br/>
-			<section class="flex items-center font-semibold gap-[calc(1px+2*var(--spacing-s))]">
+			<p class="font-sans mt-m text-m text-content/60">
+				I work on machine learning, natural language processing, and reinforcement
+				learning, with an emphasis on explainability. Mostly Python, Gleam, Zig,
+				Odin, and Nix.
+			</p>
+			<p class="font-sans mt-m text-m">
 				<a
-					class="inline-flex items-center text-center text-white border-2 border-black cursor-pointer shadow-shadow shadow-[4px_4px_0_0] px-3xs-2xs py-2xs gap-4xs bg-orange hover:bg-blue active:bg-blue"
+					class="underline underline-offset-2 decoration-content/40 hover:decoration-content"
+					href="mailto:ethoma@mail.ubc.ca"
+				>Send me an email</a>, or{ " " }
+				<a
+					class="underline underline-offset-2 decoration-content/40 hover:decoration-content"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
-				>
-					<svg class="w-4 h-4 mb-[clamp(2pt,3pt,3pt)]" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
-					Download Resume
-				</a>
-				<a
-					class="items-center leading-6 hover:underline active:underline text-blue hover:text-darkblue active:text-darkblue"
-					href="mailto:ethoma@mail.ubc.ca?subject=Professional/Academic Inquiry"
-				>
-					Inquiry (e‑mail)&nbsp;<svg class="inline w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4"></path></svg>
-				</a>
-			</section>
+				>read my resume</a>.
+			</p>
+			if len(recentProjects) > 0 {
+				<h2 class="font-medium mt-l text-content/60">Recent projects</h2>
+				<ol class="flex flex-col mt-2xs">
+					for _, project := range recentProjects {
+						<li>
+							<a
+								href={ templ.URL(project.Url) }
+								class="flex items-baseline group py-3xs"
+							>
+								<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
+									<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
+									<span class="relative flex-1 min-w-0">
+										<span class="bg-base box-decoration-clone pr-2xs-xs underline-offset-2 decoration-content/40 group-hover:text-blue">{ project.Title }</span>
+									</span>
+									<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time>{ project.Date.Format("2006-01-02") }</time></span>
+								</span>
+							</a>
+						</li>
+					}
+				</ol>
+			}
+			if len(posts) > 0 {
+				<h2 class="font-medium mt-l text-content/60">Recent writing</h2>
+				<ol class="flex flex-col mt-2xs">
+					for _, post := range posts {
+						<li>
+							<a
+								href={ templ.URL("/post/" + post.Slug) }
+								class="flex items-baseline group py-3xs"
+								data-on:click__prevent={ "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')" }
+							>
+								<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
+									<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
+									<span class="relative flex-1 min-w-0">
+										<span class="bg-base box-decoration-clone pr-2xs-xs underline-offset-2 decoration-content/40 group-hover:text-blue">{ post.Title }</span>
+									</span>
+									<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time>{ post.Date.Format("2006-01-02") }</time></span>
+								</span>
+							</a>
+						</li>
+					}
+				</ol>
+			}
 		</article>
 	}
-}
-
-templ homeInfoItem(label string, value string) {
-	<span class="font-semibold text-content">{ label }</span>
-	<span class="text-content/80">{ value }</span>
-}
-
-templ homeContactItem(platform string, handle string, url string) {
-	<a href={ templ.URL(url) } class="font-semibold hover:underline text-blue hover:text-darkblue">{ platform }</a>
-	<span class="text-content/80">{ handle }</span>
 }
