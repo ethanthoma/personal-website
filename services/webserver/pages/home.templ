@@ -1,11 +1,14 @@
 package pages
 
 import (
+	"fmt"
 	"personal-website/internal"
 	"personal-website/services/webserver/layouts"
 	"slices"
 	"sort"
 )
+
+const PostsPageSize = 3
 
 type Home struct {
 	Pages []string
@@ -14,8 +17,9 @@ type Home struct {
 templ (p Home) View(posts []internal.Post) {
 	{{
 		sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
-		if len(posts) >= 3 {
-			posts = posts[:3]
+		visible := posts
+		if len(posts) > PostsPageSize {
+			visible = posts[:PostsPageSize]
 		}
 
 		recentProjects := slices.Clone(internal.Projects)
@@ -31,10 +35,10 @@ templ (p Home) View(posts []internal.Post) {
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
-				<h1 class="font-bold text-l text-content/70 leading-none">Ethan Thoma</h1>
-				<p class="text-content/60 leading-none">Cofounder at a stealth startup.</p>
+				<h1 class="font-bold leading-none text-l text-content/70">Ethan Thoma</h1>
+				<p class="leading-none text-content/60">Cofounder at a stealth startup.</p>
 			</header>
-			<p class="font-sans mt-m text-m text-content/60">
+			<p class="font-sans mt-m text-m text-content/40">
 				I work on machine learning, natural language processing, and reinforcement
 				learning, with an emphasis on explainability. Mostly Python, Gleam, Zig,
 				Odin, and Nix.
@@ -50,7 +54,7 @@ templ (p Home) View(posts []internal.Post) {
 				>read my resume</a>.
 			</p>
 			if len(recentProjects) > 0 {
-				<h2 class="font-medium mt-l text-content/60">Recent projects</h2>
+				<h2 class="font-medium mt-l text-content/40">Recent projects</h2>
 				<ol class="flex flex-col mt-2xs">
 					for _, project := range recentProjects {
 						<li>
@@ -63,7 +67,7 @@ templ (p Home) View(posts []internal.Post) {
 									<span class="relative flex-1 min-w-0">
 										<span class="bg-base box-decoration-clone pr-2xs-xs underline-offset-2 decoration-content/40 group-hover:text-blue">{ project.Title }</span>
 									</span>
-									<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time>{ project.Date.Format("2006-01-02") }</time></span>
+									<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/40"><time>{ project.Date.Format("2006-01-02") }</time></span>
 								</span>
 							</a>
 						</li>
@@ -71,27 +75,41 @@ templ (p Home) View(posts []internal.Post) {
 				</ol>
 			}
 			if len(posts) > 0 {
-				<h2 class="font-medium mt-l text-content/60">Recent writing</h2>
-				<ol class="flex flex-col mt-2xs">
-					for _, post := range posts {
-						<li>
-							<a
-								href={ templ.URL("/post/" + post.Slug) }
-								class="flex items-baseline group py-3xs"
-								data-on:click__prevent={ "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')" }
-							>
-								<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
-									<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
-									<span class="relative flex-1 min-w-0">
-										<span class="bg-base box-decoration-clone pr-2xs-xs underline-offset-2 decoration-content/40 group-hover:text-blue">{ post.Title }</span>
-									</span>
-									<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time>{ post.Date.Format("2006-01-02") }</time></span>
-								</span>
-							</a>
-						</li>
-					}
-				</ol>
+				<h2 class="font-medium mt-l text-content/40">Writing</h2>
+				@PostsList(visible, len(posts))
 			}
 		</article>
 	}
+}
+
+templ PostsList(posts []internal.Post, total int) {
+	<ol id="posts-list" class="flex flex-col mt-2xs">
+		for index, post := range posts {
+			<li>
+				<a
+					href={ templ.URL("/post/" + post.Slug) }
+					class="flex items-baseline group gap-xs py-3xs"
+					data-on:click__prevent={ "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')" }
+				>
+					<span class="font-mono tabular-nums text-content/40 shrink-0">{ fmt.Sprintf("%03d", total-index-1) }</span>
+					<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
+						<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
+						<span class="relative flex-1 min-w-0">
+							<span class="bg-base box-decoration-clone pr-2xs-xs group-hover:text-blue">{ post.Title }</span>
+						</span>
+						<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/40"><time>{ post.Date.Format("2006-01-02") }</time></span>
+					</span>
+				</a>
+			</li>
+		}
+	</ol>
+	<div id="post-loader" class="mt-2xs">
+		if len(posts) < total {
+			<button
+				type="button"
+				class="font-sans cursor-pointer text-content/40 hover:text-blue"
+				data-on:click__prevent={ fmt.Sprintf("@get('/fragment/posts/%d')", len(posts)) }
+			>load more</button>
+		}
+	</div>
 }

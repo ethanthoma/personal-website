@@ -8,6 +8,8 @@ import (
 	"mime"
 	"net/http"
 	"os"
+	"sort"
+	"strconv"
 
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
@@ -44,7 +46,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "blog", "resources", "projects", "sitemap"}
+	navList := []string{"home", "resources", "projects", "sitemap"}
 
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
@@ -56,14 +58,25 @@ func main() {
 		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
 	}
 
-	blogHandler := func(w http.ResponseWriter, r *http.Request) {
+	postsListHandler := func(w http.ResponseWriter, r *http.Request) {
+		offset, err := strconv.Atoi(r.PathValue("offset"))
+		if err != nil || offset < 0 {
+			http.Error(w, "bad offset", http.StatusBadRequest)
+			return
+		}
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
 		}
-		log.Printf("Blog handler: rendering with %d posts", len(posts))
-
-		pages.Blog{Pages: navList}.View(posts).Render(r.Context(), w)
+		sort.SliceStable(posts, func(i, j int) bool {
+			return posts[i].Date.After(posts[j].Date)
+		})
+		end := offset + pages.PostsPageSize
+		end = min(end, len(posts))
+		if offset > end {
+			offset = end
+		}
+		pages.PostsList(posts[:end], len(posts)).Render(r.Context(), w)
 	}
 
 	projectsHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +98,6 @@ func main() {
 
 	navHandlers := map[string]http.HandlerFunc{
 		"home":      handlerHome,
-		"blog":      blogHandler,
 		"projects":  projectsHandler,
 		"resources": resourcesHandler,
 		"sitemap":   sitemapHandler,
@@ -93,10 +105,15 @@ func main() {
 
 	http.HandleFunc("GET /{$}", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
-	http.Handle("GET /blog", middlewareCache(http.HandlerFunc(blogHandler)))
 	http.HandleFunc("GET /projects", projectsHandler)
 	http.HandleFunc("GET /resources", resourcesHandler)
 	http.HandleFunc("GET /sitemap", sitemapHandler)
+
+	// /blog used to be a dedicated page; the post list now lives on /home.
+	// 301 keeps any external bookmarks working.
+	http.HandleFunc("GET /blog", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+	})
 
 	postHandler := func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
@@ -134,6 +151,7 @@ func main() {
 		asFragment(h)(w, r)
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
+	http.HandleFunc("GET /fragment/posts/{offset}", asFragment(postsListHandler))
 
 	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
