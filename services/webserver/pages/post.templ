@@ -29,7 +29,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
 				<h1 class="font-bold leading-none text-l text-content/70">{ post.Title }</h1>
 				<div class="flex flex-col items-end gap-3xs">
-					<p class="leading-none text-content/60"><time>{ post.Date.Format("2006-01-02") }</time></p>
+					<p class="leading-none text-content/60"><time datetime={ post.Date.Format("2006-01-02") }>{ post.Date.Format("2006-01-02") }</time></p>
 					<p class="leading-none text-content/60 text-s">{ fmt.Sprintf("%d min read", post.ReadingMinutes()) }</p>
 				</div>
 			</header>

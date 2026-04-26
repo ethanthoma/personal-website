@@ -18,6 +18,7 @@ import (
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/parser"
 	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
 	highlighting "github.com/yuin/goldmark-highlighting/v2"
 
@@ -33,6 +34,7 @@ import (
 var (
 	leadingH1Re         = regexp.MustCompile(`(?s)^\s*<h1[^>]*>.*?</h1>\s*`)
 	leadingBlockquoteRe = regexp.MustCompile(`(?s)^\s*<blockquote[^>]*>.*?</blockquote>\s*`)
+	headingAnchorRe     = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
 )
 
 var (
@@ -273,6 +275,9 @@ func slugToHTML(slug string) (internal.Post, error) {
 				),
 			),
 		),
+		goldmark.WithParserOptions(
+			parser.WithAutoHeadingID(),
+		),
 		goldmark.WithRendererOptions(
 			goldmarkhtml.WithUnsafe(),
 		),
@@ -289,6 +294,8 @@ func slugToHTML(slug string) (internal.Post, error) {
 	if post.TLDR != "" {
 		htmlStr = leadingBlockquoteRe.ReplaceAllString(htmlStr, "")
 	}
+	htmlStr = headingAnchorRe.ReplaceAllString(htmlStr,
+		`<$1 id="$2">$3<a href="#$2" class="heading-anchor" aria-label="Link to this section">#</a></$1>`)
 	post.HTML = template.HTML(htmlStr)
 
 	return post, nil

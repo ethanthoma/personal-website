@@ -90,6 +90,10 @@ templ (p Base) View() {
 				class="grid overflow-x-hidden relative max-w-full min-h-full font-mono antialiased text-s grid-rows-[auto_1fr_auto] gap-x-xs-xl bg-base text-content"
 				lang="en-GB"
 			>
+				<a
+					href="#main"
+					class="sr-only focus:not-sr-only focus:fixed focus:top-2xs focus:left-2xs focus:z-50 focus:px-xs focus:py-3xs focus:bg-base focus:text-blue focus:underline"
+				>Skip to content</a>
 				@components.Header{
 					PageCurrent: p.PageCurrent,
 					Pages:       p.Pages,

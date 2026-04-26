@@ -16,6 +16,9 @@ templ (p Nav) View() {
 							templ.KV("text-content/60 hover:text-blue", p.PageCurrent != name),
 						}
 						href={ templ.URL("/" + name) }
+						if p.PageCurrent == name {
+							aria-current="page"
+						}
 						data-on:click__prevent={ "goTo('/" + name + "'); @get('/fragment/" + name + "')" }
 					>{ name }</a>
 				</li>
