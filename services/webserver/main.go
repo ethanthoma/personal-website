@@ -110,13 +110,18 @@ func main() {
 		})
 	}
 
+	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotFound)
+		pages.NotFound{Pages: navList, Path: r.URL.Path}.View().Render(r.Context(), w)
+	}
+
 	postHandler := func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
 
 		post, err := slugToHTML(slug)
 		if err != nil {
-			log.Printf("failed to get post %s from cache (%v)", slug, err)
-			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("post %s not found (%v)", slug, err)
+			notFoundHandler(w, r)
 			return
 		}
 
@@ -151,10 +156,6 @@ func main() {
 	http.HandleFunc("GET /fragment/posts", asFragment(postsListHandler))
 	http.HandleFunc("GET /fragment/projects-list", asFragment(projectsListHandler))
 
-	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		pages.NotFound{Pages: navList, Path: r.URL.Path}.View().Render(r.Context(), w)
-	}
 	http.HandleFunc("GET /", notFoundHandler)
 
 	// static

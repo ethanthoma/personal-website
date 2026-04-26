@@ -16,23 +16,21 @@ templ (p NotFound) View() {
 		Title:       "Ethan Thoma / Not Found",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<header class="font-mono">
-				<h1 class="font-bold">
-					404 - NOT FOUND
-				</h1>
-				<br/>
-				<hr class="border-t-2 border-black border-dashed"/>
-				<br/>
+			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
+				<h1 class="font-bold leading-none text-l text-content/70">Not found</h1>
+				<p class="leading-none text-l text-content/60">404</p>
 			</header>
-			<section>
-				<p>
-					Nothing lives at <code class="font-semibold">{ p.Path }</code>.
-				</p>
-				<br/>
-				<p>
-					Try the nav above, or head <a href="/home" class="font-semibold hover:underline text-blue hover:text-darkblue" data-on:click__prevent="goTo('/home'); @get('/fragment/home')">home</a>.
-				</p>
-			</section>
+			<p class="font-sans mt-m text-m text-content/60">
+				The router checked <code class="font-mono">{ p.Path }</code>. It's not here.
+			</p>
+			<p class="font-sans mt-m text-m">
+				Head{ " " }
+				<a
+					class="underline underline-offset-2 decoration-content/40 hover:decoration-content"
+					href="/home"
+					data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
+				>home</a>.
+			</p>
 		</article>
 	}
 }
