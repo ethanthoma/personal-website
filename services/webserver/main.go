@@ -47,7 +47,7 @@ func main() {
 
 	// pages
 
-	navList := []string{"home", "resources", "sitemap"}
+	navList := []string{"home", "resources"}
 
 	handlerHome := func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
@@ -102,34 +102,23 @@ func main() {
 		pages.InfoRes{Pages: navList}.View().Render(r.Context(), w)
 	}
 
-	sitemapHandler := func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("failed to fetch posts from cache (%v)", err)
-		}
-
-		pages.Sitemap{Pages: navList, Posts: posts}.View().Render(r.Context(), w)
-	}
-
 	navHandlers := map[string]http.HandlerFunc{
 		"home":      handlerHome,
 		"resources": resourcesHandler,
-		"sitemap":   sitemapHandler,
 	}
 
 	http.HandleFunc("GET /{$}", handlerHome)
 	http.HandleFunc("GET /home", handlerHome)
 	http.HandleFunc("GET /resources", resourcesHandler)
-	http.HandleFunc("GET /sitemap", sitemapHandler)
 
-	// /blog and /projects used to be dedicated pages; both lists now live on
-	// /home. 301 keeps any external bookmarks working.
-	http.HandleFunc("GET /blog", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
-	})
-	http.HandleFunc("GET /projects", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/home", http.StatusMovedPermanently)
-	})
+	// /blog, /projects, /sitemap used to be dedicated pages; their content now
+	// lives on /home (or in /public/seo/sitemap.xml for crawlers). 301 keeps
+	// any external bookmarks working.
+	for _, oldPath := range []string{"/blog", "/projects", "/sitemap"} {
+		http.HandleFunc("GET "+oldPath, func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, "/home", http.StatusMovedPermanently)
+		})
+	}
 
 	postHandler := func(w http.ResponseWriter, r *http.Request) {
 		slug := r.PathValue("slug")
