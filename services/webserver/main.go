@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"html"
 	"html/template"
 	"log"
 	"mime"
@@ -12,6 +13,7 @@ import (
 	"regexp"
 	"slices"
 	"sort"
+	"time"
 
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
@@ -110,6 +112,46 @@ func main() {
 		})
 	}
 
+	http.HandleFunc("GET /rss.xml", func(w http.ResponseWriter, r *http.Request) {
+		posts, err := cache.Cache.GetPosts()
+		if err != nil {
+			log.Printf("rss: failed to fetch posts (%v)", err)
+		}
+		sort.SliceStable(posts, func(i, j int) bool {
+			return posts[i].Date.After(posts[j].Date)
+		})
+
+		buildDate := time.Now().UTC()
+		if len(posts) > 0 {
+			buildDate = posts[0].Date
+		}
+
+		w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
+		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
+		fmt.Fprintln(w, `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">`)
+		fmt.Fprintln(w, `  <channel>`)
+		fmt.Fprintln(w, `    <title>Ethan Thoma</title>`)
+		fmt.Fprintln(w, `    <link>https://www.ethanthoma.com</link>`)
+		fmt.Fprintln(w, `    <description>Notes on machine learning, NLP, and programming languages.</description>`)
+		fmt.Fprintln(w, `    <language>en-us</language>`)
+		fmt.Fprintln(w, `    <atom:link href="https://www.ethanthoma.com/rss.xml" rel="self" type="application/rss+xml" />`)
+		fmt.Fprintf(w, "    <lastBuildDate>%s</lastBuildDate>\n", buildDate.Format(time.RFC1123Z))
+		for _, p := range posts {
+			link := "https://www.ethanthoma.com/post/" + p.Slug
+			fmt.Fprintln(w, `    <item>`)
+			fmt.Fprintf(w, "      <title>%s</title>\n", html.EscapeString(p.Title))
+			fmt.Fprintf(w, "      <link>%s</link>\n", link)
+			fmt.Fprintf(w, "      <guid isPermaLink=\"true\">%s</guid>\n", link)
+			fmt.Fprintf(w, "      <pubDate>%s</pubDate>\n", p.Date.Format(time.RFC1123Z))
+			if p.TLDR != "" {
+				fmt.Fprintf(w, "      <description>%s</description>\n", html.EscapeString(p.TLDR))
+			}
+			fmt.Fprintln(w, `    </item>`)
+		}
+		fmt.Fprintln(w, `  </channel>`)
+		fmt.Fprintln(w, `</rss>`)
+	})
+
 	http.HandleFunc("GET /sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
@@ -118,7 +160,7 @@ func main() {
 		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
 		fmt.Fprintln(w, `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
-		for _, loc := range []string{"/home", "/resources"} {
+		for _, loc := range []string{"/home", "/resources", "/rss.xml"} {
 			fmt.Fprintf(w, "  <url><loc>https://www.ethanthoma.com%s</loc></url>\n", loc)
 		}
 		for _, p := range posts {
