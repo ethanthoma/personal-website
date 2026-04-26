@@ -1,8 +1,11 @@
 package pages
 
 import (
-	"personal-website/services/webserver/layouts"
 	"fmt"
+	"personal-website/services/webserver/layouts"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 type InfoRes struct {
@@ -12,6 +15,30 @@ type InfoRes struct {
 type Item struct {
 	Title string
 	URL   string
+	Year  int
+	Read  bool
+}
+
+var yearURLRegex = regexp.MustCompile(`/(19|20)\d{2}[/.]`)
+
+func (i Item) DisplayYear() int {
+	if i.Year > 0 {
+		return i.Year
+	}
+	if idx := strings.Index(i.URL, "/abs/"); idx >= 0 {
+		rest := i.URL[idx+5:]
+		if len(rest) >= 4 {
+			if yy, err := strconv.Atoi(rest[:2]); err == nil && yy >= 7 && yy <= 50 {
+				return 2000 + yy
+			}
+		}
+	}
+	if m := yearURLRegex.FindString(i.URL); m != "" {
+		if y, err := strconv.Atoi(m[1:5]); err == nil {
+			return y
+		}
+	}
+	return 0
 }
 
 var items_ml = []Item{
@@ -82,6 +109,7 @@ var items_ml = []Item{
 	{
 		Title: "Recurrent Neural Networks Meet Context-Free Grammar: Two Birds with One Stone",
 		URL:   "https://ieeexplore.ieee.org/document/9679033",
+		Year:  2021,
 	},
 	{
 		Title: "Pointer Networks",
@@ -94,6 +122,7 @@ var items_ml = []Item{
 	{
 		Title: "TC-MoE: Augmenting Mixture of Experts with Ternary Expert Choice",
 		URL:   "https://openreview.net/forum?id=dsP91M4hDL",
+		Year:  2025,
 	},
 	{
 		Title: "Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations",
@@ -106,10 +135,12 @@ var items_ml = []Item{
 	{
 		Title: "NanoGPT Speedrun Living Worklog",
 		URL:   "https://www.tylerromero.com/posts/nanogpt-speedrun-worklog/",
+		Year:  2025,
 	},
 	{
 		Title: "Uncensor any LLM with abliteration",
 		URL:   "https://huggingface.co/blog/mlabonne/abliteration",
+		Year:  2024,
 	},
 	{
 		Title: "Can Language Models Solve Olympiad Programming?",
@@ -126,6 +157,7 @@ var items_ml = []Item{
 	{
 		Title: "When, Where and Why to Average Weights?",
 		URL:   "https://openreview.net/forum?id=JN8O01IZYR",
+		Year:  2025,
 	},
 	{
 		Title: "Scaling Laws and Compute-Optimal Training Beyond Fixed Training Durations",
@@ -138,6 +170,7 @@ var items_ml = []Item{
 	{
 		Title: "BytePiece",
 		URL:   "https://github.com/bojone/bytepiece",
+		Year:  2023,
 	},
 	{
 		Title: "How Much is Enough? The Diminishing Returns of Tokenization Training Data",
@@ -165,10 +198,12 @@ var items_plt = []Item{
 	{
 		Title: "Effekt Language: Research Papers",
 		URL:   "https://effekt-lang.org/publications.html",
+		Year:  2020,
 	},
 	{
 		Title: "Garnet -- what if Rust was small?",
 		URL:   "https://sr.ht/~icefox/garnet/",
+		Year:  2020,
 	},
 	{
 		Title: "Refinement Types: A Tutorial",
@@ -177,46 +212,57 @@ var items_plt = []Item{
 	{
 		Title: "1ML – core and modules united (F-ing first-class modules)",
 		URL:   "https://dl.acm.org/doi/10.1145/2858949.2784738",
+		Year:  2015,
 	},
 	{
 		Title: "Hylo Language: Specification",
 		URL:   "https://github.com/hylo-lang/specification/blob/main/spec.md",
+		Year:  2022,
 	},
 	{
 		Title: "The Scopes Programming Infrastructure",
 		URL:   "https://scopes.readthedocs.io/en/latest/",
+		Year:  2017,
 	},
 	{
 		Title: "Terra Language",
 		URL:   "https://terralang.org/",
+		Year:  2013,
 	},
 	{
 		Title: "Swift: Ownership Manifesto",
 		URL:   "https://github.com/swiftlang/swift/blob/01c22b718cfc80a10feaefaf598aa1087f3766c8/docs/OwnershipManifesto.md",
+		Year:  2017,
 	},
 	{
 		Title: "Notes on a smaller Rust",
 		URL:   "https://without.boats/blog/notes-on-a-smaller-rust/",
+		Year:  2019,
 	},
 	{
 		Title: "Links Language",
 		URL:   "https://links-lang.org/",
+		Year:  2006,
 	},
 	{
 		Title: "An implementation of charity",
 		URL:   "https://ucalgary.scholaris.ca/items/8617652a-fcce-4de8-8f70-44245fbfd087",
+		Year:  2003,
 	},
 	{
 		Title: "Helix Language",
 		URL:   "https://www.helix-lang.com/",
+		Year:  2024,
 	},
 	{
 		Title: "Carp Language",
 		URL:   "https://github.com/carp-lang/Carp",
+		Year:  2016,
 	},
 	{
 		Title: "Second-Class References",
 		URL:   "https://borretti.me/article/second-class-references",
+		Year:  2023,
 	},
 	{
 		Title: "Borrow checking without lifetimes",
@@ -225,26 +271,32 @@ var items_plt = []Item{
 	{
 		Title: "Inko Langauge",
 		URL:   "https://inko-lang.org/",
+		Year:  2015,
 	},
 	{
 		Title: "Memory Management in Lobster",
 		URL:   "https://aardappel.github.io/lobster/memory_management.html",
+		Year:  2013,
 	},
 	{
 		Title: "The Granule Language",
 		URL:   "https://granule-project.github.io/granule.html",
+		Year:  2019,
 	},
 	{
 		Title: "Unison: Abilities",
 		URL:   "https://www.unison-lang.org/docs/fundamentals/abilities/",
+		Year:  2015,
 	},
 	{
 		Title: "Zero-Cost Borrowing with Vale Regions (Preview)",
 		URL:   "https://verdagon.dev/blog/zero-cost-borrowing-regions-overview",
+		Year:  2022,
 	},
 	{
 		Title: "Project Cambria: Translate your data with lenses",
 		URL:   "https://www.inkandswitch.com/cambria/",
+		Year:  2020,
 	},
 }
 
@@ -255,63 +307,48 @@ templ (p InfoRes) View() {
 		Title:       "Ethan Thoma / Resources",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<header class="font-mono">
-				<h1 class="font-bold">
-					ETHAN THOMA - INFORMATIONAL RESOURCES
-				</h1>
-				<br/>
-				<hr class="border-t-2 border-black border-dashed"/>
-				<br/>
+			<header>
+				<h1 class="font-bold leading-none text-l text-content/70">Resources</h1>
 			</header>
-			<section>
-				<p>
-					This page is a collection of resource links about machine 
-					learning (ML), programming language theory, and so-called 
-					"toy" languages that I find interesting. Some of these 
-					resources have been read, some them have not.
-				</p>
-				<br/>
-				<p>
-					The ML section consists almost entirely of research papers, 
-					so they may not be generally accessible. The programming 
-					language (theory) section is mostly comprised of links to 
-					project pages or GitHub; thus, more developer friendly.
-				</p>
-			</section>
-			<br/>
-			<hr class="border-t-2 border-black border-dashed"/>
-			<br/>
-			<section>
-				<table class="table-fixed [&_td]:align-top table-gap-x-[3ch]">
-					<thead><tr><th colspan="2" class="pb-[1em]">Machine Learning (ML)</th></tr></thead>
-					<tbody>
-						for index, item := range items_ml {
-							<tr>
-								<td scope="col" class="w-[1%]">{ fmt.Sprintf("%03d", index) }</td>
-								<td scope="col" class="w-full">
-									<a href={ templ.URL(item.URL) } class="font-semibold hover:underline text-blue hover:text-darkblue">
-										{ item.Title }<span class="whitespace-nowrap">&nbsp;<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg></span>
-									</a>
-								</td>
-							</tr>
-						}
-					</tbody>
-					<td colspan="3"><hr class="border-t-2 border-black border-dashed my-[1em]"/></td>
-					<thead><tr><th colspan="2" class="pb-[1em]">Programming Language(s) and Theory (PLT)</th></tr></thead>
-					<tbody>
-						for index, item := range items_plt {
-							<tr>
-								<td scope="col" class="w-[1%]">{ fmt.Sprintf("%03d", index) }</td>
-								<td scope="col" class="w-full">
-									<a href={ templ.URL(item.URL) } class="font-semibold hover:underline text-blue hover:text-darkblue">
-										{ item.Title }<span class="whitespace-nowrap">&nbsp;<svg class="inline ml-0.5 w-3 h-3 mr-[-2px]" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0v-6z"></path></svg></span>
-									</a>
-								</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</section>
+			<p class="font-sans mt-m text-m text-content/40">
+				Machine learning papers and programming language theory links that I've read or are to-be-read.
+			</p>
+			<h2 class="font-medium mt-xl text-m text-content/40">Machine learning</h2>
+			<ol class="flex flex-col mt-s">
+				for _, item := range items_ml {
+					@resourceRow(item)
+				}
+			</ol>
+			<h2 class="font-medium mt-xl text-m text-content/40">Programming language theory</h2>
+			<ol class="flex flex-col mt-s">
+				for _, item := range items_plt {
+					@resourceRow(item)
+				}
+			</ol>
 		</article>
 	}
+}
+
+templ resourceRow(item Item) {
+	{{ year := item.DisplayYear() }}
+	<li>
+		<a href={ templ.URL(item.URL) } class="flex items-baseline group py-3xs">
+			<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
+				if year > 0 {
+					<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
+				}
+				<span class="relative flex-1 min-w-0">
+					<span
+						class={
+							"bg-base box-decoration-clone pl-[2ch] [text-indent:-2ch] pr-2xs-xs group-hover:text-blue group-hover:underline",
+							templ.KV("text-content/60", !item.Read),
+						}
+					>{ item.Title }</span>
+				</span>
+				if year > 0 {
+					<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/40">{ fmt.Sprintf("%d", year) }</span>
+				}
+			</span>
+		</a>
+	</li>
 }
