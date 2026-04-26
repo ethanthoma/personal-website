@@ -1,6 +1,7 @@
 {
   fetchurl,
   makeWrapper,
+  rsync,
   buildGoApplication,
   tailwindcss,
   templpkgs,
@@ -21,6 +22,7 @@ buildGoApplication rec {
   subPackages = [ "services/${pname}" ];
   nativeBuildInputs = [
     makeWrapper
+    rsync
     tailwindcss
   ];
   preBuild = ''
