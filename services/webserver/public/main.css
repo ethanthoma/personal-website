@@ -4,6 +4,7 @@
 @import "tailwindcss/preflight.css" layer(base);
 
 @import "./fonts/Monaspace/style.css";
+@import "./fonts/PublicSans/style.css";
 
 @source "../**/*.templ";
 
