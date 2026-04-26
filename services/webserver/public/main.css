@@ -200,6 +200,18 @@
         @apply text-content/60;
     }
 
+    & cite {
+        @apply block;
+        @apply text-end;
+        @apply mt-2xs;
+        @apply not-italic;
+        @apply font-bold;
+        @apply text-xs;
+        @apply uppercase;
+        @apply tracking-wider;
+        @apply text-content/60;
+    }
+
     &>blockquote {
         @apply mt-xs;
     }
