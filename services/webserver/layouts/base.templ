@@ -8,9 +8,37 @@ type Base struct {
 	Pages       []string
 	PageCurrent string
 	Title       string
+	Description string
+	URL         string
+	OGType      string
+	Image       string
 }
 
+const (
+	siteHost  = "https://www.ethanthoma.com"
+	siteDesc  = "Notes on machine learning, NLP, and programming languages by Ethan Thoma."
+	siteImage = siteHost + "/public/favicon/android-chrome-512x512.png"
+)
+
 templ (p Base) View() {
+	{{
+		desc := p.Description
+		if desc == "" {
+			desc = siteDesc
+		}
+		ogType := p.OGType
+		if ogType == "" {
+			ogType = "website"
+		}
+		img := p.Image
+		if img == "" {
+			img = siteImage
+		}
+		canonical := ""
+		if p.URL != "" {
+			canonical = siteHost + p.URL
+		}
+	}}
 	if IsFragment(ctx) {
 		<title id="doc-title">{ p.Title }</title>
 		@components.Nav{
@@ -26,8 +54,22 @@ templ (p Base) View() {
 			<head>
 				<meta charset="UTF-8"/>
 				<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-				<meta name="description" content="Ethan Thoma's personal website"/>
+				<meta name="description" content={ desc }/>
 				<title id="doc-title">{ p.Title }</title>
+				<meta property="og:title" content={ p.Title }/>
+				<meta property="og:description" content={ desc }/>
+				<meta property="og:type" content={ ogType }/>
+				<meta property="og:image" content={ img }/>
+				<meta property="og:site_name" content="Ethan Thoma"/>
+				if canonical != "" {
+					<meta property="og:url" content={ canonical }/>
+					<link rel="canonical" href={ canonical }/>
+				}
+				<meta name="twitter:card" content="summary"/>
+				<meta name="twitter:site" content="@EthanBThoma"/>
+				<meta name="twitter:title" content={ p.Title }/>
+				<meta name="twitter:description" content={ desc }/>
+				<meta name="twitter:image" content={ img }/>
 				<script type="module" src="/public/js/datastar.js"></script>
 				<link rel="stylesheet" type="text/css" href="/public/main.css"/>
 				<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png"/>

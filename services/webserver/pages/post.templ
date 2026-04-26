@@ -21,6 +21,9 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 		Pages:       p.Pages,
 		PageCurrent: "",
 		Title:       "Ethan Thoma / " + post.Title,
+		Description: post.TLDR,
+		URL:         "/post/" + post.Slug,
+		OGType:      "article",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
