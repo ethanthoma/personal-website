@@ -10,7 +10,6 @@ import (
 	"os"
 	"slices"
 	"sort"
-	"strconv"
 
 	"github.com/alecthomas/chroma/v2"
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
@@ -60,11 +59,6 @@ func main() {
 	}
 
 	postsListHandler := func(w http.ResponseWriter, r *http.Request) {
-		offset, err := strconv.Atoi(r.PathValue("offset"))
-		if err != nil || offset < 0 {
-			http.Error(w, "bad offset", http.StatusBadRequest)
-			return
-		}
 		posts, err := cache.Cache.GetPosts()
 		if err != nil {
 			log.Printf("failed to fetch posts from cache (%v)", err)
@@ -72,30 +66,15 @@ func main() {
 		sort.SliceStable(posts, func(i, j int) bool {
 			return posts[i].Date.After(posts[j].Date)
 		})
-		end := offset + pages.PostsPageSize
-		end = min(end, len(posts))
-		if offset > end {
-			offset = end
-		}
-		pages.PostsList(posts[:end], len(posts)).Render(r.Context(), w)
+		pages.PostsList(posts, len(posts)).Render(r.Context(), w)
 	}
 
 	projectsListHandler := func(w http.ResponseWriter, r *http.Request) {
-		offset, err := strconv.Atoi(r.PathValue("offset"))
-		if err != nil || offset < 0 {
-			http.Error(w, "bad offset", http.StatusBadRequest)
-			return
-		}
 		projects := slices.Clone(internal.Projects)
 		sort.SliceStable(projects, func(i, j int) bool {
 			return projects[i].Date.After(projects[j].Date)
 		})
-		end := offset + pages.ProjectsPageSize
-		end = min(end, len(projects))
-		if offset > end {
-			offset = end
-		}
-		pages.ProjectsList(projects[:end], len(projects)).Render(r.Context(), w)
+		pages.ProjectsList(projects, len(projects)).Render(r.Context(), w)
 	}
 
 	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -156,8 +135,8 @@ func main() {
 		asFragment(h)(w, r)
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
-	http.HandleFunc("GET /fragment/posts/{offset}", asFragment(postsListHandler))
-	http.HandleFunc("GET /fragment/projects-list/{offset}", asFragment(projectsListHandler))
+	http.HandleFunc("GET /fragment/posts", asFragment(postsListHandler))
+	http.HandleFunc("GET /fragment/projects-list", asFragment(projectsListHandler))
 
 	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)

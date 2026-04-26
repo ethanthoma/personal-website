@@ -93,7 +93,7 @@ templ PostsList(posts []internal.Post, total int) {
 			</li>
 		}
 	</ol>
-	@loaderButton("post-loader", fmt.Sprintf("/fragment/posts/%d", len(posts)), len(posts) < total)
+	@loaderButton("post-loader", "/fragment/posts", len(posts) < total)
 }
 
 templ ProjectsList(projects []internal.Project, total int) {
@@ -117,7 +117,7 @@ templ ProjectsList(projects []internal.Project, total int) {
 			</li>
 		}
 	</ol>
-	@loaderButton("project-loader", fmt.Sprintf("/fragment/projects-list/%d", len(projects)), len(projects) < total)
+	@loaderButton("project-loader", "/fragment/projects-list", len(projects) < total)
 }
 
 templ listRowView(row listRow) {
