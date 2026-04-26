@@ -124,7 +124,7 @@
     }
 
     & h3 {
-        @apply text-s;
+        @apply text-m;
 
         @apply mt-s-m;
     }
@@ -176,13 +176,13 @@
 
     & ul,
     & ol {
-        @apply list-inside;
+        @apply list-outside;
         @apply list-disc;
+        @apply ps-m;
         @apply font-sans;
-
-        &>li {
-            @apply ml-m;
-        }
+        @apply text-m;
+        @apply leading-snug;
+        @apply marker:text-content/40;
 
         &>*+li {
             @apply mt-3xs;
