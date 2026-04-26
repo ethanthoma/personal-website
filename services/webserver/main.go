@@ -102,13 +102,35 @@ func main() {
 	http.HandleFunc("GET /resources", resourcesHandler)
 
 	// /blog, /projects, /sitemap used to be dedicated pages; their content now
-	// lives on /home (or in /public/seo/sitemap.xml for crawlers). 301 keeps
-	// any external bookmarks working.
+	// lives on /home (crawlers use /sitemap.xml below). 301 keeps any external
+	// bookmarks working.
 	for _, oldPath := range []string{"/blog", "/projects", "/sitemap"} {
 		http.HandleFunc("GET "+oldPath, func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 		})
 	}
+
+	http.HandleFunc("GET /sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
+		posts, err := cache.Cache.GetPosts()
+		if err != nil {
+			log.Printf("sitemap: failed to fetch posts (%v)", err)
+		}
+		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
+		fmt.Fprintln(w, `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
+		for _, loc := range []string{"/home", "/resources"} {
+			fmt.Fprintf(w, "  <url><loc>https://www.ethanthoma.com%s</loc></url>\n", loc)
+		}
+		for _, p := range posts {
+			lastmod := p.Date
+			if !p.LastModified.IsZero() {
+				lastmod = p.LastModified
+			}
+			fmt.Fprintf(w, "  <url><loc>https://www.ethanthoma.com/post/%s</loc><lastmod>%s</lastmod></url>\n",
+				p.Slug, lastmod.Format("2006-01-02"))
+		}
+		fmt.Fprintln(w, `</urlset>`)
+	})
 
 	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
