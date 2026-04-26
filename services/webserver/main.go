@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"html/template"
 	"log"
 	"mime"
 	"net/http"
 	"os"
+	"regexp"
 	"slices"
 	"sort"
 
@@ -20,6 +22,14 @@ import (
 	"personal-website/services/webserver/cache"
 	"personal-website/services/webserver/layouts"
 	"personal-website/services/webserver/pages"
+)
+
+// post.templ renders the title and tldr in their own elements, so the
+// markdown's leading H1 (always the post title) and leading blockquote (the
+// `> tldr;` summary) get stripped from the rendered HTML to avoid duplication.
+var (
+	leadingH1Re         = regexp.MustCompile(`(?s)^\s*<h1[^>]*>.*?</h1>\s*`)
+	leadingBlockquoteRe = regexp.MustCompile(`(?s)^\s*<blockquote[^>]*>.*?</blockquote>\s*`)
 )
 
 var (
@@ -109,7 +119,9 @@ func main() {
 			return
 		}
 
-		pages.Post{Pages: navList}.View(post).Render(r.Context(), w)
+		older, newer := postNeighbors(slug)
+
+		pages.Post{Pages: navList}.View(post, older, newer).Render(r.Context(), w)
 	}
 	http.HandleFunc("GET /post/{slug}", postHandler)
 
@@ -195,6 +207,9 @@ func slugToHTML(slug string) (internal.Post, error) {
 				),
 			),
 		),
+		goldmark.WithRendererOptions(
+			goldmarkhtml.WithUnsafe(),
+		),
 	)
 
 	var buf bytes.Buffer
@@ -204,7 +219,46 @@ func slugToHTML(slug string) (internal.Post, error) {
 		return post, err
 	}
 
-	post.HTML = template.HTML(buf.String())
+	htmlStr := leadingH1Re.ReplaceAllString(buf.String(), "")
+	if post.TLDR != "" {
+		htmlStr = leadingBlockquoteRe.ReplaceAllString(htmlStr, "")
+	}
+	post.HTML = template.HTML(htmlStr)
 
 	return post, nil
+}
+
+func postNeighbors(slug string) (older, newer *pages.PostNeighbor) {
+	posts, err := cache.Cache.GetPosts()
+	if err != nil {
+		log.Printf("failed to fetch posts from cache (%v)", err)
+		return nil, nil
+	}
+	sort.SliceStable(posts, func(i, j int) bool {
+		return posts[i].Date.After(posts[j].Date)
+	})
+	total := len(posts)
+	for i, p := range posts {
+		if p.Slug != slug {
+			continue
+		}
+		if i+1 < total {
+			o := posts[i+1]
+			older = &pages.PostNeighbor{
+				Slug:   o.Slug,
+				Title:  o.Title,
+				Number: fmt.Sprintf("%03d", total-(i+1)-1),
+			}
+		}
+		if i > 0 {
+			n := posts[i-1]
+			newer = &pages.PostNeighbor{
+				Slug:   n.Slug,
+				Title:  n.Title,
+				Number: fmt.Sprintf("%03d", total-(i-1)-1),
+			}
+		}
+		break
+	}
+	return older, newer
 }

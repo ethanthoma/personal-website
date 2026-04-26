@@ -98,32 +98,33 @@
         @apply mt-2xs;
     }
 
-    & h1, & h2, & h3 {
-        @apply font-bold;
-        @apply leading-none;
-        @apply tracking-tight;
-    }
-
-    & h1 {
-        @apply text-2xl;
-    }
-
-    & h1+* {
+    &>p+p {
         @apply mt-s;
     }
 
-    & h2 {
-        @apply text-l;
+    & h2, & h3 {
+        @apply font-bold;
+        @apply leading-none;
+        @apply font-mono;
+    }
 
-        @apply mt-m-l;
-        @apply pb-3xs-2xs;
-        @apply border-b-2;
-        @apply border-content;
-        @apply border-dashed;
+    & h2 {
+        @apply text-m;
+        @apply mt-m;
+        @apply flex;
+        @apply items-center;
+        @apply gap-xs;
+
+        &::after {
+            content: '';
+            @apply flex-1;
+            @apply h-px;
+            @apply bg-content/20;
+        }
     }
 
     & h3 {
-        @apply text-m;
+        @apply text-s;
 
         @apply mt-s-m;
     }
@@ -131,7 +132,8 @@
     & p {
         @apply font-sans;
         @apply tracking-wide;
-        @apply text-s;
+        @apply text-m;
+        @apply leading-normal;
 
         & code {
             @apply tracking-tight;
@@ -150,10 +152,6 @@
         @apply overflow-x-auto;
         @apply p-3xs;
         @apply font-[Monaspace_Krypton];
-        @apply border-white;
-        @apply border-1;
-        @apply outline-1;
-        @apply outline-black;
 
         &>code {
             @apply block;
@@ -170,8 +168,10 @@
     }
 
     & a {
-        @apply text-blue;
-        @apply hover:underline;
+        @apply underline;
+        @apply underline-offset-2;
+        @apply decoration-content/40;
+        @apply hover:decoration-content;
     }
 
     & ul,
@@ -193,9 +193,19 @@
         @apply italic;
         @apply w-fit;
         @apply p-2xs;
+        @apply ms-4xs;
         @apply space-y-xs;
-        @apply border-black;
+        @apply border-content/20;
         @apply border-s-1;
+        @apply text-content/60;
+    }
+
+    &>blockquote {
+        @apply mt-xs;
+    }
+
+    & > blockquote + p {
+        @apply mt-xs;
     }
 }
 
@@ -284,9 +294,7 @@ dl {
 
 hr {
     border: none;
-    background-image: radial-gradient(circle at center, black 0.5px, transparent 1px);
-    background-size: 0.25rem 0.25rem;
-    background-position: left top;
-    background-repeat: round;
-    height: 1em;
+    border-top: 1px solid;
+    @apply border-content/20;
+    @apply my-m-l;
 }
