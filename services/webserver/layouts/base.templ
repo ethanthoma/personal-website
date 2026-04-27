@@ -72,7 +72,8 @@ templ (p Base) View() {
 				<meta name="twitter:description" content={ desc }/>
 				<meta name="twitter:image" content={ img }/>
 				<script type="module" src={ static.Asset("js/datastar.js") }></script>
-				<link rel="stylesheet" type="text/css" href={ static.Asset("main.css") }/>
+				<link rel="preload" as="style" href={ static.Asset("main.css") } onload="this.onload=null;this.rel='stylesheet'"/>
+				<noscript><link rel="stylesheet" type="text/css" href={ static.Asset("main.css") }/></noscript>
 				<link rel="apple-touch-icon" sizes="180x180" href={ static.Asset("favicon/apple-touch-icon.png") }/>
 				<link rel="icon" type="image/png" sizes="512x512" href={ static.Asset("favicon/android-chrome-512x512.png") }/>
 				<link rel="icon" type="image/png" sizes="192x192" href={ static.Asset("favicon/android-chrome-192x192.png") }/>
