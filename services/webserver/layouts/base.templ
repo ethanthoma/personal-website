@@ -93,7 +93,7 @@ templ (p Base) View() {
 			>
 				<a
 					href="#main"
-					class="sr-only focus:not-sr-only focus:fixed focus:top-2xs focus:left-2xs focus:z-50 focus:px-xs focus:py-3xs focus:bg-base focus:text-blue focus:underline"
+					class="sr-only focus:fixed focus:z-50 focus:underline focus:not-sr-only focus:top-2xs focus:left-2xs focus:px-xs focus:py-3xs focus:bg-base focus:text-blue"
 				>Skip to content</a>
 				@components.Header{
 					PageCurrent: p.PageCurrent,
@@ -172,27 +172,10 @@ templ spaRuntime() {
 	</script>
 }
 
-// prefetchNav warms the browser's HTTP cache for every nav fragment except
-// the current page, using the exact Accept header datastar's @get() will
-// later send. This guarantees the subsequent click-triggered fetch() reuses
-// the cached response instead of issuing a fresh network request.
 templ prefetchNav(pages []string, current string) {
-	{{
-		targets := make([]string, 0, len(pages))
-		for _, p := range pages {
-			if p != current {
-				targets = append(targets, "/fragment/"+p)
-			}
+	for _, p := range pages {
+		if p != current {
+			<link rel="prefetch" href={ "/fragment/" + p }/>
 		}
-	}}
-	@templ.JSONScript("nav-prefetch-urls", targets)
-	<script>
-		addEventListener("DOMContentLoaded", () => {
-			const urls = JSON.parse(document.getElementById("nav-prefetch-urls").textContent);
-			const opts = { headers: { "Accept": "text/event-stream, text/html, application/json" } };
-			const warm = () => urls.forEach(u => fetch(u, opts).catch(() => {}));
-			if ("requestIdleCallback" in window) requestIdleCallback(warm);
-			else setTimeout(warm, 0);
-		});
-	</script>
+	}
 }
