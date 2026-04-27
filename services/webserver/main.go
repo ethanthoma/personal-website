@@ -26,6 +26,7 @@ import (
 	"personal-website/services/webserver/cache"
 	"personal-website/services/webserver/layouts"
 	"personal-website/services/webserver/pages"
+	"personal-website/services/webserver/static"
 )
 
 // post.templ renders the title and tldr in their own elements, so the
@@ -226,7 +227,7 @@ func main() {
 
 	// static
 
-	http.Handle("GET /public/", http.StripPrefix("/public/", http.FileServer(http.Dir("public"))))
+	http.Handle("GET /public/", static.Handler())
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, middlewareCache(logRequests)))

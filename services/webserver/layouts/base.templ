@@ -2,6 +2,7 @@ package layouts
 
 import (
 	"personal-website/services/webserver/components"
+	"personal-website/services/webserver/static"
 )
 
 type Base struct {
@@ -70,20 +71,20 @@ templ (p Base) View() {
 				<meta name="twitter:title" content={ p.Title }/>
 				<meta name="twitter:description" content={ desc }/>
 				<meta name="twitter:image" content={ img }/>
-				<script type="module" src="/public/js/datastar.js"></script>
-				<link rel="stylesheet" type="text/css" href="/public/main.css"/>
-				<link rel="apple-touch-icon" sizes="180x180" href="/public/favicon/apple-touch-icon.png"/>
-				<link rel="icon" type="image/png" sizes="512x512" href="/public/favicon/android-chrome-512x512.png"/>
-				<link rel="icon" type="image/png" sizes="192x192" href="/public/favicon/android-chrome-192x192.png"/>
-				<link rel="icon" type="image/png" sizes="32x32" href="/public/favicon/favicon-32x32.png"/>
-				<link rel="icon" type="image/png" sizes="16x16" href="/public/favicon/favicon-16x16.png"/>
-				<link rel="manifest" href="/public/favicon/site.webmanifest"/>
+				<script type="module" src={ static.Asset("js/datastar.js") }></script>
+				<link rel="stylesheet" type="text/css" href={ static.Asset("main.css") }/>
+				<link rel="apple-touch-icon" sizes="180x180" href={ static.Asset("favicon/apple-touch-icon.png") }/>
+				<link rel="icon" type="image/png" sizes="512x512" href={ static.Asset("favicon/android-chrome-512x512.png") }/>
+				<link rel="icon" type="image/png" sizes="192x192" href={ static.Asset("favicon/android-chrome-192x192.png") }/>
+				<link rel="icon" type="image/png" sizes="32x32" href={ static.Asset("favicon/favicon-32x32.png") }/>
+				<link rel="icon" type="image/png" sizes="16x16" href={ static.Asset("favicon/favicon-16x16.png") }/>
+				<link rel="manifest" href={ static.Asset("favicon/site.webmanifest") }/>
 				<link rel="alternate" type="application/rss+xml" title="Ethan Thoma" href="/rss.xml"/>
 				@prefetchNav(p.Pages, p.PageCurrent)
 				@spaRuntime()
-				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
-				<link rel="preload" as="font" href="public/fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2" type="font/woff2" crossorigin="anonymous"/>
-				<link rel="preload" as="font" href="public/fonts/PublicSans/PublicSans[wght].woff2" type="font/woff2" crossorigin="anonymous"/>
+				<link rel="preload" as="font" href={ static.Asset("fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2") } type="font/woff2" crossorigin="anonymous"/>
+				<link rel="preload" as="font" href={ static.Asset("fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2") } type="font/woff2" crossorigin="anonymous"/>
+				<link rel="preload" as="font" href={ static.Asset("fonts/PublicSans/PublicSans[wght].woff2") } type="font/woff2" crossorigin="anonymous"/>
 			</head>
 			<body
 				style="grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));"
