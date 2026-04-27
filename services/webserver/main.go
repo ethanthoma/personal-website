@@ -15,15 +15,9 @@ import (
 	"sort"
 	"time"
 
-	"github.com/alecthomas/chroma/v2"
-	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/parser"
-	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
-	highlighting "github.com/yuin/goldmark-highlighting/v2"
-
 	"personal-website/internal"
 	"personal-website/services/webserver/cache"
+	"personal-website/services/webserver/highlight"
 	"personal-website/services/webserver/layouts"
 	"personal-website/services/webserver/pages"
 	"personal-website/services/webserver/static"
@@ -244,48 +238,8 @@ func slugToHTML(slug string) (internal.Post, error) {
 		}
 	}
 
-	styleBuilder := chroma.NewStyleBuilder("default")
-	styleBuilder.AddEntry(chroma.Background, chroma.MustParseStyleEntry("bg:#ansiblack"))
-	styleBuilder.AddEntry(chroma.Keyword, chroma.MustParseStyleEntry("#FFA500"))
-	styleBuilder.AddEntry(chroma.Name, chroma.MustParseStyleEntry("#ansilightgray"))
-	styleBuilder.AddEntry(chroma.NameVariable, chroma.MustParseStyleEntry("#A500FF"))
-	styleBuilder.AddEntry(chroma.NameBuiltin, chroma.MustParseStyleEntry("#FF00A5"))
-	styleBuilder.AddEntry(chroma.NameFunction, chroma.MustParseStyleEntry("#00A5FF"))
-	styleBuilder.AddEntry(chroma.Literal, chroma.MustParseStyleEntry("#ansigreen"))
-	styleBuilder.AddEntry(chroma.LiteralNumber, chroma.MustParseStyleEntry("#ansigreen"))
-	styleBuilder.AddEntry(chroma.LiteralString, chroma.MustParseStyleEntry("#ansigreen"))
-
-	styleBuilder.AddEntry(chroma.LineNumbers, chroma.MustParseStyleEntry("#ansidarkgray"))
-	styleBuilder.AddEntry(chroma.Punctuation, chroma.MustParseStyleEntry("#a5a5a5"))
-	styleBuilder.AddEntry(chroma.Generic, chroma.MustParseStyleEntry("#ansiwhite"))
-	styleBuilder.AddEntry(chroma.Operator, chroma.MustParseStyleEntry("#ansiwhite"))
-	styleBuilder.AddEntry(chroma.Text, chroma.MustParseStyleEntry("#ansiwhite"))
-
-	style, err := styleBuilder.Build()
-
-	if err != nil {
-		log.Printf("error building style")
-	}
-
-	mdRenderer := goldmark.New(
-		goldmark.WithExtensions(
-			highlighting.NewHighlighting(
-				highlighting.WithCustomStyle(style),
-				highlighting.WithFormatOptions(
-					chromahtml.WithLineNumbers(true),
-				),
-			),
-		),
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-		),
-		goldmark.WithRendererOptions(
-			goldmarkhtml.WithUnsafe(),
-		),
-	)
-
 	var buf bytes.Buffer
-	err = mdRenderer.Convert([]byte(post.Content), &buf)
+	err = highlight.Renderer.Convert([]byte(post.Content), &buf)
 	if err != nil {
 		log.Printf("error parsing post %s to markdown (%v)", slug, err)
 		return post, err

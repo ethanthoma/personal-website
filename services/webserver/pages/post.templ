@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"personal-website/internal"
+	"personal-website/services/webserver/highlight"
 	"personal-website/services/webserver/layouts"
 )
 
@@ -42,6 +43,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 					<p class="font-sans italic text-content/60 mt-2xs">{ post.TLDR }</p>
 				</aside>
 			}
+			@templ.Raw("<style>" + highlight.CSS + "</style>")
 			<div class="content mt-m">
 				@templ.Raw(post.HTML)
 			</div>
