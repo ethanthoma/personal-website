@@ -5,6 +5,7 @@
     font-weight: 200 800;
     font-stretch: 100 125;
     font-style: oblique -11deg 0deg;
+    font-display: swap;
 }
 
 @font-face {
@@ -14,6 +15,7 @@
     font-weight: 200 800;
     font-stretch: 100 125;
     font-style: oblique -11deg 0deg;
+    font-display: swap;
 }
 
 @font-face {
@@ -23,6 +25,7 @@
     font-weight: 200 800;
     font-stretch: 100 125;
     font-style: oblique -11deg 0deg;
+    font-display: swap;
 }
 
 @font-face {
@@ -32,6 +35,7 @@
     font-weight: 200 800;
     font-stretch: 100 125;
     font-style: oblique -11deg 0deg;
+    font-display: swap;
 }
 
 @font-face {
@@ -41,4 +45,5 @@
     font-weight: 200 800;
     font-stretch: 100 125;
     font-style: oblique -11deg 0deg;
+    font-display: swap;
 }
