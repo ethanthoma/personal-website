@@ -248,15 +248,16 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, middlewareSecurity(middlewareCache(logRequests))))
 }
 
+// Each line of `html` gets its own `data: elements <line>` line. Datastar's
+// SSE parser splits every data line by the first space and treats it as
+// `<field> <value>`, so unprefixed continuations would be misinterpreted as
+// new fields named after the first word of each HTML/CSS line (e.g. "/*",
+// "<a", "background"...) rather than appended to the elements field.
 func writePatch(w http.ResponseWriter, selector, html string) {
 	fmt.Fprint(w, "event: datastar-patch-elements\n")
 	fmt.Fprintf(w, "data: selector %s\n", selector)
-	for i, line := range strings.Split(html, "\n") {
-		if i == 0 {
-			fmt.Fprintf(w, "data: elements %s\n", line)
-		} else {
-			fmt.Fprintf(w, "data: %s\n", line)
-		}
+	for _, line := range strings.Split(html, "\n") {
+		fmt.Fprintf(w, "data: elements %s\n", line)
 	}
 	fmt.Fprint(w, "\n")
 }
