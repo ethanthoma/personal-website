@@ -47,12 +47,15 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 // content rotates over time — pinning a hash would break navigation every
 // time CF updates the snippet. 'unsafe-eval' is required by datastar's
 // data-on:click expression model, which evaluates handler strings via
-// new Function() at click time. Inline styles still get per-block sha256s
-// because CF doesn't inject styles and ours are stable. frame-ancestors +
-// X-Frame-Options together block clickjacking on both modern and legacy
-// browsers. Permissions-Policy denies sensor/payment/clipboard APIs we don't
-// use, including the deprecated FLoC interest-cohort cohort. HSTS is
-// intentionally omitted because Cloudflare sets it at the edge.
+// new Function() at click time. Inline styles use per-block sha256s with no
+// 'unsafe-inline' fallback: CF doesn't inject styles and ours are stable, so
+// hash-only is genuinely strict (modern browsers ignore 'unsafe-inline' when
+// hashes are present anyway, leaving it in just produced a console warning).
+// frame-ancestors + X-Frame-Options together block clickjacking on both
+// modern and legacy browsers. Permissions-Policy denies sensor/payment/
+// clipboard APIs we don't use, including the deprecated FLoC interest-cohort
+// cohort. HSTS is intentionally omitted because Cloudflare sets it at the
+// edge.
 var csp = buildCSP()
 
 const (
@@ -64,7 +67,7 @@ func buildCSP() string {
 	styleHashes := cspHash(layouts.FontFacesInnerCSS) + " " + cspHash(highlight.CSS)
 	return "default-src 'self'; " +
 		"script-src 'self' 'unsafe-inline' 'unsafe-eval' " + cfBeaconScriptOrigin + "; " +
-		"style-src 'self' 'unsafe-inline' " + styleHashes + "; " +
+		"style-src 'self' " + styleHashes + "; " +
 		"img-src 'self' data:; " +
 		"font-src 'self'; " +
 		"connect-src 'self' " + cfBeaconReportOrigin + "; " +
