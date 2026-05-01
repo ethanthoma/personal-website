@@ -3,9 +3,6 @@
 @import "tailwindcss";
 @import "tailwindcss/preflight.css" layer(base);
 
-@import "./fonts/Monaspace/style.css";
-@import "./fonts/PublicSans/style.css";
-
 @source "../**/*.templ";
 
 @theme {
@@ -85,8 +82,8 @@
     --spacing-content: 40rem;
 
     /* Font */
-    --font-mono: "Monaspace Neon", monospace;
-    --font-sans: "Public Sans", sans-serif;
+    --font-mono: "Monaspace Neon", "Monaspace Fallback", ui-monospace, monospace;
+    --font-sans: "Public Sans", "Public Sans Fallback", ui-sans-serif, sans-serif;
 }
 
 * {

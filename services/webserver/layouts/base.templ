@@ -72,6 +72,7 @@ templ (p Base) View() {
 				<meta name="twitter:description" content={ desc }/>
 				<meta name="twitter:image" content={ img }/>
 				<script type="module" src={ static.Asset("js/datastar.js") }></script>
+				@fontFaces()
 				<link rel="preload" as="style" href={ static.Asset("main.css") } onload="this.onload=null;this.rel='stylesheet'"/>
 				<noscript><link rel="stylesheet" type="text/css" href={ static.Asset("main.css") }/></noscript>
 				<link rel="apple-touch-icon" sizes="180x180" href={ static.Asset("favicon/apple-touch-icon.png") }/>
@@ -178,4 +179,11 @@ templ prefetchNav(pages []string, current string) {
 			<link rel="prefetch" href={ "/fragment/" + p }/>
 		}
 	}
+}
+
+// Inlined so the browser registers @font-face on HTML parse rather than after
+// main.css arrives. Combined with the woff2 preloads below, the fallback→real
+// font swap fires on the first frame instead of waiting for stylesheet load.
+templ fontFaces() {
+	@templ.Raw(fontFacesHTML)
 }
