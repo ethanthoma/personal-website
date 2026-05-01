@@ -73,8 +73,7 @@ templ (p Base) View() {
 				<meta name="twitter:image" content={ img }/>
 				<script type="module" src={ static.Asset("js/datastar.js") }></script>
 				@fontFaces()
-				<link rel="preload" as="style" href={ static.Asset("main.css") } onload="this.onload=null;this.rel='stylesheet'"/>
-				<noscript><link rel="stylesheet" type="text/css" href={ static.Asset("main.css") }/></noscript>
+				<link rel="stylesheet" href={ static.Asset("main.css") }/>
 				<link rel="apple-touch-icon" sizes="180x180" href={ static.Asset("favicon/apple-touch-icon.png") }/>
 				<link rel="icon" type="image/png" sizes="512x512" href={ static.Asset("favicon/android-chrome-512x512.png") }/>
 				<link rel="icon" type="image/png" sizes="192x192" href={ static.Asset("favicon/android-chrome-192x192.png") }/>
@@ -88,7 +87,6 @@ templ (p Base) View() {
 				<link rel="preload" as="font" href={ static.Asset("fonts/PublicSans/PublicSans[wght].woff2") } type="font/woff2" crossorigin="anonymous"/>
 			</head>
 			<body
-				style="grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));"
 				class="grid overflow-x-hidden relative max-w-full min-h-full font-mono antialiased text-s grid-rows-[auto_1fr_auto] gap-x-xs-xl bg-base text-content"
 				lang="en-GB"
 			>
@@ -109,68 +107,11 @@ templ (p Base) View() {
 	}
 }
 
+// Body lives in spa.go as SpaRuntimeJS so middleware can compute its CSP
+// sha256 hash. Emitted via templ.Raw to ensure the bytes between <script>
+// and </script> match the hash exactly (no template-added whitespace).
 templ spaRuntime() {
-	<script>
-		(() => {
-			let displayedPath = location.pathname;
-			let pendingPath = null;
-			let inPopstate = false;
-			window.goTo = (path) => {
-				pendingPath = path;
-				if (!inPopstate) {
-					history.pushState(null, '', path);
-					scrollTo(0, 0);
-				}
-				displayedPath = path;
-			};
-			addEventListener("popstate", () => {
-				if (location.pathname === displayedPath) return;
-				const link = document.querySelector(`[href="${location.pathname}"]`);
-				if (!link) { location.reload(); return; }
-				inPopstate = true;
-				link.click();
-				inPopstate = false;
-			});
-			// If the fragment fetch dies (5xx, network drop, retries exhausted),
-			// fall back to a full-page navigation so the user at least lands on
-			// the right URL with fresh content instead of stale DOM.
-			document.addEventListener("datastar-fetch", (evt) => {
-				if (!pendingPath) return;
-				const t = evt.detail && evt.detail.type;
-				if (t === "error" || t === "retries-failed") {
-					location.href = pendingPath;
-				}
-			});
-
-			let syncingHash = false;
-			function syncHash() {
-				syncingHash = true;
-				const hash = location.hash.slice(1);
-				document.querySelectorAll("details").forEach(d => {
-					const content = d.querySelector("[id]");
-					const shouldOpen = !!hash && content && content.id === hash;
-					if (d.open !== shouldOpen) d.open = shouldOpen;
-				});
-				queueMicrotask(() => queueMicrotask(() => { syncingHash = false; }));
-			}
-			document.addEventListener("toggle", (ev) => {
-				if (syncingHash) return;
-				if (ev.target.tagName !== "DETAILS") return;
-				const content = ev.target.querySelector("[id]");
-				if (!content) return;
-				if (ev.target.open) {
-					if (location.hash !== "#" + content.id) {
-						history.pushState(null, '', "#" + content.id);
-					}
-				} else if (location.hash === "#" + content.id) {
-					history.pushState(null, '', location.pathname + location.search);
-				}
-			}, true);
-			addEventListener("hashchange", syncHash);
-			addEventListener("datastar-patch-elements", syncHash);
-			syncHash();
-		})();
-	</script>
+	@templ.Raw("<script>" + SpaRuntimeJS + "</script>")
 }
 
 templ prefetchNav(pages []string, current string) {

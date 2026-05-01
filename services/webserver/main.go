@@ -224,7 +224,7 @@ func main() {
 	http.Handle("GET /public/", static.Handler())
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
-	log.Fatal(http.ListenAndServe(":"+port, middlewareCache(logRequests)))
+	log.Fatal(http.ListenAndServe(":"+port, middlewareSecurity(middlewareCache(logRequests))))
 }
 
 func slugToHTML(slug string) (internal.Post, error) {

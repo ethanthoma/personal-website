@@ -4,11 +4,15 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"net"
 	"net/http"
 	"strings"
+
+	"personal-website/services/webserver/highlight"
+	"personal-website/services/webserver/layouts"
 )
 
 type responseWriter struct {
@@ -35,6 +39,54 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 	}
 
 	return h.Hijack()
+}
+
+// CSP keeps script/style/font/img/connect to 'self' (everything ships from
+// /public/). Inline <script>/<style> blocks are allowed via per-block sha256
+// hashes computed from the exact bytes ship — no 'unsafe-inline'. frame-
+// ancestors + X-Frame-Options together block clickjacking on both modern and
+// legacy browsers. Permissions-Policy denies sensor/payment/clipboard APIs we
+// don't use, including the deprecated FLoC interest-cohort cohort. HSTS is
+// intentionally omitted because Cloudflare sets it at the edge.
+var csp = buildCSP()
+
+func buildCSP() string {
+	scriptHash := cspHash(layouts.SpaRuntimeJS)
+	styleHashes := cspHash(layouts.FontFacesInnerCSS) + " " + cspHash(highlight.CSS)
+	// 'unsafe-inline' is ignored by modern browsers (CSP3 spec) when a hash
+	// is present, so it doesn't weaken the policy here. It only takes effect
+	// on legacy browsers that don't understand the hash sources, where it
+	// gracefully falls back to allowing inline blocks.
+	return "default-src 'self'; " +
+		"script-src 'self' 'unsafe-inline' " + scriptHash + "; " +
+		"style-src 'self' 'unsafe-inline' " + styleHashes + "; " +
+		"img-src 'self' data:; " +
+		"font-src 'self'; " +
+		"connect-src 'self'; " +
+		"frame-ancestors 'none'; " +
+		"base-uri 'self'; " +
+		"form-action 'self'; " +
+		"object-src 'none'; " +
+		"upgrade-insecure-requests"
+}
+
+func cspHash(content string) string {
+	sum := sha256.Sum256([]byte(content))
+	return "'sha256-" + base64.StdEncoding.EncodeToString(sum[:]) + "'"
+}
+
+const permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+
+func middlewareSecurity(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		h := w.Header()
+		h.Set("Content-Security-Policy", csp)
+		h.Set("Permissions-Policy", permissionsPolicy)
+		h.Set("Referrer-Policy", "strict-origin-when-cross-origin")
+		h.Set("X-Content-Type-Options", "nosniff")
+		h.Set("X-Frame-Options", "DENY")
+		next.ServeHTTP(w, r)
+	})
 }
 
 func middlewareCache(next http.Handler) http.Handler {

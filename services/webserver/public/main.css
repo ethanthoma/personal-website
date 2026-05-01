@@ -91,6 +91,10 @@
     @apply focus-visible:outline-offset-4;
 }
 
+body {
+    grid-template-columns: minmax(0, calc((100% - var(--spacing-content)) / 2)) repeat(10, minmax(0, 1fr)) minmax(0, calc((100% - var(--spacing-content)) / 2));
+}
+
 .content {
     &>*+* {
         @apply mt-2xs;
