@@ -43,26 +43,34 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 
 // CSP keeps script/style/font/img/connect to 'self' (everything ships from
 // /public/). Inline <script>/<style> blocks are allowed via per-block sha256
-// hashes computed from the exact bytes ship — no 'unsafe-inline'. frame-
-// ancestors + X-Frame-Options together block clickjacking on both modern and
-// legacy browsers. Permissions-Policy denies sensor/payment/clipboard APIs we
-// don't use, including the deprecated FLoC interest-cohort cohort. HSTS is
-// intentionally omitted because Cloudflare sets it at the edge.
+// hashes computed from the exact bytes ship; 'unsafe-inline' is added as a
+// legacy fallback, ignored by modern browsers when hashes are present (CSP3
+// spec). 'unsafe-eval' is required by datastar's data-on:click expression
+// model, which evaluates handler strings via new Function() at click time.
+// Cloudflare Web Analytics injects beacon.min.js + an inline beacon at the
+// edge after our response leaves the origin; both are explicitly allowed so
+// page navigation works in prod. frame-ancestors + X-Frame-Options together
+// block clickjacking on both modern and legacy browsers. Permissions-Policy
+// denies sensor/payment/clipboard APIs we don't use, including the deprecated
+// FLoC interest-cohort cohort. HSTS is intentionally omitted because
+// Cloudflare sets it at the edge.
 var csp = buildCSP()
+
+const (
+	cfBeaconScriptOrigin = "https://static.cloudflareinsights.com"
+	cfBeaconReportOrigin = "https://cloudflareinsights.com"
+	cfBeaconInlineHash   = "'sha256-BwGXUuO1vNwqUNMaXnnoM5Wm3m7SgfdZuNaoNWIOLx0='"
+)
 
 func buildCSP() string {
 	scriptHash := cspHash(layouts.SpaRuntimeJS)
 	styleHashes := cspHash(layouts.FontFacesInnerCSS) + " " + cspHash(highlight.CSS)
-	// 'unsafe-inline' is ignored by modern browsers (CSP3 spec) when a hash
-	// is present, so it doesn't weaken the policy here. It only takes effect
-	// on legacy browsers that don't understand the hash sources, where it
-	// gracefully falls back to allowing inline blocks.
 	return "default-src 'self'; " +
-		"script-src 'self' 'unsafe-inline' " + scriptHash + "; " +
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval' " + scriptHash + " " + cfBeaconScriptOrigin + " " + cfBeaconInlineHash + "; " +
 		"style-src 'self' 'unsafe-inline' " + styleHashes + "; " +
 		"img-src 'self' data:; " +
 		"font-src 'self'; " +
-		"connect-src 'self'; " +
+		"connect-src 'self' " + cfBeaconReportOrigin + "; " +
 		"frame-ancestors 'none'; " +
 		"base-uri 'self'; " +
 		"form-action 'self'; " +
