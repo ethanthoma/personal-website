@@ -42,31 +42,28 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 }
 
 // CSP keeps script/style/font/img/connect to 'self' (everything ships from
-// /public/). Inline <script>/<style> blocks are allowed via per-block sha256
-// hashes computed from the exact bytes ship; 'unsafe-inline' is added as a
-// legacy fallback, ignored by modern browsers when hashes are present (CSP3
-// spec). 'unsafe-eval' is required by datastar's data-on:click expression
-// model, which evaluates handler strings via new Function() at click time.
-// Cloudflare Web Analytics injects beacon.min.js + an inline beacon at the
-// edge after our response leaves the origin; both are explicitly allowed so
-// page navigation works in prod. frame-ancestors + X-Frame-Options together
-// block clickjacking on both modern and legacy browsers. Permissions-Policy
-// denies sensor/payment/clipboard APIs we don't use, including the deprecated
-// FLoC interest-cohort cohort. HSTS is intentionally omitted because
-// Cloudflare sets it at the edge.
+// /public/). Inline scripts use 'unsafe-inline' rather than per-block hashes
+// because Cloudflare Web Analytics injects an inline beacon at the edge whose
+// content rotates over time — pinning a hash would break navigation every
+// time CF updates the snippet. 'unsafe-eval' is required by datastar's
+// data-on:click expression model, which evaluates handler strings via
+// new Function() at click time. Inline styles still get per-block sha256s
+// because CF doesn't inject styles and ours are stable. frame-ancestors +
+// X-Frame-Options together block clickjacking on both modern and legacy
+// browsers. Permissions-Policy denies sensor/payment/clipboard APIs we don't
+// use, including the deprecated FLoC interest-cohort cohort. HSTS is
+// intentionally omitted because Cloudflare sets it at the edge.
 var csp = buildCSP()
 
 const (
 	cfBeaconScriptOrigin = "https://static.cloudflareinsights.com"
 	cfBeaconReportOrigin = "https://cloudflareinsights.com"
-	cfBeaconInlineHash   = "'sha256-BwGXUuO1vNwqUNMaXnnoM5Wm3m7SgfdZuNaoNWIOLx0='"
 )
 
 func buildCSP() string {
-	scriptHash := cspHash(layouts.SpaRuntimeJS)
 	styleHashes := cspHash(layouts.FontFacesInnerCSS) + " " + cspHash(highlight.CSS)
 	return "default-src 'self'; " +
-		"script-src 'self' 'unsafe-inline' 'unsafe-eval' " + scriptHash + " " + cfBeaconScriptOrigin + " " + cfBeaconInlineHash + "; " +
+		"script-src 'self' 'unsafe-inline' 'unsafe-eval' " + cfBeaconScriptOrigin + "; " +
 		"style-src 'self' 'unsafe-inline' " + styleHashes + "; " +
 		"img-src 'self' data:; " +
 		"font-src 'self'; " +
