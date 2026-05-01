@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"slices"
 	"sort"
+	"strings"
 	"time"
 
 	"personal-website/internal"
@@ -192,15 +193,34 @@ func main() {
 	}
 	http.HandleFunc("GET /post/{slug}", postHandler)
 
-	// Explicit Content-Type: fragments don't start with <!DOCTYPE html>, so
-	// Go's auto-sniffer labels them text/plain, which datastar's @get() can't
-	// HTML-patch and which browsers may skip the prefetch cache for.
+	// Wraps a page handler as a datastar SSE patch event:
+	//   event: datastar-patch-elements
+	//   data: elements <html>...
+	//
+	// SSE prevents Cloudflare's Web Analytics beacon from being appended to
+	// the response body (CF only injects into text/html), which was triggering
+	// PatchElementsNoTargetsFound warnings on every navigation as datastar
+	// tried to patch the trailing <script>. Multi-line HTML (chroma CSS in
+	// posts) is split into one `data:` line per source line per the SSE spec.
 	asFragment := func(h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			w.Header().Set("Cache-Control", "public, max-age=60")
 			ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
-			h(w, r.WithContext(ctx))
+			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
+			h(rw, r.WithContext(ctx))
+
+			w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-cache")
+			w.WriteHeader(rw.status)
+
+			fmt.Fprint(w, "event: datastar-patch-elements\n")
+			for i, line := range strings.Split(rw.body.String(), "\n") {
+				if i == 0 {
+					fmt.Fprintf(w, "data: elements %s\n", line)
+				} else {
+					fmt.Fprintf(w, "data: %s\n", line)
+				}
+			}
+			fmt.Fprint(w, "\n")
 		}
 	}
 
