@@ -20,12 +20,13 @@ const (
 
 var devMode = os.Getenv("DEV") == "1"
 
-// Version is the deploy-time content hash of public/, computed once at package
-// init
-var Version = computeVersion(publicRoot)
+// Per-asset content hashes computed once at startup. Each file gets its own
+// version prefix so changing one asset (e.g. main.css) doesn't invalidate the
+// cache entry for every other asset (e.g. the 186 KB Monaspace woff2).
+var assetVersions = computeAssetVersions(publicRoot)
 
-func computeVersion(root string) string {
-	h := sha256.New()
+func computeAssetVersions(root string) map[string]string {
+	out := map[string]string{}
 	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
@@ -37,35 +38,39 @@ func computeVersion(root string) string {
 		if err != nil {
 			return err
 		}
-		h.Write([]byte(rel))
-		h.Write([]byte{0})
 		f, err := os.Open(path)
 		if err != nil {
 			return err
 		}
 		defer f.Close()
+		h := sha256.New()
 		if _, err := io.Copy(h, f); err != nil {
 			return err
 		}
+		out[filepath.ToSlash(rel)] = hex.EncodeToString(h.Sum(nil))[:8]
 		return nil
 	})
 	if err != nil {
-		log.Printf("static: failed to hash %s (%v) - falling back to dev marker", root, err)
-		return "dev"
+		log.Printf("static: failed to hash %s (%v) - serving without version prefix", root, err)
 	}
-	return hex.EncodeToString(h.Sum(nil))[:8]
+	return out
 }
 
-// Asset returns the long-cached, version-prefixed URL for a file under public/.
+// Asset returns the long-cached, content-hashed URL for a file under public/.
 // Accepts paths with or without a leading slash and with or without the
-// "public/" prefix
+// "public/" prefix. Falls back to an unversioned URL if the file wasn't in
+// public/ at startup.
 func Asset(path string) string {
 	path = strings.TrimPrefix(path, "/")
 	path = strings.TrimPrefix(path, "public/")
 	if devMode {
 		return urlPrefix + path
 	}
-	return urlPrefix + versionTag + Version + "/" + path
+	v, ok := assetVersions[path]
+	if !ok {
+		return urlPrefix + path
+	}
+	return urlPrefix + versionTag + v + "/" + path
 }
 
 // URLs starting with /public/v_<hash>/ are deploy-versioned and get a 1-year
