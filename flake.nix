@@ -47,6 +47,10 @@
               pkgs.biome
               pkgs.mago
               pkgs.superhtml
+
+              pkgs.google-lighthouse
+              pkgs.chromium
+              pkgs.jq
             ];
 
             commands = [

@@ -5,6 +5,7 @@
 !.gitignore
 !.github/workflows/*
 !dev.sh
+!perf.sh
 
 # go 
 !internal/
