@@ -311,16 +311,16 @@ templ (p InfoRes) View() {
 			<header>
 				<h1 class="font-bold leading-none text-l text-content/70">Resources</h1>
 			</header>
-			<p class="font-sans mt-m text-m text-content/40">
+			<p class="font-sans mt-m text-m text-content/60">
 				Machine learning papers and programming language theory links that I've read or are to-be-read.
 			</p>
-			<h2 class="font-medium mt-xl text-m text-content/40">Machine learning</h2>
+			<h2 class="font-medium mt-xl text-m text-content/60">Machine learning</h2>
 			<ol class="flex flex-col mt-s">
 				for _, item := range items_ml {
 					@resourceRow(item)
 				}
 			</ol>
-			<h2 class="font-medium mt-xl text-m text-content/40">Programming language theory</h2>
+			<h2 class="font-medium mt-xl text-m text-content/60">Programming language theory</h2>
 			<ol class="flex flex-col mt-s">
 				for _, item := range items_plt {
 					@resourceRow(item)
@@ -347,7 +347,7 @@ templ resourceRow(item Item) {
 					>{ item.Title }</span>
 				</span>
 				if year > 0 {
-					<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/40">{ fmt.Sprintf("%d", year) }</span>
+					<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60">{ fmt.Sprintf("%d", year) }</span>
 				}
 			</span>
 		</a>

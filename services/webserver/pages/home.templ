@@ -52,7 +52,7 @@ templ (p Home) View(posts []internal.Post) {
 				<h1 class="font-bold leading-none text-l text-content/70">Ethan Thoma</h1>
 				<p class="leading-none text-content/60">Cofounder @ stealth startup</p>
 			</header>
-			<p class="font-sans mt-m text-m text-content/40">
+			<p class="font-sans mt-m text-m text-content/60">
 				I work on machine learning, natural language processing, and reinforcement
 				learning, with an emphasis on explainability. Mostly Python, Gleam, Zig,
 				Odin, and Nix.
@@ -68,11 +68,11 @@ templ (p Home) View(posts []internal.Post) {
 				>read my resume</a>.
 			</p>
 			if len(projects) > 0 {
-				<h2 class="font-medium mt-l text-content/40">Projects</h2>
+				<h2 class="font-medium mt-l text-content/60">Projects</h2>
 				@ProjectsList(visibleProjects, len(projects))
 			}
 			if len(posts) > 0 {
-				<h2 class="font-medium mt-l text-content/40">Writing</h2>
+				<h2 class="font-medium mt-l text-content/60">Writing</h2>
 				@PostsList(visiblePosts, len(posts))
 			}
 		</article>
@@ -129,7 +129,7 @@ templ listRowView(row listRow) {
 			data-on:click__prevent={ row.OnClick }
 		}
 	>
-		<span class="font-mono tabular-nums text-content/40 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
+		<span class="font-mono tabular-nums text-content/60 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
 		<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
 			<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
 			<span class="relative flex-1 min-w-0">
@@ -140,7 +140,7 @@ templ listRowView(row listRow) {
 					}
 				</span>
 			</span>
-			<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/40"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
+			<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
 		</span>
 	</a>
 }
@@ -150,7 +150,7 @@ templ loaderButton(id string, fragmentURL string, hasMore bool) {
 		if hasMore {
 			<button
 				type="button"
-				class="font-sans cursor-pointer text-content/40 hover:text-blue"
+				class="font-sans cursor-pointer text-content/60 hover:text-blue"
 				data-on:click__prevent={ "@get('" + fragmentURL + "')" }
 			>load more</button>
 		}

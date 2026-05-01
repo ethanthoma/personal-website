@@ -37,7 +37,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 			if post.TLDR != "" {
 				<aside class="mt-m">
 					<div class="flex items-center gap-xs">
-						<span class="font-mono uppercase text-content/40 text-s">tldr</span>
+						<span class="font-mono uppercase text-content/60 text-s">tldr</span>
 						<span class="flex-1 h-px bg-content/20"></span>
 					</div>
 					<p class="font-sans italic text-content/60 mt-2xs">{ post.TLDR }</p>
@@ -56,9 +56,9 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 								class="group"
 								data-on:click__prevent={ "goTo('/post/" + older.Slug + "'); @get('/fragment/post/" + older.Slug + "')" }
 							>
-								<span class="text-content/40">&larr;</span>
+								<span class="text-content/60">&larr;</span>
 								{ " " }
-								<span class="font-mono tabular-nums text-content/40">{ older.Number }</span>
+								<span class="font-mono tabular-nums text-content/60">{ older.Number }</span>
 								{ "  " }
 								<span class="group-hover:text-blue">{ older.Title }</span>
 							</a>
@@ -73,9 +73,9 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 							>
 								<span class="group-hover:text-blue">{ newer.Title }</span>
 								{ "  " }
-								<span class="font-mono tabular-nums text-content/40">{ newer.Number }</span>
+								<span class="font-mono tabular-nums text-content/60">{ newer.Number }</span>
 								{ " " }
-								<span class="text-content/40">&rarr;</span>
+								<span class="text-content/60">&rarr;</span>
 							</a>
 						}
 					</div>
