@@ -193,15 +193,16 @@ func main() {
 	}
 	http.HandleFunc("GET /post/{slug}", postHandler)
 
-	// Wraps a page handler as a datastar SSE patch event:
-	//   event: datastar-patch-elements
-	//   data: elements <html>...
+	// Wraps a page handler as datastar SSE patch events. The fragment template
+	// always emits exactly three top-level elements (<title>, <nav id="nav">,
+	// <main id="main">). We split them and emit one SSE event per element with
+	// an explicit selector, which avoids datastar's children-iteration code
+	// path. That path triggered PatchElementsNoTargetsFound on Firefox even
+	// with all IDs present — the explicit-selector path uses
+	// querySelectorAll(t) which doesn't have the same failure mode.
 	//
-	// SSE prevents Cloudflare's Web Analytics beacon from being appended to
-	// the response body (CF only injects into text/html), which was triggering
-	// PatchElementsNoTargetsFound warnings on every navigation as datastar
-	// tried to patch the trailing <script>. Multi-line HTML (chroma CSS in
-	// posts) is split into one `data:` line per source line per the SSE spec.
+	// SSE also prevents Cloudflare's Web Analytics beacon from being appended
+	// to the response body (CF only injects into text/html).
 	asFragment := func(h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
@@ -212,15 +213,15 @@ func main() {
 			w.Header().Set("Cache-Control", "no-cache")
 			w.WriteHeader(rw.status)
 
-			fmt.Fprint(w, "event: datastar-patch-elements\n")
-			for i, line := range strings.Split(rw.body.String(), "\n") {
-				if i == 0 {
-					fmt.Fprintf(w, "data: elements %s\n", line)
-				} else {
-					fmt.Fprintf(w, "data: %s\n", line)
-				}
-			}
-			fmt.Fprint(w, "\n")
+			body := rw.body.String()
+			titleEnd := strings.Index(body, "</title>") + len("</title>")
+			navStart := strings.Index(body[titleEnd:], "<nav") + titleEnd
+			navEnd := strings.Index(body[navStart:], "</nav>") + navStart + len("</nav>")
+			mainStart := strings.Index(body[navEnd:], "<main") + navEnd
+
+			writePatch(w, "title", body[:titleEnd])
+			writePatch(w, "#nav", body[navStart:navEnd])
+			writePatch(w, "#main", body[mainStart:])
 		}
 	}
 
@@ -245,6 +246,19 @@ func main() {
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, middlewareSecurity(middlewareCache(logRequests))))
+}
+
+func writePatch(w http.ResponseWriter, selector, html string) {
+	fmt.Fprint(w, "event: datastar-patch-elements\n")
+	fmt.Fprintf(w, "data: selector %s\n", selector)
+	for i, line := range strings.Split(html, "\n") {
+		if i == 0 {
+			fmt.Fprintf(w, "data: elements %s\n", line)
+		} else {
+			fmt.Fprintf(w, "data: %s\n", line)
+		}
+	}
+	fmt.Fprint(w, "\n")
 }
 
 func slugToHTML(slug string) (internal.Post, error) {
