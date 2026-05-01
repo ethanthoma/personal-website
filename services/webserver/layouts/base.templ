@@ -45,8 +45,7 @@ templ (p Base) View() {
 		@components.Nav{
 			PageCurrent: p.PageCurrent,
 			Pages:       p.Pages,
-		}.View()
-		<main id="main" class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-xl pb-2xl">
+		}.View()<main id="main" class="grid auto-rows-min grid-cols-subgrid col-[1/-1] py-xl pb-2xl">
 			{ children... }
 		</main>
 	} else {
