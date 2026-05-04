@@ -45,7 +45,6 @@ var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request
 func main() {
 	log.Printf("Starting server on %s...", port)
 
-	// Register MIME types explicitly
 	mime.AddExtensionType(".js", "text/javascript")
 	mime.AddExtensionType(".css", "text/css")
 
@@ -54,8 +53,6 @@ func main() {
 	http.HandleFunc("GET /healthy", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
-
-	// pages
 
 	navList := []string{"home", "resources"}
 
@@ -225,6 +222,25 @@ func main() {
 		}
 	}
 
+	// Same explicit-selector rationale as asFragment, but for list partials
+	// that emit <ol>...</ol><div>...</div>.
+	asListFragment := func(listSelector, loaderSelector string, h http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
+			h(rw, r)
+
+			w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-cache")
+			w.WriteHeader(rw.status)
+
+			body := rw.body.String()
+			olEnd := strings.Index(body, "</ol>") + len("</ol>")
+
+			writePatch(w, listSelector, body[:olEnd])
+			writePatch(w, loaderSelector, body[olEnd:])
+		}
+	}
+
 	http.HandleFunc("GET /fragment/{name}", func(w http.ResponseWriter, r *http.Request) {
 		name := r.PathValue("name")
 		h, ok := navHandlers[name]
@@ -235,12 +251,10 @@ func main() {
 		asFragment(h)(w, r)
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
-	http.HandleFunc("GET /fragment/posts", asFragment(postsListHandler))
-	http.HandleFunc("GET /fragment/projects-list", asFragment(projectsListHandler))
+	http.HandleFunc("GET /fragment/posts", asListFragment("#posts-list", "#post-loader", postsListHandler))
+	http.HandleFunc("GET /fragment/projects-list", asListFragment("#projects-list", "#project-loader", projectsListHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
-
-	// static
 
 	http.Handle("GET /public/", static.Handler())
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
