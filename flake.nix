@@ -47,6 +47,7 @@
               pkgs.biome
               pkgs.mago
               pkgs.superhtml
+              pkgs.oxlint
 
               pkgs.google-lighthouse
               pkgs.chromium

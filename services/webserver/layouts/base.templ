@@ -107,9 +107,9 @@ templ (p Base) View() {
 	}
 }
 
-// Body lives in spa.go as SpaRuntimeJS so middleware can compute its CSP
-// sha256 hash. Emitted via templ.Raw to ensure the bytes between <script>
-// and </script> match the hash exactly (no template-added whitespace).
+// templ.Raw avoids template-added whitespace inside the <script>, so the
+// emitted bytes match the source file exactly (matters for any future
+// hash-based CSP for script-src).
 templ spaRuntime() {
 	@templ.Raw("<script>" + SpaRuntimeJS + "</script>")
 }
