@@ -47,7 +47,7 @@ func buildStyle() *chroma.Style {
 
 // renderCSS emits the chroma stylesheet for `style` as a single string,
 // using the same class names the renderer below stamps on each <span>.
-// The result is injected into post.templ via a <style> block — small
+// The result is injected into post.templ via a <style> block: small
 // (~1KB), only loaded with posts, and replaces ~280 inline style="..."
 // attributes per post page.
 func renderCSS(s *chroma.Style) string {

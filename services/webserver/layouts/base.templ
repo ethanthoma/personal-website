@@ -123,7 +123,7 @@ templ prefetchNav(pages []string, current string) {
 }
 
 // Inlined so the browser registers @font-face on HTML parse rather than after
-// main.css arrives. Combined with the woff2 preloads below, the fallback→real
+// main.css arrives. Combined with the woff2 preloads below, the fallback-to-real
 // font swap fires on the first frame instead of waiting for stylesheet load.
 templ fontFaces() {
 	@templ.Raw(fontFacesHTML)

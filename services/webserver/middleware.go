@@ -44,7 +44,7 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 // CSP keeps script/style/font/img/connect to 'self' (everything ships from
 // /public/). Inline scripts use 'unsafe-inline' rather than per-block hashes
 // because Cloudflare Web Analytics injects an inline beacon at the edge whose
-// content rotates over time — pinning a hash would break navigation every
+// content rotates over time -- pinning a hash would break navigation every
 // time CF updates the snippet. 'unsafe-eval' is required by datastar's
 // data-on:click expression model, which evaluates handler strings via
 // new Function() at click time. Inline styles use per-block sha256s with no
@@ -129,7 +129,7 @@ func eTag(content []byte) string {
 	return fmt.Sprintf("W/\"%s\"", hash)
 }
 
-// etagMatch performs weak comparison per RFC 7232 §2.3.2: the opaque-tag
+// etagMatch performs weak comparison per RFC 7232 section 2.3.2: the opaque-tag
 // bodies must match, ignoring W/ prefix. Also handles comma-separated lists
 // (If-None-Match: W/"a", W/"b") and the wildcard "*".
 func etagMatch(ifNoneMatch, serverTag string) bool {

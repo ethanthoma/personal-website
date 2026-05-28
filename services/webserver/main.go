@@ -1,42 +1,16 @@
 package main
 
 import (
-	"bytes"
-	"context"
-	"fmt"
-	"html"
-	"html/template"
 	"log"
 	"mime"
 	"net/http"
 	"os"
-	"regexp"
-	"slices"
-	"sort"
-	"strconv"
-	"strings"
-	"time"
 
-	"personal-website/internal"
 	"personal-website/services/webserver/cache"
-	"personal-website/services/webserver/highlight"
-	"personal-website/services/webserver/layouts"
-	"personal-website/services/webserver/pages"
 	"personal-website/services/webserver/static"
 )
 
-// post.templ renders the title and tldr in their own elements, so the
-// markdown's leading H1 (always the post title) and leading blockquote (the
-// `> tldr;` summary) get stripped from the rendered HTML to avoid duplication.
-var (
-	leadingH1Re         = regexp.MustCompile(`(?s)^\s*<h1[^>]*>.*?</h1>\s*`)
-	leadingBlockquoteRe = regexp.MustCompile(`(?s)^\s*<blockquote[^>]*>.*?</blockquote>\s*`)
-	headingAnchorRe     = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
-)
-
-var (
-	port = os.Getenv("WEBSERVER_PORT")
-)
+var port = os.Getenv("WEBSERVER_PORT")
 
 var logRequests = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 	log.Printf("%s %s\n", req.Method, req.URL)
@@ -55,310 +29,28 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 	})
 
-	navList := []string{"home", "resources"}
-
-	handlerHome := func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("failed to fetch posts from cache (%v)", err)
-		}
-		log.Printf("Home handler: rendering with %d posts", len(posts))
-
-		pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
-	}
-
-	postsListHandler := func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("failed to fetch posts from cache (%v)", err)
-		}
-		sort.SliceStable(posts, func(i, j int) bool {
-			return posts[i].Date.After(posts[j].Date)
-		})
-		offset, end := pageBounds(r, len(posts), pages.PostsPageSize)
-		pages.PostsList(posts[offset:end], len(posts), offset).Render(r.Context(), w)
-	}
-
-	projectsListHandler := func(w http.ResponseWriter, r *http.Request) {
-		projects := slices.Clone(internal.Projects)
-		sort.SliceStable(projects, func(i, j int) bool {
-			return projects[i].Date.After(projects[j].Date)
-		})
-		offset, end := pageBounds(r, len(projects), pages.ProjectsPageSize)
-		pages.ProjectsList(projects[offset:end], len(projects), offset).Render(r.Context(), w)
-	}
-
-	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
-		pages.InfoRes{Pages: navList}.View().Render(r.Context(), w)
-	}
-
-	navHandlers := map[string]http.HandlerFunc{
-		"home":      handlerHome,
-		"resources": resourcesHandler,
-	}
-
-	http.HandleFunc("GET /{$}", handlerHome)
-	http.HandleFunc("GET /home", handlerHome)
+	http.HandleFunc("GET /{$}", homeHandler)
+	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /resources", resourcesHandler)
+	http.HandleFunc("GET /post/{slug}", postHandler)
+	http.HandleFunc("GET /rss.xml", rssHandler)
+	http.HandleFunc("GET /sitemap.xml", sitemapHandler)
 
-	// /blog, /projects, /sitemap used to be dedicated pages; their content now
-	// lives on /home (crawlers use /sitemap.xml below). 301 keeps any external
-	// bookmarks working.
-	for _, oldPath := range []string{"/blog", "/projects", "/sitemap"} {
-		http.HandleFunc("GET "+oldPath, func(w http.ResponseWriter, r *http.Request) {
+	retiredPathsNowOnHome := []string{"/blog", "/projects", "/sitemap"}
+	for _, p := range retiredPathsNowOnHome {
+		http.HandleFunc("GET "+p, func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, "/home", http.StatusMovedPermanently)
 		})
 	}
 
-	http.HandleFunc("GET /rss.xml", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("rss: failed to fetch posts (%v)", err)
-		}
-		sort.SliceStable(posts, func(i, j int) bool {
-			return posts[i].Date.After(posts[j].Date)
-		})
-
-		buildDate := time.Now().UTC()
-		if len(posts) > 0 {
-			buildDate = posts[0].Date
-		}
-
-		w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
-		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
-		fmt.Fprintln(w, `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">`)
-		fmt.Fprintln(w, `  <channel>`)
-		fmt.Fprintln(w, `    <title>Ethan Thoma</title>`)
-		fmt.Fprintln(w, `    <link>https://www.ethanthoma.com</link>`)
-		fmt.Fprintln(w, `    <description>Notes on machine learning, NLP, and programming languages.</description>`)
-		fmt.Fprintln(w, `    <language>en-us</language>`)
-		fmt.Fprintln(w, `    <atom:link href="https://www.ethanthoma.com/rss.xml" rel="self" type="application/rss+xml" />`)
-		fmt.Fprintf(w, "    <lastBuildDate>%s</lastBuildDate>\n", buildDate.Format(time.RFC1123Z))
-		for _, p := range posts {
-			link := "https://www.ethanthoma.com/post/" + p.Slug
-			fmt.Fprintln(w, `    <item>`)
-			fmt.Fprintf(w, "      <title>%s</title>\n", html.EscapeString(p.Title))
-			fmt.Fprintf(w, "      <link>%s</link>\n", link)
-			fmt.Fprintf(w, "      <guid isPermaLink=\"true\">%s</guid>\n", link)
-			fmt.Fprintf(w, "      <pubDate>%s</pubDate>\n", p.Date.Format(time.RFC1123Z))
-			if p.TLDR != "" {
-				fmt.Fprintf(w, "      <description>%s</description>\n", html.EscapeString(p.TLDR))
-			}
-			fmt.Fprintln(w, `    </item>`)
-		}
-		fmt.Fprintln(w, `  </channel>`)
-		fmt.Fprintln(w, `</rss>`)
-	})
-
-	http.HandleFunc("GET /sitemap.xml", func(w http.ResponseWriter, r *http.Request) {
-		posts, err := cache.Cache.GetPosts()
-		if err != nil {
-			log.Printf("sitemap: failed to fetch posts (%v)", err)
-		}
-		w.Header().Set("Content-Type", "application/xml; charset=utf-8")
-		fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
-		fmt.Fprintln(w, `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
-		for _, loc := range []string{"/home", "/resources", "/rss.xml"} {
-			fmt.Fprintf(w, "  <url><loc>https://www.ethanthoma.com%s</loc></url>\n", loc)
-		}
-		for _, p := range posts {
-			lastmod := p.Date
-			if !p.LastModified.IsZero() {
-				lastmod = p.LastModified
-			}
-			fmt.Fprintf(w, "  <url><loc>https://www.ethanthoma.com/post/%s</loc><lastmod>%s</lastmod></url>\n",
-				p.Slug, lastmod.Format("2006-01-02"))
-		}
-		fmt.Fprintln(w, `</urlset>`)
-	})
-
-	notFoundHandler := func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNotFound)
-		pages.NotFound{Pages: navList, Path: r.URL.Path}.View().Render(r.Context(), w)
-	}
-
-	postHandler := func(w http.ResponseWriter, r *http.Request) {
-		slug := r.PathValue("slug")
-
-		post, err := slugToHTML(slug)
-		if err != nil {
-			log.Printf("post %s not found (%v)", slug, err)
-			notFoundHandler(w, r)
-			return
-		}
-
-		older, newer := postNeighbors(slug)
-
-		pages.Post{Pages: navList}.View(post, older, newer).Render(r.Context(), w)
-	}
-	http.HandleFunc("GET /post/{slug}", postHandler)
-
-	// Wraps a page handler as datastar SSE patch events. The fragment template
-	// always emits exactly three top-level elements (<title>, <nav id="nav">,
-	// <main id="main">). We split them and emit one SSE event per element with
-	// an explicit selector, which avoids datastar's children-iteration code
-	// path. That path triggered PatchElementsNoTargetsFound on Firefox even
-	// with all IDs present — the explicit-selector path uses
-	// querySelectorAll(t) which doesn't have the same failure mode.
-	//
-	// SSE also prevents Cloudflare's Web Analytics beacon from being appended
-	// to the response body (CF only injects into text/html).
-	asFragment := func(h http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
-			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
-			h(rw, r.WithContext(ctx))
-
-			w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
-			w.Header().Set("Cache-Control", "no-cache")
-			w.WriteHeader(rw.status)
-
-			body := rw.body.String()
-			titleEnd := strings.Index(body, "</title>") + len("</title>")
-			navStart := strings.Index(body[titleEnd:], "<nav") + titleEnd
-			navEnd := strings.Index(body[navStart:], "</nav>") + navStart + len("</nav>")
-			mainStart := strings.Index(body[navEnd:], "<main") + navEnd
-
-			writePatch(w, "title", "", body[:titleEnd])
-			writePatch(w, "#nav", "", body[navStart:navEnd])
-			writePatch(w, "#main", "", body[mainStart:])
-		}
-	}
-
-	// Same explicit-selector rationale as asFragment.
-	asListFragment := func(listSelector, loaderSelector, loaderID string, h http.HandlerFunc) http.HandlerFunc {
-		return func(w http.ResponseWriter, r *http.Request) {
-			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
-			h(rw, r)
-
-			w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
-			w.Header().Set("Cache-Control", "no-cache")
-			w.WriteHeader(rw.status)
-
-			body := rw.body.String()
-			loaderStart := strings.Index(body, `<div id="`+loaderID+`"`)
-			if loaderStart < 0 {
-				writePatch(w, listSelector, "append", body)
-				return
-			}
-			writePatch(w, listSelector, "append", body[:loaderStart])
-			writePatch(w, loaderSelector, "", body[loaderStart:])
-		}
-	}
-
-	http.HandleFunc("GET /fragment/{name}", func(w http.ResponseWriter, r *http.Request) {
-		name := r.PathValue("name")
-		h, ok := navHandlers[name]
-		if !ok {
-			http.NotFound(w, r)
-			return
-		}
-		asFragment(h)(w, r)
-	})
+	http.HandleFunc("GET /fragment/{name}", navFragmentHandler)
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
 	http.HandleFunc("GET /fragment/posts", asListFragment("#posts-list", "#post-loader", "post-loader", postsListHandler))
 	http.HandleFunc("GET /fragment/projects-list", asListFragment("#projects-list", "#project-loader", "project-loader", projectsListHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
-
 	http.Handle("GET /public/", static.Handler())
 	http.Handle("GET /robots.txt", http.FileServer(http.Dir("public/seo")))
 
 	log.Fatal(http.ListenAndServe(":"+port, middlewareSecurity(middlewareCache(logRequests))))
-}
-
-// Each line of `html` gets its own `data: elements <line>` line. Datastar's
-// SSE parser splits every data line by the first space and treats it as
-// `<field> <value>`, so unprefixed continuations would be misinterpreted as
-// new fields named after the first word of each HTML/CSS line (e.g. "/*",
-// "<a", "background"...) rather than appended to the elements field.
-func writePatch(w http.ResponseWriter, selector, mode, html string) {
-	fmt.Fprint(w, "event: datastar-patch-elements\n")
-	fmt.Fprintf(w, "data: selector %s\n", selector)
-	if mode != "" {
-		fmt.Fprintf(w, "data: mode %s\n", mode)
-	}
-	for _, line := range strings.Split(html, "\n") {
-		fmt.Fprintf(w, "data: elements %s\n", line)
-	}
-	fmt.Fprint(w, "\n")
-}
-
-func pageBounds(r *http.Request, total, size int) (start, end int) {
-	start, _ = strconv.Atoi(r.URL.Query().Get("offset"))
-	if start < 0 {
-		start = 0
-	}
-	if start > total {
-		start = total
-	}
-	end = start + size
-	if end > total {
-		end = total
-	}
-	return start, end
-}
-
-func slugToHTML(slug string) (internal.Post, error) {
-	post, err := cache.Cache.GetPost(slug)
-	if err != nil {
-		log.Printf("error getting post %s from cache, trying GitHub directly (%v)", slug, err)
-		post, err = internal.GetPostFromGitHub(slug)
-		if err != nil {
-			log.Printf("error getting post %s from GitHub (%v)", slug, err)
-			return post, err
-		}
-	}
-
-	var buf bytes.Buffer
-	err = highlight.Renderer.Convert([]byte(post.Content), &buf)
-	if err != nil {
-		log.Printf("error parsing post %s to markdown (%v)", slug, err)
-		return post, err
-	}
-
-	htmlStr := leadingH1Re.ReplaceAllString(buf.String(), "")
-	if post.TLDR != "" {
-		htmlStr = leadingBlockquoteRe.ReplaceAllString(htmlStr, "")
-	}
-	htmlStr = headingAnchorRe.ReplaceAllString(htmlStr,
-		`<$1 id="$2">$3<a href="#$2" class="heading-anchor" aria-label="Link to this section">#</a></$1>`)
-	post.HTML = template.HTML(htmlStr)
-
-	return post, nil
-}
-
-func postNeighbors(slug string) (older, newer *pages.PostNeighbor) {
-	posts, err := cache.Cache.GetPosts()
-	if err != nil {
-		log.Printf("failed to fetch posts from cache (%v)", err)
-		return nil, nil
-	}
-	sort.SliceStable(posts, func(i, j int) bool {
-		return posts[i].Date.After(posts[j].Date)
-	})
-	total := len(posts)
-	for i, p := range posts {
-		if p.Slug != slug {
-			continue
-		}
-		if i+1 < total {
-			o := posts[i+1]
-			older = &pages.PostNeighbor{
-				Slug:   o.Slug,
-				Title:  o.Title,
-				Number: fmt.Sprintf("%03d", total-(i+1)-1),
-			}
-		}
-		if i > 0 {
-			n := posts[i-1]
-			newer = &pages.PostNeighbor{
-				Slug:   n.Slug,
-				Title:  n.Title,
-				Number: fmt.Sprintf("%03d", total-(i-1)-1),
-			}
-		}
-		break
-	}
-	return older, newer
 }

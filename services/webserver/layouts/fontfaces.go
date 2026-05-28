@@ -11,10 +11,10 @@ var fontFacesHTML = "<style>" + FontFacesInnerCSS + "</style>"
 
 // Two @font-face declarations per fallback family, each calibrated against a
 // different real fallback. The browser picks the first whose src local()
-// chain resolves on the user's platform — so Mac/Windows users get
+// chain resolves on the user's platform, so Mac/Windows users get
 // Arial-class metrics, Linux users get DejaVu metrics, both with overrides
 // tuned for the *actual* fallback rendering. This makes the LCP element's
-// bounding box identical pre- and post-swap regardless of platform → no LCP
+// bounding box identical pre- and post-swap regardless of platform: no LCP
 // candidate change at font load. Override values were computed from the
 // shipped woff2 + the actual fallback ttf metrics (avgW per upem).
 const (
