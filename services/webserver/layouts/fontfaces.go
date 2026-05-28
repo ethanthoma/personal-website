@@ -20,24 +20,24 @@ var fontFacesHTML = "<style>" + FontFacesInnerCSS + "</style>"
 const (
 	// Mac, Windows. Liberation Sans is metric-compatible with Arial so it
 	// shares this declaration on Linux systems that have it.
-	sansArialSrc       = `local("Arial"),local("Helvetica Neue"),local("Helvetica"),local("Liberation Sans")`
-	sansArialAdjust    = "97.17%"
-	sansArialAscent    = "97.77%"
-	sansArialDescent   = "23.16%"
-	sansArialLineGap   = "0%"
+	sansArialSrc     = `local("Arial"),local("Helvetica Neue"),local("Helvetica"),local("Liberation Sans")`
+	sansArialAdjust  = "97.17%"
+	sansArialAscent  = "97.77%"
+	sansArialDescent = "23.16%"
+	sansArialLineGap = "0%"
 	// Linux fallback when Arial-class isn't installed.
-	sansDejavuSrc      = `local("DejaVu Sans")`
-	sansDejavuAdjust   = "85.75%"
-	sansDejavuAscent   = "110.79%"
-	sansDejavuDescent  = "26.24%"
-	sansDejavuLineGap  = "0%"
+	sansDejavuSrc     = `local("DejaVu Sans")`
+	sansDejavuAdjust  = "85.75%"
+	sansDejavuAscent  = "110.79%"
+	sansDejavuDescent = "26.24%"
+	sansDejavuLineGap = "0%"
 	// All common monospace fallbacks land within 0.3% of each other for
 	// Monaspace's metrics, so one declaration covers them.
-	monoFallbackSrc    = `local("Menlo"),local("Consolas"),local("DejaVu Sans Mono"),local("Liberation Mono"),local("Courier New")`
-	monoSizeAdjust     = "103.32%"
-	monoAscent         = "91.47%"
-	monoDescent        = "19.36%"
-	monoLineGap        = "9.68%"
+	monoFallbackSrc = `local("Menlo"),local("Consolas"),local("DejaVu Sans Mono"),local("Liberation Mono"),local("Courier New")`
+	monoSizeAdjust  = "103.32%"
+	monoAscent      = "91.47%"
+	monoDescent     = "19.36%"
+	monoLineGap     = "9.68%"
 )
 
 func buildFontFacesInnerCSS() string {

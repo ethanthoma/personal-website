@@ -13,6 +13,7 @@ import (
 	"regexp"
 	"slices"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -74,7 +75,8 @@ func main() {
 		sort.SliceStable(posts, func(i, j int) bool {
 			return posts[i].Date.After(posts[j].Date)
 		})
-		pages.PostsList(posts, len(posts)).Render(r.Context(), w)
+		offset, end := paginate(r, len(posts), pages.PostsPageSize)
+		pages.PostsList(posts[offset:end], len(posts), offset).Render(r.Context(), w)
 	}
 
 	projectsListHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +84,8 @@ func main() {
 		sort.SliceStable(projects, func(i, j int) bool {
 			return projects[i].Date.After(projects[j].Date)
 		})
-		pages.ProjectsList(projects, len(projects)).Render(r.Context(), w)
+		offset, end := paginate(r, len(projects), pages.ProjectsPageSize)
+		pages.ProjectsList(projects[offset:end], len(projects), offset).Render(r.Context(), w)
 	}
 
 	resourcesHandler := func(w http.ResponseWriter, r *http.Request) {
@@ -216,15 +219,16 @@ func main() {
 			navEnd := strings.Index(body[navStart:], "</nav>") + navStart + len("</nav>")
 			mainStart := strings.Index(body[navEnd:], "<main") + navEnd
 
-			writePatch(w, "title", body[:titleEnd])
-			writePatch(w, "#nav", body[navStart:navEnd])
-			writePatch(w, "#main", body[mainStart:])
+			writePatch(w, "title", "", body[:titleEnd])
+			writePatch(w, "#nav", "", body[navStart:navEnd])
+			writePatch(w, "#main", "", body[mainStart:])
 		}
 	}
 
 	// Same explicit-selector rationale as asFragment, but for list partials
-	// that emit <ol>...</ol><div>...</div>.
-	asListFragment := func(listSelector, loaderSelector string, h http.HandlerFunc) http.HandlerFunc {
+	// that emit <li>...</li>...<div id="<loaderId>">...</div>. Rows append to
+	// the <ol>; the loader replaces the previous loader element in place.
+	asListFragment := func(listSelector, loaderSelector, loaderID string, h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
 			h(rw, r)
@@ -234,10 +238,13 @@ func main() {
 			w.WriteHeader(rw.status)
 
 			body := rw.body.String()
-			olEnd := strings.Index(body, "</ol>") + len("</ol>")
-
-			writePatch(w, listSelector, body[:olEnd])
-			writePatch(w, loaderSelector, body[olEnd:])
+			loaderStart := strings.Index(body, `<div id="`+loaderID+`"`)
+			if loaderStart < 0 {
+				writePatch(w, listSelector, "append", body)
+				return
+			}
+			writePatch(w, listSelector, "append", body[:loaderStart])
+			writePatch(w, loaderSelector, "", body[loaderStart:])
 		}
 	}
 
@@ -251,8 +258,8 @@ func main() {
 		asFragment(h)(w, r)
 	})
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
-	http.HandleFunc("GET /fragment/posts", asListFragment("#posts-list", "#post-loader", postsListHandler))
-	http.HandleFunc("GET /fragment/projects-list", asListFragment("#projects-list", "#project-loader", projectsListHandler))
+	http.HandleFunc("GET /fragment/posts", asListFragment("#posts-list", "#post-loader", "post-loader", postsListHandler))
+	http.HandleFunc("GET /fragment/projects-list", asListFragment("#projects-list", "#project-loader", "project-loader", projectsListHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
 
@@ -267,13 +274,36 @@ func main() {
 // `<field> <value>`, so unprefixed continuations would be misinterpreted as
 // new fields named after the first word of each HTML/CSS line (e.g. "/*",
 // "<a", "background"...) rather than appended to the elements field.
-func writePatch(w http.ResponseWriter, selector, html string) {
+//
+// `mode` is empty for the default outer-morph patch, or one of datastar's
+// patch modes (e.g. "append") to control how the elements land on the target.
+func writePatch(w http.ResponseWriter, selector, mode, html string) {
 	fmt.Fprint(w, "event: datastar-patch-elements\n")
 	fmt.Fprintf(w, "data: selector %s\n", selector)
+	if mode != "" {
+		fmt.Fprintf(w, "data: mode %s\n", mode)
+	}
 	for _, line := range strings.Split(html, "\n") {
 		fmt.Fprintf(w, "data: elements %s\n", line)
 	}
 	fmt.Fprint(w, "\n")
+}
+
+// paginate clamps the ?offset= query param against `total` and returns the
+// [start, end) slice bounds for a page of `size` items.
+func paginate(r *http.Request, total, size int) (int, int) {
+	offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
+	if offset < 0 {
+		offset = 0
+	}
+	if offset > total {
+		offset = total
+	}
+	end := offset + size
+	if end > total {
+		end = total
+	}
+	return offset, end
 }
 
 func slugToHTML(slug string) (internal.Post, error) {
