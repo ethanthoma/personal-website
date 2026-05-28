@@ -10,7 +10,9 @@ import (
 )
 
 type Home struct {
-	Pages []string
+	Pages       []string
+	PostsFit    int
+	ProjectsFit int
 }
 
 type listRow struct {
@@ -65,8 +67,13 @@ templ (p Home) View(posts []internal.Post) {
 							if project.WIP {
 								suffix = "(WIP)"
 							}
+							trimmed := p.ProjectsFit > 0 && index >= p.ProjectsFit
 						}}
-						<li>
+						<li
+							if trimmed {
+								hidden
+							}
+						>
 							@listRowView(listRow{
 								Href:   project.Url,
 								Index:  index,
@@ -81,7 +88,9 @@ templ (p Home) View(posts []internal.Post) {
 				<button
 					id="show-all-projects"
 					type="button"
-					hidden
+					if p.ProjectsFit <= 0 || p.ProjectsFit >= len(projects) {
+						hidden
+					}
 					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
 				>show all</button>
 			}
@@ -89,7 +98,14 @@ templ (p Home) View(posts []internal.Post) {
 				<h2 class="font-medium mt-l text-content/60">Writing</h2>
 				<ol id="posts-list" class="flex flex-col mt-2xs">
 					for index, post := range posts {
-						<li>
+						{{
+							trimmed := p.PostsFit > 0 && index >= p.PostsFit
+						}}
+						<li
+							if trimmed {
+								hidden
+							}
+						>
 							@listRowView(listRow{
 								Href:    "/post/" + post.Slug,
 								Index:   index,
@@ -104,7 +120,9 @@ templ (p Home) View(posts []internal.Post) {
 				<button
 					id="show-all-posts"
 					type="button"
-					hidden
+					if p.PostsFit <= 0 || p.PostsFit >= len(posts) {
+						hidden
+					}
 					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
 				>show all</button>
 			}

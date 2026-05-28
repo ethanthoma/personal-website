@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"strconv"
 
 	"personal-website/services/webserver/cache"
 	"personal-website/services/webserver/pages"
@@ -21,7 +22,23 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("failed to fetch posts from cache (%v)", err)
 	}
 	log.Printf("Home handler: rendering with %d posts", len(posts))
-	pages.Home{Pages: navList}.View(posts).Render(r.Context(), w)
+	pages.Home{
+		Pages:       navList,
+		PostsFit:    readFitCookie(r, "home-fit-posts"),
+		ProjectsFit: readFitCookie(r, "home-fit-projects"),
+	}.View(posts).Render(r.Context(), w)
+}
+
+func readFitCookie(r *http.Request, name string) int {
+	c, err := r.Cookie(name)
+	if err != nil {
+		return 0
+	}
+	n, err := strconv.Atoi(c.Value)
+	if err != nil || n < 0 {
+		return 0
+	}
+	return n
 }
 
 func resourcesHandler(w http.ResponseWriter, r *http.Request) {
