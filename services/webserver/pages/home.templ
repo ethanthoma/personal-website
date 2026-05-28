@@ -10,10 +10,6 @@ import (
 	"time"
 )
 
-// PostsPageSize is both the initial server-side render count AND the chunk
-// size for each lazy-load fetch. The loader auto-fires when it enters the
-// viewport (data-on-intersect), so a fresh load streams in K, K, K… until the
-// loader is pushed below the fold — naturally fitting the list to the screen.
 const PostsPageSize = 3
 const ProjectsPageSize = 3
 
@@ -77,22 +73,19 @@ templ (p Home) View(posts []internal.Post) {
 				<ol id="projects-list" class="flex flex-col mt-2xs">
 					@projectsRows(visibleProjects, len(projects), 0)
 				</ol>
-				@loaderButton("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(len(visibleProjects)), len(visibleProjects) < len(projects))
+				@lazyLoadSentinel("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(len(visibleProjects)), len(visibleProjects) < len(projects))
 			}
 			if len(posts) > 0 {
 				<h2 class="font-medium mt-l text-content/60">Writing</h2>
 				<ol id="posts-list" class="flex flex-col mt-2xs">
 					@postsRows(visiblePosts, len(posts), 0)
 				</ol>
-				@loaderButton("post-loader", "/fragment/posts?offset="+strconv.Itoa(len(visiblePosts)), len(visiblePosts) < len(posts))
+				@lazyLoadSentinel("post-loader", "/fragment/posts?offset="+strconv.Itoa(len(visiblePosts)), len(visiblePosts) < len(posts))
 			}
 		</article>
 	}
 }
 
-// postsRows / projectsRows emit only <li> children; the wrapping <ol> lives
-// in Home (initial render) and is reused as the SSE append target for
-// PostsList / ProjectsList (partial responses).
 templ postsRows(posts []internal.Post, total int, offset int) {
 	for index, post := range posts {
 		<li>
@@ -131,12 +124,12 @@ templ projectsRows(projects []internal.Project, total int, offset int) {
 
 templ PostsList(posts []internal.Post, total int, offset int) {
 	@postsRows(posts, total, offset)
-	@loaderButton("post-loader", "/fragment/posts?offset="+strconv.Itoa(offset+len(posts)), offset+len(posts) < total)
+	@lazyLoadSentinel("post-loader", "/fragment/posts?offset="+strconv.Itoa(offset+len(posts)), offset+len(posts) < total)
 }
 
 templ ProjectsList(projects []internal.Project, total int, offset int) {
 	@projectsRows(projects, total, offset)
-	@loaderButton("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(offset+len(projects)), offset+len(projects) < total)
+	@lazyLoadSentinel("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(offset+len(projects)), offset+len(projects) < total)
 }
 
 templ listRowView(row listRow) {
@@ -163,22 +156,9 @@ templ listRowView(row listRow) {
 	</a>
 }
 
-// The loader auto-fires on entering the viewport so the list grows to fit
-// available space. data-on-intersect's IntersectionObserver only fires on a
-// not-intersecting → intersecting transition, and the element is replaced by
-// the SSE response, so each loader instance fetches at most once. __once
-// disconnects the observer immediately after firing as belt-and-suspenders
-// against rapid re-fire while a fetch is in flight. The button remains as a
-// manual fallback (no-JS callers and visual affordance during load).
-templ loaderButton(id string, fragmentURL string, hasMore bool) {
+templ lazyLoadSentinel(id string, fragmentURL string, hasMore bool) {
 	if hasMore {
-		<div id={ id } class="mt-2xs" data-on-intersect__once={ "@get('" + fragmentURL + "')" }>
-			<button
-				type="button"
-				class="font-sans cursor-pointer text-content/60 hover:text-blue"
-				data-on:click__prevent={ "@get('" + fragmentURL + "')" }
-			>load more</button>
-		</div>
+		<div id={ id } data-on-intersect__once={ "@get('" + fragmentURL + "')" }></div>
 	} else {
 		<div id={ id }></div>
 	}

@@ -75,7 +75,7 @@ func main() {
 		sort.SliceStable(posts, func(i, j int) bool {
 			return posts[i].Date.After(posts[j].Date)
 		})
-		offset, end := paginate(r, len(posts), pages.PostsPageSize)
+		offset, end := pageBounds(r, len(posts), pages.PostsPageSize)
 		pages.PostsList(posts[offset:end], len(posts), offset).Render(r.Context(), w)
 	}
 
@@ -84,7 +84,7 @@ func main() {
 		sort.SliceStable(projects, func(i, j int) bool {
 			return projects[i].Date.After(projects[j].Date)
 		})
-		offset, end := paginate(r, len(projects), pages.ProjectsPageSize)
+		offset, end := pageBounds(r, len(projects), pages.ProjectsPageSize)
 		pages.ProjectsList(projects[offset:end], len(projects), offset).Render(r.Context(), w)
 	}
 
@@ -225,9 +225,7 @@ func main() {
 		}
 	}
 
-	// Same explicit-selector rationale as asFragment, but for list partials
-	// that emit <li>...</li>...<div id="<loaderId>">...</div>. Rows append to
-	// the <ol>; the loader replaces the previous loader element in place.
+	// Same explicit-selector rationale as asFragment.
 	asListFragment := func(listSelector, loaderSelector, loaderID string, h http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			rw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
@@ -274,9 +272,6 @@ func main() {
 // `<field> <value>`, so unprefixed continuations would be misinterpreted as
 // new fields named after the first word of each HTML/CSS line (e.g. "/*",
 // "<a", "background"...) rather than appended to the elements field.
-//
-// `mode` is empty for the default outer-morph patch, or one of datastar's
-// patch modes (e.g. "append") to control how the elements land on the target.
 func writePatch(w http.ResponseWriter, selector, mode, html string) {
 	fmt.Fprint(w, "event: datastar-patch-elements\n")
 	fmt.Fprintf(w, "data: selector %s\n", selector)
@@ -289,21 +284,19 @@ func writePatch(w http.ResponseWriter, selector, mode, html string) {
 	fmt.Fprint(w, "\n")
 }
 
-// paginate clamps the ?offset= query param against `total` and returns the
-// [start, end) slice bounds for a page of `size` items.
-func paginate(r *http.Request, total, size int) (int, int) {
-	offset, _ := strconv.Atoi(r.URL.Query().Get("offset"))
-	if offset < 0 {
-		offset = 0
+func pageBounds(r *http.Request, total, size int) (start, end int) {
+	start, _ = strconv.Atoi(r.URL.Query().Get("offset"))
+	if start < 0 {
+		start = 0
 	}
-	if offset > total {
-		offset = total
+	if start > total {
+		start = total
 	}
-	end := offset + size
+	end = start + size
 	if end > total {
 		end = total
 	}
-	return offset, end
+	return start, end
 }
 
 func slugToHTML(slug string) (internal.Post, error) {
