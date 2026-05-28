@@ -3,11 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
-	"slices"
-	"sort"
-	"strconv"
 
-	"personal-website/internal"
 	"personal-website/services/webserver/cache"
 	"personal-website/services/webserver/pages"
 )
@@ -37,24 +33,6 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	pages.NotFound{Pages: navList, Path: r.URL.Path}.View().Render(r.Context(), w)
 }
 
-func postsListHandler(w http.ResponseWriter, r *http.Request) {
-	posts, err := postsByDateDesc()
-	if err != nil {
-		log.Printf("failed to fetch posts from cache (%v)", err)
-	}
-	start, end := pageBounds(r, len(posts), pages.PostsPageSize)
-	pages.PostsList(posts[start:end], len(posts), start).Render(r.Context(), w)
-}
-
-func projectsListHandler(w http.ResponseWriter, r *http.Request) {
-	projects := slices.Clone(internal.Projects)
-	sort.SliceStable(projects, func(i, j int) bool {
-		return projects[i].Date.After(projects[j].Date)
-	})
-	start, end := pageBounds(r, len(projects), pages.ProjectsPageSize)
-	pages.ProjectsList(projects[start:end], len(projects), start).Render(r.Context(), w)
-}
-
 func navFragmentHandler(w http.ResponseWriter, r *http.Request) {
 	h, ok := navHandlers[r.PathValue("name")]
 	if !ok {
@@ -62,19 +40,4 @@ func navFragmentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	asFragment(h)(w, r)
-}
-
-func pageBounds(r *http.Request, total, size int) (start, end int) {
-	start, _ = strconv.Atoi(r.URL.Query().Get("offset"))
-	if start < 0 {
-		start = 0
-	}
-	if start > total {
-		start = total
-	}
-	end = start + size
-	if end > total {
-		end = total
-	}
-	return start, end
 }

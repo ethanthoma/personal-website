@@ -6,12 +6,8 @@ import (
 	"personal-website/services/webserver/layouts"
 	"slices"
 	"sort"
-	"strconv"
 	"time"
 )
-
-const PostsPageSize = 3
-const ProjectsPageSize = 3
 
 type Home struct {
 	Pages []string
@@ -30,17 +26,9 @@ type listRow struct {
 templ (p Home) View(posts []internal.Post) {
 	{{
 		sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
-		visiblePosts := posts
-		if len(posts) > PostsPageSize {
-			visiblePosts = posts[:PostsPageSize]
-		}
 
 		projects := slices.Clone(internal.Projects)
 		sort.SliceStable(projects, func(i, j int) bool { return projects[i].Date.After(projects[j].Date) })
-		visibleProjects := projects
-		if len(projects) > ProjectsPageSize {
-			visibleProjects = projects[:ProjectsPageSize]
-		}
 	}}
 	@layouts.Base{
 		Pages:       p.Pages,
@@ -71,65 +59,57 @@ templ (p Home) View(posts []internal.Post) {
 			if len(projects) > 0 {
 				<h2 class="font-medium mt-l text-content/60">Projects</h2>
 				<ol id="projects-list" class="flex flex-col mt-2xs">
-					@projectsRows(visibleProjects, len(projects), 0)
+					for index, project := range projects {
+						{{
+							suffix := ""
+							if project.WIP {
+								suffix = "(WIP)"
+							}
+						}}
+						<li>
+							@listRowView(listRow{
+								Href:   project.Url,
+								Index:  index,
+								Total:  len(projects),
+								Title:  project.Title,
+								Suffix: suffix,
+								Date:   project.Date,
+							})
+						</li>
+					}
 				</ol>
-				@lazyLoadSentinel("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(len(visibleProjects)), len(visibleProjects) < len(projects))
+				<button
+					id="show-all-projects"
+					type="button"
+					hidden
+					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
+				>show all</button>
 			}
 			if len(posts) > 0 {
 				<h2 class="font-medium mt-l text-content/60">Writing</h2>
 				<ol id="posts-list" class="flex flex-col mt-2xs">
-					@postsRows(visiblePosts, len(posts), 0)
+					for index, post := range posts {
+						<li>
+							@listRowView(listRow{
+								Href:    "/post/" + post.Slug,
+								Index:   index,
+								Total:   len(posts),
+								Title:   post.Title,
+								Date:    post.Date,
+								OnClick: "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')",
+							})
+						</li>
+					}
 				</ol>
-				@lazyLoadSentinel("post-loader", "/fragment/posts?offset="+strconv.Itoa(len(visiblePosts)), len(visiblePosts) < len(posts))
+				<button
+					id="show-all-posts"
+					type="button"
+					hidden
+					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
+				>show all</button>
 			}
 		</article>
 	}
-}
-
-templ postsRows(posts []internal.Post, total int, offset int) {
-	for index, post := range posts {
-		<li>
-			@listRowView(listRow{
-				Href:    "/post/" + post.Slug,
-				Index:   offset + index,
-				Total:   total,
-				Title:   post.Title,
-				Date:    post.Date,
-				OnClick: "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')",
-			})
-		</li>
-	}
-}
-
-templ projectsRows(projects []internal.Project, total int, offset int) {
-	for index, project := range projects {
-		{{
-			suffix := ""
-			if project.WIP {
-				suffix = "(WIP)"
-			}
-		}}
-		<li>
-			@listRowView(listRow{
-				Href:   project.Url,
-				Index:  offset + index,
-				Total:  total,
-				Title:  project.Title,
-				Suffix: suffix,
-				Date:   project.Date,
-			})
-		</li>
-	}
-}
-
-templ PostsList(posts []internal.Post, total int, offset int) {
-	@postsRows(posts, total, offset)
-	@lazyLoadSentinel("post-loader", "/fragment/posts?offset="+strconv.Itoa(offset+len(posts)), offset+len(posts) < total)
-}
-
-templ ProjectsList(projects []internal.Project, total int, offset int) {
-	@projectsRows(projects, total, offset)
-	@lazyLoadSentinel("project-loader", "/fragment/projects-list?offset="+strconv.Itoa(offset+len(projects)), offset+len(projects) < total)
 }
 
 templ listRowView(row listRow) {
@@ -154,12 +134,4 @@ templ listRowView(row listRow) {
 			<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
 		</span>
 	</a>
-}
-
-templ lazyLoadSentinel(id string, fragmentURL string, hasMore bool) {
-	if hasMore {
-		<div id={ id } data-on-intersect__once={ "@get('" + fragmentURL + "')" }></div>
-	} else {
-		<div id={ id }></div>
-	}
 }

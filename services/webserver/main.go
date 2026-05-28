@@ -45,8 +45,6 @@ func main() {
 
 	http.HandleFunc("GET /fragment/{name}", navFragmentHandler)
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
-	http.HandleFunc("GET /fragment/posts", asListFragment("#posts-list", "#post-loader", "post-loader", postsListHandler))
-	http.HandleFunc("GET /fragment/projects-list", asListFragment("#projects-list", "#project-loader", "project-loader", projectsListHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
 	http.Handle("GET /public/", static.Handler())

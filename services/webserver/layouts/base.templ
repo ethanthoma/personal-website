@@ -102,6 +102,7 @@ templ (p Base) View() {
 					{ children... }
 				</main>
 				@components.Footer{}.View()
+				@templ.Raw("<script>fitHomeListsToViewport()</script>")
 			</body>
 		</html>
 	}
