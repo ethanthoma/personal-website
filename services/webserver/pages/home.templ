@@ -88,7 +88,7 @@ templ (p Home) View(posts []internal.Post) {
 					if p.ProjectsFit <= 0 || p.ProjectsFit >= len(projects) {
 						hidden
 					}
-					class="font-sans cursor-pointer text-content/60 mt-2xs hover:text-blue"
+					class="font-sans cursor-pointer text-content underline underline-offset-2 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 			if len(posts) > 0 {
@@ -118,7 +118,7 @@ templ (p Home) View(posts []internal.Post) {
 					if p.PostsFit <= 0 || p.PostsFit >= len(posts) {
 						hidden
 					}
-					class="font-sans cursor-pointer text-content/60 mt-2xs hover:text-blue"
+					class="font-sans cursor-pointer text-content underline underline-offset-2 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 		</article>
