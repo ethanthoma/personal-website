@@ -4,10 +4,18 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"personal-website/services/webserver/layouts"
 )
+
+var fragmentCacheControl = func() string {
+	if os.Getenv("DEV") == "1" {
+		return "no-store"
+	}
+	return "private, max-age=300"
+}()
 
 // Explicit per-element selectors avoid datastar's children-iteration path,
 // which triggered PatchElementsNoTargetsFound on Firefox even with all IDs
@@ -20,7 +28,7 @@ func asFragment(h http.HandlerFunc) http.HandlerFunc {
 		h(rw, r.WithContext(ctx))
 
 		w.Header().Set("Content-Type", "text/event-stream; charset=utf-8")
-		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Cache-Control", fragmentCacheControl)
 		w.WriteHeader(rw.status)
 
 		body := rw.body.String()
