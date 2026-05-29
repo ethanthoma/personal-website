@@ -1,37 +1,35 @@
 (() => {
-    let displayedPath = location.pathname;
-    let pendingPath = null;
-    let inPopstate = false;
+    const nav = { shown: location.pathname, pending: null, replaying: false };
 
     window.goTo = (path) => {
-        pendingPath = path;
-        if (!inPopstate) {
+        nav.pending = path;
+        if (!nav.replaying) {
             history.pushState(null, "", path);
             scrollTo(0, 0);
         }
-        displayedPath = path;
+        nav.shown = path;
     };
 
     addEventListener("popstate", () => {
-        if (location.pathname === displayedPath) return;
+        if (location.pathname === nav.shown) return;
         const link = document.querySelector(`[href="${location.pathname}"]`);
         if (!link) {
             location.reload();
             return;
         }
-        inPopstate = true;
+        nav.replaying = true;
         link.click();
-        inPopstate = false;
+        nav.replaying = false;
     });
 
     // If the fragment fetch dies (5xx, network drop, retries exhausted), fall
     // back to a full-page navigation so the user lands on the right URL with
     // fresh content instead of stale DOM.
     document.addEventListener("datastar-fetch", (evt) => {
-        if (!pendingPath) return;
         const t = evt.detail?.type;
-        if (t === "error" || t === "retries-failed") {
-            location.href = pendingPath;
+        if (t === "finished") nav.pending = null;
+        else if (nav.pending && (t === "error" || t === "retries-failed")) {
+            location.href = nav.pending;
         }
     });
 
