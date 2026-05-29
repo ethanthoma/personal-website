@@ -161,14 +161,12 @@
 
     const prefetchedPostURLs = new Set();
     function prefetchPostFragment(slug) {
-        const href = `/fragment/post/${slug}`;
-        if (prefetchedPostURLs.has(href)) return;
-        prefetchedPostURLs.add(href);
-        const link = document.createElement("link");
-        link.rel = "prefetch";
-        link.as = "fetch";
-        link.href = href;
-        document.head.appendChild(link);
+        const url = `/fragment/post/${slug}?${new URLSearchParams({ datastar: "{}" })}`;
+        if (prefetchedPostURLs.has(url)) return;
+        prefetchedPostURLs.add(url);
+        fetch(url, { headers: { Accept: "text/event-stream" } })
+            .then((r) => r.text())
+            .catch(() => {});
     }
     function postSlugFromTarget(t) {
         const a = t?.closest?.('a[href^="/post/"]');
