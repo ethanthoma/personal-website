@@ -1,10 +1,8 @@
 name: Deploy to VPS
-
 on:
   push:
     branches:
       - main
-
 jobs:
   deploy:
     name: Deploy
@@ -19,7 +17,6 @@ jobs:
           token: '${{ github.token }}'
           environment-url: ${{ vars.MY_APP }}
           environment: production
-          
       - name: Deploy to VPS
         uses: appleboy/ssh-action@master
         with:
@@ -38,16 +35,15 @@ jobs:
             nix build .#default
 
             sudo systemctl restart personal-website
-            
+
             sleep 2
             if ! systemctl is-active --quiet personal-website; then
               echo "Service failed to start"
               systemctl status personal-website
               exit 1
             fi
-            
+
             echo "Deployment successful"
-            
       - name: Update Status (success)
         if: success()
         uses: chrnorm/deployment-status@v2
@@ -56,7 +52,6 @@ jobs:
           environment-url: ${{ vars.MY_APP }}
           state: 'success'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-          
       - name: Update status (failure)
         if: failure()
         uses: chrnorm/deployment-status@v2

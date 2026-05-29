@@ -48,6 +48,7 @@
               pkgs.mago
               pkgs.superhtml
               pkgs.oxlint
+              pkgs.yamlfmt
 
               pkgs.google-lighthouse
               pkgs.chromium
