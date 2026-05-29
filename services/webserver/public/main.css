@@ -185,7 +185,8 @@ body {
         @apply underline;
         @apply underline-offset-2;
         @apply decoration-content/40;
-        @apply hover:decoration-content;
+        @apply hover:text-blue;
+        @apply hover:decoration-blue;
     }
 
     & ul,
