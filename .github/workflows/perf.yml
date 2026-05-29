@@ -11,7 +11,7 @@ jobs:
     name: Lighthouse (CI build)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
       - name: Build webserver
@@ -32,7 +32,6 @@ jobs:
           {
             echo "list<<EOF"
             echo "http://localhost:8090/home"
-            echo "http://localhost:8090/resources"
             [ -n "$slug" ] && echo "http://localhost:8090/post/$slug"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"

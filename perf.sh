@@ -5,7 +5,7 @@
 # a sensible default set), prints scores.
 #
 # Usage:
-#   ./perf.sh                       # /home, /resources, first post from rss
+#   ./perf.sh                       # /home, first post from rss
 #   ./perf.sh /home /post/some-slug # specific paths
 
 set -e
@@ -94,7 +94,7 @@ done
 
 PATHS=("$@")
 if [[ ${#PATHS[@]} -eq 0 ]]; then
-    PATHS=("/home" "/resources")
+    PATHS=("/home")
     FIRST_POST=$(curl -s "http://localhost:${PORT}/rss.xml" | grep -oP '<link>https://www\.ethanthoma\.com/post/\K[^<]+' | head -1 || true)
     [[ -n "$FIRST_POST" ]] && PATHS+=("/post/${FIRST_POST}")
 fi
