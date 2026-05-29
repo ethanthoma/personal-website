@@ -27,10 +27,10 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 				<h1 class="font-bold leading-none text-l text-content/70">
 					<a
 						href="/home"
-						aria-label="Back to home"
-						class="text-content/60 hover:text-blue"
+						aria-label="home"
+						class="px-3xs -mx-3xs text-content/60 hover:text-blue"
 						data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
-					>&larr;</a>
+					>home</a><span class="text-content/40">{ " / " }</span>
 					{ " " }
 					{ post.Title }
 				</h1>
