@@ -44,6 +44,26 @@ tailwindcss -i ./services/webserver/public/main.css -o ./public/main.css --minif
 echo -e "${GREEN}» sync static${NC}"
 rsync -a ./services/webserver/public/ ./public --exclude='*.css'
 
+echo -e "${GREEN}» subset fonts${NC}"
+UNICODES='U+0020-007E,U+00A0-00FF,U+2010-206F,U+2190-21FF'
+FEATURES='kern,liga,calt,ccmp,locl'
+subset_var() {
+    fonttools varLib.instancer "$1" wdth=100 slnt=0 -o "$1.tmp"
+    pyftsubset "$1.tmp" --output-file="$1" \
+        --unicodes="$UNICODES" --layout-features="$FEATURES" \
+        --flavor=woff2 --no-hinting --no-glyph-names
+    rm "$1.tmp"
+}
+subset_static() {
+    pyftsubset "$1" --output-file="$1" \
+        --unicodes="$UNICODES" --layout-features="$FEATURES" \
+        --flavor=woff2 --no-hinting --no-glyph-names
+}
+subset_var "./public/fonts/Monaspace/MonaspaceNeonVarVF[wght,wdth,slnt].woff2"
+subset_var "./public/fonts/Monaspace/MonaspaceKryptonVarVF[wght,wdth,slnt].woff2"
+subset_static "./public/fonts/PublicSans/PublicSans[wght].woff2"
+subset_static "./public/fonts/PublicSans/PublicSans-Italic[wght].woff2"
+
 DATASTAR_VERSION="1.0.1"
 DATASTAR_CACHE="${SCRIPT_DIR}/tmp/datastar-v${DATASTAR_VERSION}.js"
 DATASTAR_TARGET="${SCRIPT_DIR}/public/js/datastar.js"

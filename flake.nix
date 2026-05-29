@@ -30,6 +30,10 @@
           templpkgs = inputs.templ.packages.${system}.templ;
           gomod2nixpkgs = inputs.gomod2nix.packages.${system}.default;
           buildGoApplication = inputs.gomod2nix.legacyPackages.${system}.buildGoApplication;
+          pythonFonttools = pkgs.python3.withPackages (p: [
+            p.fonttools
+            p.brotli
+          ]);
         in
         {
           devshells.default = {
@@ -53,6 +57,7 @@
               pkgs.google-lighthouse
               pkgs.chromium
               pkgs.jq
+              pythonFonttools
             ];
 
             commands = [
