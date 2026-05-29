@@ -70,8 +70,13 @@ jobs:
       - name: Resolve audit URLs
         id: urls
         run: |
-          slug=$(curl -s https://www.ethanthoma.com/rss.xml \
-            | grep -oP '<link>https://www\.ethanthoma\.com/post/\K[^<]+' | head -1 || true)
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+          for i in $(seq 1 10); do
+            slug=$(curl -fsS --compressed -A "$UA" https://www.ethanthoma.com/rss.xml \
+              | grep -oP '<link>https://www\.ethanthoma\.com/post/\K[^<]+' | head -1 || true)
+            [ -n "$slug" ] && break
+            sleep 3
+          done
           {
             echo "list<<EOF"
             echo "https://www.ethanthoma.com/home"
