@@ -1,0 +1,45 @@
+name: Performance
+on:
+  push:
+    branches: [main]
+  pull_request:
+concurrency:
+  group: perf-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  audit:
+    name: Lighthouse (CI build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      - name: Build webserver
+        run: nix build .#default
+      - name: Start server
+        run: |
+          WEBSERVER_PORT=8090 ./result/bin/webserver > server.log 2>&1 &
+          for i in $(seq 1 50); do
+            curl -sf http://localhost:8090/healthy >/dev/null && exit 0
+            sleep 0.2
+          done
+          echo "server failed to start"; cat server.log; exit 1
+      - name: Resolve audit URLs
+        id: urls
+        run: |
+          slug=$(curl -s http://localhost:8090/rss.xml \
+            | grep -oP '<link>https://www\.ethanthoma\.com/post/\K[^<]+' | head -1 || true)
+          {
+            echo "list<<EOF"
+            echo "http://localhost:8090/home"
+            echo "http://localhost:8090/resources"
+            [ -n "$slug" ] && echo "http://localhost:8090/post/$slug"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.urls.outputs.list }}
+          configPath: ./lighthouserc.json
+          temporaryPublicStorage: true
+          uploadArtifacts: true

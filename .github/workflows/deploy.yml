@@ -60,3 +60,28 @@ jobs:
           environment-url: ${{ vars.MY_APP }}
           state: 'failure'
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+  perf:
+    name: Lighthouse (live prod)
+    needs: deploy
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve audit URLs
+        id: urls
+        run: |
+          slug=$(curl -s https://www.ethanthoma.com/rss.xml \
+            | grep -oP '<link>https://www\.ethanthoma\.com/post/\K[^<]+' | head -1 || true)
+          {
+            echo "list<<EOF"
+            echo "https://www.ethanthoma.com/home"
+            echo "https://www.ethanthoma.com/resources"
+            [ -n "$slug" ] && echo "https://www.ethanthoma.com/post/$slug"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Lighthouse
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          urls: ${{ steps.urls.outputs.list }}
+          configPath: ./lighthouserc.json
+          temporaryPublicStorage: true
