@@ -3,15 +3,12 @@ package pages
 import "personal-website/services/webserver/layouts"
 
 type NotFound struct {
-	Pages []string
-	Path  string
+	Path string
 }
 
 templ (p NotFound) View() {
 	@layouts.Base{
-		Pages:       p.Pages,
-		PageCurrent: "",
-		Title:       "Ethan Thoma / Not Found",
+		Title: "Ethan Thoma / Not Found",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">

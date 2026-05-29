@@ -25,12 +25,9 @@ func asFragment(h http.HandlerFunc) http.HandlerFunc {
 
 		body := rw.body.String()
 		titleEnd := strings.Index(body, "</title>") + len("</title>")
-		navStart := strings.Index(body[titleEnd:], "<nav") + titleEnd
-		navEnd := strings.Index(body[navStart:], "</nav>") + navStart + len("</nav>")
-		mainStart := strings.Index(body[navEnd:], "<main") + navEnd
+		mainStart := strings.Index(body[titleEnd:], "<main") + titleEnd
 
 		writePatch(w, "title", body[:titleEnd])
-		writePatch(w, "#nav", body[navStart:navEnd])
 		writePatch(w, "#main", body[mainStart:])
 	}
 }

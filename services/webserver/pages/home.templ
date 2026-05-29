@@ -10,7 +10,6 @@ import (
 )
 
 type Home struct {
-	Pages       []string
 	PostsFit    int
 	ProjectsFit int
 }
@@ -33,10 +32,8 @@ templ (p Home) View(posts []internal.Post) {
 		sort.SliceStable(projects, func(i, j int) bool { return projects[i].Date.After(projects[j].Date) })
 	}}
 	@layouts.Base{
-		Pages:       p.Pages,
-		PageCurrent: "home",
-		Title:       "Ethan Thoma",
-		URL:         "/home",
+		Title: "Ethan Thoma",
+		URL:   "/home",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
@@ -91,16 +88,14 @@ templ (p Home) View(posts []internal.Post) {
 					if p.ProjectsFit <= 0 || p.ProjectsFit >= len(projects) {
 						hidden
 					}
-					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
+					class="font-sans cursor-pointer text-content/60 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 			if len(posts) > 0 {
 				<h2 class="font-medium mt-l text-content/60">Writing</h2>
 				<ol id="posts-list" class="flex flex-col mt-2xs">
 					for index, post := range posts {
-						{{
-							trimmed := p.PostsFit > 0 && index >= p.PostsFit
-						}}
+						{{ trimmed := p.PostsFit > 0 && index >= p.PostsFit }}
 						<li
 							if trimmed {
 								hidden
@@ -123,7 +118,7 @@ templ (p Home) View(posts []internal.Post) {
 					if p.PostsFit <= 0 || p.PostsFit >= len(posts) {
 						hidden
 					}
-					class="font-sans cursor-pointer text-content/60 hover:text-blue mt-2xs"
+					class="font-sans cursor-pointer text-content/60 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 		</article>

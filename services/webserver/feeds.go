@@ -69,7 +69,7 @@ func writeRSSItem(w io.Writer, p internal.Post) {
 func writeSitemap(w io.Writer, posts []internal.Post) {
 	fmt.Fprintln(w, `<?xml version="1.0" encoding="UTF-8"?>`)
 	fmt.Fprintln(w, `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
-	for _, loc := range []string{"/home", "/resources", "/rss.xml"} {
+	for _, loc := range []string{"/home", "/rss.xml"} {
 		fmt.Fprintf(w, "  <url><loc>%s%s</loc></url>\n", siteOrigin, loc)
 	}
 	for _, p := range posts {

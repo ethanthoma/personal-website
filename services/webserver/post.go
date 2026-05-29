@@ -31,7 +31,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	older, newer := postNeighbors(slug)
-	pages.Post{Pages: navList}.View(post, older, newer).Render(r.Context(), w)
+	pages.Post{}.View(post, older, newer).Render(r.Context(), w)
 }
 
 func postsByDateDesc() ([]internal.Post, error) {
