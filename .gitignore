@@ -6,6 +6,7 @@
 !.github/workflows/*
 !dev.sh
 !perf.sh
+!lighthouserc.json
 
 # go 
 !internal/
