@@ -10,6 +10,12 @@ type Project struct {
 
 var Projects = []Project{
 	{
+		Date:  time.Date(2026, 5, 29, 0, 0, 0, 0, time.Local),
+		Title: "Hardware: bf16 MMA in Amaranth HDL",
+		Url:   "https://github.com/ethanthoma/hardware",
+		WIP:   true,
+	},
+	{
 		Date:  time.Date(2025, 11, 2, 0, 0, 0, 0, time.Local),
 		Title: "Window: cross-platform windowing for Zig",
 		Url:   "https://github.com/ethanthoma/window",
