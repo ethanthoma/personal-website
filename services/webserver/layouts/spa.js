@@ -109,6 +109,8 @@
         update(posts, "home-fit-posts", "#show-all-posts");
     }
 
+    const expandedLists = new Set();
+
     function fitHomeListsToViewport() {
         const projects = document.querySelector("#projects-list");
         const posts = document.querySelector("#posts-list");
@@ -119,7 +121,12 @@
             for (const li of list.children) li.hidden = false;
         }
 
-        for (const li of alternatingTail(projects, posts)) {
+        const collapsible = (list) =>
+            list && !expandedLists.has(list.id) ? list : null;
+        for (const li of alternatingTail(
+            collapsible(projects),
+            collapsible(posts),
+        )) {
             if (!overflowing()) break;
             li.hidden = true;
         }
@@ -135,6 +142,7 @@
         const listId = isPosts ? "#posts-list" : "#projects-list";
         const list = document.querySelector(listId);
         if (!list) return;
+        expandedLists.add(list.id);
         for (const li of list.children) li.hidden = false;
         setFitCookie(
             isPosts ? "home-fit-posts" : "home-fit-projects",
