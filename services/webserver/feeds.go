@@ -54,7 +54,7 @@ func writeRSSFeed(w io.Writer, posts []internal.Post) {
 }
 
 func writeRSSItem(w io.Writer, p internal.Post) {
-	link := siteOrigin + "/post/" + p.Slug
+	link := html.EscapeString(siteOrigin + "/post/" + p.Slug)
 	fmt.Fprintln(w, `    <item>`)
 	fmt.Fprintf(w, "      <title>%s</title>\n", html.EscapeString(p.Title))
 	fmt.Fprintf(w, "      <link>%s</link>\n", link)
@@ -77,8 +77,9 @@ func writeSitemap(w io.Writer, posts []internal.Post) {
 		if !p.LastModified.IsZero() {
 			lastmod = p.LastModified
 		}
-		fmt.Fprintf(w, "  <url><loc>%s/post/%s</loc><lastmod>%s</lastmod></url>\n",
-			siteOrigin, p.Slug, lastmod.Format("2006-01-02"))
+		loc := html.EscapeString(siteOrigin + "/post/" + p.Slug)
+		fmt.Fprintf(w, "  <url><loc>%s</loc><lastmod>%s</lastmod></url>\n",
+			loc, lastmod.Format("2006-01-02"))
 	}
 	fmt.Fprintln(w, `</urlset>`)
 }
