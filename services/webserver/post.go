@@ -24,6 +24,11 @@ var (
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
+	if !internal.IsValidSlug(slug) {
+		notFoundHandler(w, r)
+		return
+	}
+
 	post, err := slugToHTML(slug)
 	if err != nil {
 		log.Printf("post %s not found (%v)", slug, err)

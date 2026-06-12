@@ -40,6 +40,7 @@
             packages = [
               pkgs.air
               pkgs.turso-cli
+              pkgs.gcc
               pkgs.gopls
               pkgs.tailwindcss_4
               pkgs.tailwindcss-language-server

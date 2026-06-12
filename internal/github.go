@@ -198,7 +198,17 @@ func getPostsFromGitAPI(config BlogConfig) ([]Post, error) {
 	return posts, nil
 }
 
+var pathSafeSlug = regexp.MustCompile(`^[a-z0-9_-]{1,64}$`)
+
+func IsValidSlug(slug string) bool {
+	return pathSafeSlug.MatchString(slug)
+}
+
 func GetPostFromGitHub(slug string) (Post, error) {
+	if !IsValidSlug(slug) {
+		return Post{}, fmt.Errorf("refusing path-unsafe slug %q", slug)
+	}
+
 	config := getBlogConfig()
 	filename := slug + ".md"
 

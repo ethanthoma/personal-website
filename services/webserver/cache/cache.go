@@ -3,17 +3,22 @@ package cache
 import (
 	"fmt"
 	"log"
+	"slices"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"personal-website/internal"
 )
 
+const postCacheTTL = 5 * time.Minute
+
 type PostCache struct {
-	posts     map[string]internal.Post
-	allPosts  []internal.Post
-	mutex     sync.RWMutex
-	lastFetch time.Time
+	posts           map[string]internal.Post
+	allPosts        []internal.Post
+	mutex           sync.RWMutex
+	lastFetch       time.Time
+	refreshInFlight atomic.Bool
 }
 
 var Cache = &PostCache{
@@ -43,44 +48,53 @@ func (c *PostCache) updateCache() error {
 	return nil
 }
 
+func (c *PostCache) refreshIfStale(lastFetch time.Time) {
+	if time.Since(lastFetch) <= postCacheTTL {
+		return
+	}
+	if !c.refreshInFlight.CompareAndSwap(false, true) {
+		return
+	}
+	go func() {
+		defer c.refreshInFlight.Store(false)
+		if err := c.updateCache(); err != nil {
+			log.Printf("Cache: background refresh failed: %v", err)
+		}
+	}()
+}
+
 func (c *PostCache) GetPosts() ([]internal.Post, error) {
 	c.mutex.RLock()
-	defer c.mutex.RUnlock()
+	posts := slices.Clone(c.allPosts)
+	lastFetch := c.lastFetch
+	c.mutex.RUnlock()
 
-	log.Printf("Cache: GetPosts called, have %d posts, last fetch: %v", len(c.allPosts), c.lastFetch)
+	c.refreshIfStale(lastFetch)
 
-	if time.Since(c.lastFetch) > 5*time.Minute {
-		log.Printf("Cache: Cache expired, triggering async update")
-		go c.updateCache() // Update cache asynchronously
-	}
-
-	if len(c.allPosts) == 0 && c.lastFetch.IsZero() {
-		log.Printf("Cache: No posts and never fetched, this is likely an initialization issue")
+	if len(posts) == 0 && lastFetch.IsZero() {
 		return nil, fmt.Errorf("cache not initialized")
 	}
 
-	return c.allPosts, nil
+	return posts, nil
 }
 
 func (c *PostCache) GetPost(slug string) (internal.Post, error) {
 	c.mutex.RLock()
-	defer c.mutex.RUnlock()
+	post, found := c.posts[slug]
+	lastFetch := c.lastFetch
+	c.mutex.RUnlock()
 
-	if time.Since(c.lastFetch) > 5*time.Minute {
-		go c.updateCache()
-	}
+	c.refreshIfStale(lastFetch)
 
-	post, ok := c.posts[slug]
-	if !ok {
-		return internal.Post{}, fmt.Errorf("Cache: post not found")
+	if !found {
+		return internal.Post{}, fmt.Errorf("post %q not in cache", slug)
 	}
 
 	return post, nil
 }
 
 func InitCache() {
-	err := Cache.updateCache()
-	if err != nil {
+	if err := Cache.updateCache(); err != nil {
 		log.Printf("Cache: failed to initialize cache: %v", err)
 	}
 }
