@@ -18,7 +18,7 @@ jobs:
           environment-url: ${{ vars.MY_APP }}
           environment: production
       - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@0ff4204d59e8e51228ff73bce53f80d53301dee2 # v1.2.5
         with:
           host: ${{ secrets.VPS_IP }}
           username: deploy
