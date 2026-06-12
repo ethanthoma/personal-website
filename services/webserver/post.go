@@ -62,8 +62,15 @@ func loadPost(slug string) (internal.Post, error) {
 	if err == nil {
 		return post, nil
 	}
-	log.Printf("error getting post %s from cache, trying GitHub directly (%v)", slug, err)
-	return internal.GetPostFromGitHub(slug)
+	if cache.Cache.IsRecentlyAbsent(slug) {
+		return internal.Post{}, fmt.Errorf("post %q recently absent", slug)
+	}
+
+	post, err = internal.GetPostFromGitHub(slug)
+	if err != nil {
+		cache.Cache.MarkAbsent(slug)
+	}
+	return post, err
 }
 
 func renderPostBody(markdown string, hasTLDR bool) (template.HTML, error) {

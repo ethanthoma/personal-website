@@ -11,19 +11,25 @@ import (
 	"personal-website/internal"
 )
 
-const postCacheTTL = 5 * time.Minute
+const (
+	postCacheTTL       = 5 * time.Minute
+	absentSlugTTL      = time.Minute
+	absentSlugCapacity = 1024
+)
 
 type PostCache struct {
 	posts           map[string]internal.Post
 	allPosts        []internal.Post
+	recentlyAbsent  map[string]time.Time
 	mutex           sync.RWMutex
 	lastFetch       time.Time
 	refreshInFlight atomic.Bool
 }
 
 var Cache = &PostCache{
-	posts:    make(map[string]internal.Post),
-	allPosts: []internal.Post{},
+	posts:          make(map[string]internal.Post),
+	allPosts:       []internal.Post{},
+	recentlyAbsent: make(map[string]time.Time),
 }
 
 func (c *PostCache) updateCache() error {
@@ -42,6 +48,7 @@ func (c *PostCache) updateCache() error {
 	for _, post := range posts {
 		c.posts[post.Slug] = post
 	}
+	c.recentlyAbsent = make(map[string]time.Time)
 
 	c.lastFetch = time.Now()
 	log.Println("Cache: updated successfully")
@@ -91,6 +98,22 @@ func (c *PostCache) GetPost(slug string) (internal.Post, error) {
 	}
 
 	return post, nil
+}
+
+func (c *PostCache) MarkAbsent(slug string) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	if len(c.recentlyAbsent) >= absentSlugCapacity {
+		c.recentlyAbsent = make(map[string]time.Time, absentSlugCapacity)
+	}
+	c.recentlyAbsent[slug] = time.Now()
+}
+
+func (c *PostCache) IsRecentlyAbsent(slug string) bool {
+	c.mutex.RLock()
+	markedAt, found := c.recentlyAbsent[slug]
+	c.mutex.RUnlock()
+	return found && time.Since(markedAt) < absentSlugTTL
 }
 
 func InitCache() {
