@@ -10,8 +10,14 @@ type Project struct {
 
 var Projects = []Project{
 	{
+		Date:  time.Date(2026, 6, 11, 0, 0, 0, 0, time.Local),
+		Title: "STM32: bare-metal Rust firmware for the STM32F407",
+		Url:   "https://github.com/ethanthoma/stm32",
+		WIP:   true,
+	},
+	{
 		Date:  time.Date(2026, 5, 29, 0, 0, 0, 0, time.Local),
-		Title: "Hardware: bf16 MMA in Amaranth HDL",
+		Title: "Hardware Description Lang: bf16 MMA in Amaranth HDL",
 		Url:   "https://github.com/ethanthoma/hardware",
 		WIP:   true,
 	},

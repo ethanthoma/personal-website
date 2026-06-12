@@ -97,8 +97,6 @@ func (p Post) ReadingMinutes() int {
 	const wordsPerMinute = 200
 	words := len(strings.Fields(p.Content))
 	minutes := (words + wordsPerMinute - 1) / wordsPerMinute
-	if minutes < 1 {
-		minutes = 1
-	}
+	minutes = max(minutes, 1)
 	return minutes
 }
