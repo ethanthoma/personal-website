@@ -47,10 +47,6 @@ buildGoApplication rec {
     mkdir -p $static/js
     cp ${datastar} $static/js/datastar.js
 
-    # Subset shipped fonts: pin Monaspace's unused width/slant axes (kept wght
-    # only), then strip non-Latin glyphs and unused OpenType features. Cuts
-    # Monaspace Neon ~184 KB → ~28 KB and Krypton ~148 KB → ~22 KB. Public Sans
-    # has only a wght axis so just gets glyph/feature subsetting.
     UNICODES='U+0020-007E,U+00A0-00FF,U+2010-206F,U+2190-21FF'
     FEATURES='kern,liga,calt,ccmp,locl'
     subset_var() {
