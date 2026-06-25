@@ -2,37 +2,28 @@ package layouts
 
 import "personal-website/services/webserver/static"
 
-// FontFacesInnerCSS holds just the @font-face rules, with no surrounding
-// <style> tags. Exported so middleware can compute a stable CSP sha256 over
-// the exact bytes between <style> and </style>; fontFacesHTML wraps it for
-// templ rendering.
+// Exported so middleware computes the CSP sha256 over the exact bytes
+// between <style> and </style>; change the rules and the hash regenerates.
 var FontFacesInnerCSS = buildFontFacesInnerCSS()
 var fontFacesHTML = "<style>" + FontFacesInnerCSS + "</style>"
 
-// Two @font-face declarations per fallback family, each calibrated against a
-// different real fallback. The browser picks the first whose src local()
-// chain resolves on the user's platform, so Mac/Windows users get
-// Arial-class metrics, Linux users get DejaVu metrics, both with overrides
-// tuned for the *actual* fallback rendering. This makes the LCP element's
-// bounding box identical pre- and post-swap regardless of platform: no LCP
-// candidate change at font load. Override values were computed from the
-// shipped woff2 + the actual fallback ttf metrics (avgW per upem).
+// Two @font-face per family, each calibrated to a different real fallback
+// (browser picks the first src local() that resolves), so the LCP box is
+// identical pre/post swap on every platform. Overrides computed from the
+// woff2 + fallback ttf metrics.
 const (
-	// Mac, Windows. Liberation Sans is metric-compatible with Arial so it
-	// shares this declaration on Linux systems that have it.
-	sansArialSrc     = `local("Arial"),local("Helvetica Neue"),local("Helvetica"),local("Liberation Sans")`
-	sansArialAdjust  = "97.17%"
-	sansArialAscent  = "97.77%"
-	sansArialDescent = "23.16%"
-	sansArialLineGap = "0%"
-	// Linux fallback when Arial-class isn't installed.
+	// Liberation Sans is metric-compatible with Arial, so it rides the Arial declaration.
+	sansArialSrc      = `local("Arial"),local("Helvetica Neue"),local("Helvetica"),local("Liberation Sans")`
+	sansArialAdjust   = "97.17%"
+	sansArialAscent   = "97.77%"
+	sansArialDescent  = "23.16%"
+	sansArialLineGap  = "0%"
 	sansDejavuSrc     = `local("DejaVu Sans")`
 	sansDejavuAdjust  = "85.75%"
 	sansDejavuAscent  = "110.79%"
 	sansDejavuDescent = "26.24%"
 	sansDejavuLineGap = "0%"
-	// All common monospace fallbacks land within 0.3% of each other for
-	// Monaspace's metrics, so one declaration covers them.
+	// Mono fallbacks land within 0.3% of each other, so one declaration covers all.
 	monoFallbackSrc = `local("Menlo"),local("Consolas"),local("DejaVu Sans Mono"),local("Liberation Mono"),local("Courier New")`
 	monoSizeAdjust  = "103.32%"
 	monoAscent      = "91.47%"

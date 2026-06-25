@@ -22,9 +22,7 @@
         nav.replaying = false;
     });
 
-    // If the fragment fetch dies (5xx, network drop, retries exhausted), fall
-    // back to a full-page navigation so the user lands on the right URL with
-    // fresh content instead of stale DOM.
+    // On fragment-fetch failure, full-page nav to the URL so the user gets fresh content, not stale DOM.
     document.addEventListener("datastar-fetch", (evt) => {
         const t = evt.detail?.type;
         if (t === "finished") nav.pending = null;

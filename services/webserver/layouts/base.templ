@@ -96,16 +96,12 @@ templ (p Base) View() {
 	}
 }
 
-// templ.Raw avoids template-added whitespace inside the <script>, so the
-// emitted bytes match the source file exactly (matters for any future
-// hash-based CSP for script-src).
+// templ.Raw keeps emitted bytes byte-exact (no injected whitespace) so a hash-based CSP script-src stays valid.
 templ spaRuntime() {
 	@templ.Raw("<script>" + SpaRuntimeJS + "</script>")
 }
 
-// Inlined so the browser registers @font-face on HTML parse rather than after
-// main.css arrives. Combined with the woff2 preloads below, the fallback-to-real
-// font swap fires on the first frame instead of waiting for stylesheet load.
+// Inlined so @font-face registers on HTML parse (with the woff2 preloads, the font swap fires on the first frame, not after main.css loads).
 templ fontFaces() {
 	@templ.Raw(fontFacesHTML)
 }

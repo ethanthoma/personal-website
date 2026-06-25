@@ -12,9 +12,6 @@ import (
 	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
 )
 
-// chroma palette for fenced code blocks. Defined once at package init so
-// every post render reuses the same Style + Markdown renderer instead of
-// rebuilding them per request.
 var (
 	style    = buildStyle()
 	CSS      = renderCSS(style)
@@ -45,11 +42,6 @@ func buildStyle() *chroma.Style {
 	return s
 }
 
-// renderCSS emits the chroma stylesheet for `style` as a single string,
-// using the same class names the renderer below stamps on each <span>.
-// The result is injected into post.templ via a <style> block: small
-// (~1KB), only loaded with posts, and replaces ~280 inline style="..."
-// attributes per post page.
 func renderCSS(s *chroma.Style) string {
 	f := chromahtml.New(chromahtml.WithClasses(true))
 	var buf bytes.Buffer

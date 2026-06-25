@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/languages/count/ethanthoma/personal-website?style=for-the-badge&labelColor=%231f1d2e&color=%23ebbcba">
 </p>
 
-## GoTH Stack
+## Stack
 
 The backend is written in Go using [templ](https://github.com/a-h/templ) and
 using stdlib HTTP.
@@ -33,8 +33,9 @@ Use `nix build .#<name>` to run a build command. The names are:
 
 ## Developing
 
-The [make file](./Makefile) in root is setup for running air w/ livereload. It
-will run tailwindcss, templ, and air. Simply run `make live`.
+Run `./dev.sh` for the dev loop: it starts the templ proxy, the Go server (air
+rebuilds it on `.go` changes), the tailwindcss watcher, and an asset-sync
+watcher, cleaning up stragglers on exit.
 
 The webserver port is set via environment variable `WEBSERVER_PORT`.
 

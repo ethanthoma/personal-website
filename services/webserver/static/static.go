@@ -20,9 +20,7 @@ const (
 
 var devMode = os.Getenv("DEV") == "1"
 
-// Per-asset content hashes computed once at startup. Each file gets its own
-// version prefix so changing one asset (e.g. main.css) doesn't invalidate the
-// cache entry for every other asset (e.g. the 186 KB Monaspace woff2).
+// Per-asset version prefix so changing one asset doesn't invalidate the cache for every other asset.
 var assetVersions = computeAssetVersions(publicRoot)
 
 func computeAssetVersions(root string) map[string]string {
@@ -56,10 +54,6 @@ func computeAssetVersions(root string) map[string]string {
 	return out
 }
 
-// Asset returns the long-cached, content-hashed URL for a file under public/.
-// Accepts paths with or without a leading slash and with or without the
-// "public/" prefix. Falls back to an unversioned URL if the file wasn't in
-// public/ at startup.
 func Asset(path string) string {
 	path = strings.TrimPrefix(path, "/")
 	path = strings.TrimPrefix(path, "public/")
@@ -73,10 +67,7 @@ func Asset(path string) string {
 	return urlPrefix + versionTag + v + "/" + path
 }
 
-// URLs starting with /public/v_<hash>/ are deploy-versioned and get a 1-year
-// immutable Cache-Control. Any other /public/ URL gets a 5-minute cache so
-// stale bookmarks or external refs (favicon links, OG images cached by social
-// crawlers) still resolve without poisoning a year of edge cache.
+// Versioned URLs get 1-year immutable; unversioned get 5-min so stale bookmarks/social-crawler caches don't poison a year of edge cache.
 func Handler() http.Handler {
 	fs := http.FileServer(http.Dir(publicRoot))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

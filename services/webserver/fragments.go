@@ -17,10 +17,8 @@ var fragmentCacheControl = func() string {
 	return "private, max-age=300"
 }()
 
-// Explicit per-element selectors avoid datastar's children-iteration path,
-// which triggered PatchElementsNoTargetsFound on Firefox even with all IDs
-// present. SSE also keeps Cloudflare's Web Analytics beacon out of the
-// response body (CF only injects into text/html).
+// Explicit per-element selectors avoid datastar's children-iteration path that fired
+// PatchElementsNoTargetsFound on Firefox; SSE also keeps Cloudflare's beacon out of the body.
 func asFragment(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := context.WithValue(r.Context(), layouts.FragmentKey, true)
@@ -35,15 +33,13 @@ func asFragment(h http.HandlerFunc) http.HandlerFunc {
 		titleEnd := strings.Index(body, "</title>") + len("</title>")
 		mainStart := strings.Index(body[titleEnd:], "<main") + titleEnd
 
-		writePatch(w, "title", body[:titleEnd])
+		writePatch(w, "#doc-title", body[:titleEnd])
 		writePatch(w, "#main", body[mainStart:])
 	}
 }
 
-// Datastar's SSE parser splits each `data:` line on the first space as
-// `<field> <value>`, so every HTML line gets re-prefixed with `elements `;
-// otherwise continuations would be misread as new fields named after the
-// first word of each HTML/CSS line.
+// Hand-rolled: the datastar Go SDK's NewSSE panics against the buffering middleware and forces no-cache.
+// Datastar's SSE parser splits each `data:` line on the first space, so every HTML line is re-prefixed with `elements `.
 func writePatch(w http.ResponseWriter, selector, html string) {
 	fmt.Fprint(w, "event: datastar-patch-elements\n")
 	fmt.Fprintf(w, "data: selector %s\n", selector)
