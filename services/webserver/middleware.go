@@ -23,9 +23,7 @@ type responseWriter struct {
 
 func (rw *responseWriter) WriteHeader(code int) {
 	rw.status = code
-	// Do not commit headers to the underlying writer yet. The middlewareCache
-	// needs to add ETag (and possibly short-circuit to 304) before the
-	// status line is flushed.
+	// Defer the status line so middlewareCache can add ETag or short-circuit to 304.
 }
 
 func (rw *responseWriter) Write(b []byte) (int, error) {
@@ -41,21 +39,9 @@ func (rw *responseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
 	return h.Hijack()
 }
 
-// CSP keeps script/style/font/img/connect to 'self' (everything ships from
-// /public/). Inline scripts use 'unsafe-inline' rather than per-block hashes
-// because Cloudflare Web Analytics injects an inline beacon at the edge whose
-// content rotates over time -- pinning a hash would break navigation every
-// time CF updates the snippet. 'unsafe-eval' is required by datastar's
-// data-on:click expression model, which evaluates handler strings via
-// new Function() at click time. Inline styles use per-block sha256s with no
-// 'unsafe-inline' fallback: CF doesn't inject styles and ours are stable, so
-// hash-only is genuinely strict (modern browsers ignore 'unsafe-inline' when
-// hashes are present anyway, leaving it in just produced a console warning).
-// frame-ancestors + X-Frame-Options together block clickjacking on both
-// modern and legacy browsers. Permissions-Policy denies sensor/payment/
-// clipboard APIs we don't use, including the deprecated FLoC interest-cohort
-// cohort. HSTS is intentionally omitted because Cloudflare sets it at the
-// edge.
+// script-src needs 'unsafe-inline' (Cloudflare's edge-injected beacon rotates, can't hash)
+// and 'unsafe-eval' (datastar evals data-on:* via new Function()). style-src is hash-only.
+// HSTS is omitted because Cloudflare sets it at the edge.
 var csp = buildCSP()
 
 const (
@@ -104,6 +90,12 @@ func middlewareCache(next http.Handler) http.Handler {
 			return
 		}
 
+		// ServeContent owns static validators (strong ETag, ranges); buffering would re-hash them and break ranges.
+		if strings.HasPrefix(r.URL.Path, "/public/") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		crw := &responseWriter{ResponseWriter: w, status: http.StatusOK}
 
 		next.ServeHTTP(crw, r)
@@ -129,9 +121,7 @@ func eTag(content []byte) string {
 	return fmt.Sprintf("W/\"%s\"", hash)
 }
 
-// etagMatch performs weak comparison per RFC 7232 section 2.3.2: the opaque-tag
-// bodies must match, ignoring W/ prefix. Also handles comma-separated lists
-// (If-None-Match: W/"a", W/"b") and the wildcard "*".
+// Weak comparison per RFC 7232 2.3.2: match opaque-tag bodies, ignoring the W/ prefix.
 func etagMatch(ifNoneMatch, serverTag string) bool {
 	if ifNoneMatch == "" {
 		return false

@@ -15,6 +15,8 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("failed to fetch posts from cache (%v)", err)
 	}
 	log.Printf("Home handler: rendering with %d posts", len(posts))
+	// Varies by the home-fit-* cookies and CF ignores Vary: Cookie — never shared-cache.
+	w.Header().Set("Cache-Control", "private, no-cache")
 	pages.Home{
 		PostsFit:    readFitCookie(r, "home-fit-posts"),
 		ProjectsFit: readFitCookie(r, "home-fit-projects"),

@@ -14,10 +14,18 @@ import (
 
 const siteOrigin = "https://www.ethanthoma.com"
 
+const (
+	feedCacheControl      = "public, s-maxage=300, max-age=300, stale-while-revalidate=600"
+	feedErrorCacheControl = "public, max-age=30"
+)
+
 func rssHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := postsByDateDesc()
 	if err != nil {
 		log.Printf("rss: failed to fetch posts (%v)", err)
+		w.Header().Set("Cache-Control", feedErrorCacheControl)
+	} else {
+		w.Header().Set("Cache-Control", feedCacheControl)
 	}
 	w.Header().Set("Content-Type", "application/rss+xml; charset=utf-8")
 	writeRSSFeed(w, posts)
@@ -27,6 +35,9 @@ func sitemapHandler(w http.ResponseWriter, r *http.Request) {
 	posts, err := cache.Cache.GetPosts()
 	if err != nil {
 		log.Printf("sitemap: failed to fetch posts (%v)", err)
+		w.Header().Set("Cache-Control", feedErrorCacheControl)
+	} else {
+		w.Header().Set("Cache-Control", feedCacheControl)
 	}
 	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
 	writeSitemap(w, posts)
