@@ -71,10 +71,6 @@
     addEventListener("datastar-patch-elements", syncDetailsToHash);
     syncDetailsToHash();
 
-    function setFitCookie(name, k) {
-        // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API lacks Firefox/Safari support
-        document.cookie = `${name}=${k}; Path=/; SameSite=Lax; Max-Age=31536000`;
-    }
     function countVisible(listId) {
         return document.querySelectorAll(`${listId} > li:not([hidden])`).length;
     }
@@ -95,16 +91,15 @@
         return seq;
     }
 
-    function updateFitCookiesAndButtons(projects, posts) {
-        const update = (list, cookieName, btnId) => {
+    function updateShowAllButtons(projects, posts) {
+        const update = (list, btnId) => {
             if (!list) return;
             const visible = Math.max(1, countVisible(`#${list.id}`));
-            setFitCookie(cookieName, visible);
             const btn = document.querySelector(btnId);
             if (btn) btn.hidden = visible >= list.children.length;
         };
-        update(projects, "home-fit-projects", "#show-all-projects");
-        update(posts, "home-fit-posts", "#show-all-posts");
+        update(projects, "#show-all-projects");
+        update(posts, "#show-all-posts");
     }
 
     const expandedLists = new Set();
@@ -129,23 +124,19 @@
             li.hidden = true;
         }
 
-        updateFitCookiesAndButtons(projects, posts);
+        updateShowAllButtons(projects, posts);
     }
     window.fitHomeListsToViewport = fitHomeListsToViewport;
 
     document.addEventListener("click", (e) => {
         const btn = e.target?.closest?.("#show-all-posts, #show-all-projects");
         if (!btn) return;
-        const isPosts = btn.id === "show-all-posts";
-        const listId = isPosts ? "#posts-list" : "#projects-list";
+        const listId =
+            btn.id === "show-all-posts" ? "#posts-list" : "#projects-list";
         const list = document.querySelector(listId);
         if (!list) return;
         expandedLists.add(list.id);
         for (const li of list.children) li.hidden = false;
-        setFitCookie(
-            isPosts ? "home-fit-posts" : "home-fit-projects",
-            list.children.length,
-        );
         btn.hidden = true;
     });
 

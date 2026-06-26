@@ -22,8 +22,8 @@ var (
 	headingAnchorRe            = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
 )
 
-// Safe to share-cache per slug (no per-visitor data); s-maxage tracks the 5m post cache.
-const postCacheControl = "public, s-maxage=300, max-age=60, stale-while-revalidate=600, stale-if-error=86400"
+// Cacheable HTML pages (home, posts) carry no per-visitor data; s-maxage tracks the 5m post cache.
+const pageCacheControl = "public, s-maxage=300, max-age=60, stale-while-revalidate=600, stale-if-error=86400"
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
@@ -39,7 +39,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	older, newer := postNeighbors(slug)
-	w.Header().Set("Cache-Control", postCacheControl)
+	w.Header().Set("Cache-Control", pageCacheControl)
 	pages.Post{}.View(post, older, newer).Render(r.Context(), w)
 }
 
