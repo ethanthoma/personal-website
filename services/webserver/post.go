@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"slices"
 	"sort"
@@ -22,8 +23,14 @@ var (
 	headingAnchorRe            = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
 )
 
-// Cacheable HTML pages (home, posts) carry no per-visitor data; s-maxage tracks the 5m post cache.
-const pageCacheControl = "public, s-maxage=300, max-age=60, stale-while-revalidate=600, stale-if-error=86400"
+// Cacheable HTML pages (home, posts, games) carry no per-visitor data; s-maxage tracks the 5m
+// post cache. DEV serves no-store so the browser never holds a stale inlined globle.js/spa.js.
+var pageCacheControl = func() string {
+	if os.Getenv("DEV") == "1" {
+		return "no-store"
+	}
+	return "public, s-maxage=300, max-age=60, stale-while-revalidate=600, stale-if-error=86400"
+}()
 
 func postHandler(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
