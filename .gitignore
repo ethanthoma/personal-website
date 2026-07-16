@@ -35,6 +35,9 @@ services/webserver/**/*.js
 !internal/
 !internal/**/*.go
 
+# scripts
+!scripts/**/*
+
 !docs
 !docs/**/*.pdf
 

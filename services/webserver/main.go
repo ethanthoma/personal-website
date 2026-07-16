@@ -32,6 +32,8 @@ func main() {
 	http.HandleFunc("GET /{$}", homeHandler)
 	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /post/{slug}", postHandler)
+	http.HandleFunc("GET /games", gamesHandler)
+	http.HandleFunc("GET /games/{slug}", gameHandler)
 	http.HandleFunc("GET /rss.xml", rssHandler)
 	http.HandleFunc("GET /sitemap.xml", sitemapHandler)
 
@@ -44,6 +46,7 @@ func main() {
 
 	http.HandleFunc("GET /fragment/home", asFragment(homeHandler))
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
+	http.HandleFunc("GET /fragment/games", asFragment(gamesHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
 	http.Handle("GET /public/", static.Handler())

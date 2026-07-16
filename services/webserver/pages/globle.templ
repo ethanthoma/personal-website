@@ -1,0 +1,58 @@
+package pages
+
+import "personal-website/services/webserver/layouts"
+
+type Globle struct{}
+
+templ (p Globle) View(countriesURL string) {
+	@layouts.Base{
+		Title:       "Ethan Thoma / Globle",
+		Description: "Guess the mystery country, a daily geography game.",
+		URL:         "/games/globle",
+	}.View() {
+		<article id="globle-root" data-countries={ countriesURL } class="flex flex-col row-start-1 col-[2/-2]">
+			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
+				<h1 class="font-bold leading-none text-l text-content/70">
+					<a
+						href="/home"
+						aria-label="home"
+						class="px-3xs -mx-3xs text-content/60 hover:text-blue"
+						data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
+					>home</a><span class="text-content/40">{ " / " }</span>
+					<a
+						href="/games"
+						class="px-3xs -mx-3xs text-content/60 hover:text-blue"
+						data-on:click__prevent="goTo('/games'); @get('/fragment/games')"
+					>games</a><span class="text-content/40">{ " / " }</span>
+					{ " " }
+					Globle
+				</h1>
+			</header>
+			<p class="font-sans mt-m text-content/60">
+				Guess the mystery country. Warmer is closer. Drag to spin. New puzzle in{ " " }
+				<span id="globle-countdown" class="tabular-nums">24h</span>.
+			</p>
+			<div class="mx-auto w-full max-w-[32rem] aspect-square mt-l">
+				<canvas id="globe" class="w-full h-full touch-none cursor-grab" aria-label="Globe"></canvas>
+			</div>
+			<form id="guess-form" class="flex gap-2xs mt-m" autocomplete="off">
+				<input
+					id="guess-input"
+					list="country-list"
+					name="country"
+					placeholder="Guess a country"
+					aria-label="Guess a country"
+					class="flex-1 min-w-0 px-xs py-2xs font-mono bg-transparent border rounded-none border-content/30 text-content focus:border-blue focus:outline-none"
+				/>
+				<datalist id="country-list"></datalist>
+				<button
+					type="submit"
+					class="px-s py-2xs font-mono cursor-pointer border border-content/30 text-content hover:text-blue hover:border-blue"
+				>Guess</button>
+			</form>
+			<p id="globle-message" class="font-sans mt-xs text-content/70" aria-live="polite"></p>
+			<ol id="globle-guesses" class="flex flex-col mt-m gap-3xs"></ol>
+			@templ.Raw("<script>" + layouts.GlobleJS + "</script>")
+		</article>
+	}
+}

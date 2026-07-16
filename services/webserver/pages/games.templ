@@ -1,0 +1,45 @@
+package pages
+
+import "personal-website/services/webserver/layouts"
+
+type Games struct{}
+
+type GameCard struct {
+	Slug  string
+	Title string
+	Blurb string
+}
+
+templ (p Games) View(cards []GameCard) {
+	@layouts.Base{
+		Title:       "Ethan Thoma / Games",
+		Description: "A small collection of daily browser games.",
+		URL:         "/games",
+	}.View() {
+		<article class="row-start-1 col-[2/-2]">
+			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
+				<h1 class="font-bold leading-none text-l text-content/70">
+					<a
+						href="/home"
+						aria-label="home"
+						class="px-3xs -mx-3xs text-content/60 hover:text-blue"
+						data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
+					>home</a><span class="text-content/40">{ " / " }</span>
+					{ " " }
+					Games
+				</h1>
+				<p class="leading-none text-content/60">A new puzzle every day</p>
+			</header>
+			<ol class="flex flex-col mt-l gap-xs">
+				for _, card := range cards {
+					<li>
+						<a href={ templ.URL("/games/" + card.Slug) } class="block group py-2xs">
+							<span class="text-m text-content group-hover:text-blue">{ card.Title }</span>
+							<span class="block font-sans text-content/60 mt-3xs">{ card.Blurb }</span>
+						</a>
+					</li>
+				}
+			</ol>
+		</article>
+	}
+}
