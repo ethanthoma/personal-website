@@ -21,6 +21,8 @@ type listRow struct {
 	OnClick string
 }
 
+const homeListLimit = 6
+
 templ (p Home) View(posts []internal.Post) {
 	{{
 		sort.SliceStable(posts, func(i, j int) bool { return posts[i].Date.After(posts[j].Date) })
@@ -62,7 +64,11 @@ templ (p Home) View(posts []internal.Post) {
 								suffix = "(WIP)"
 							}
 						}}
-						<li>
+						<li
+							if index >= homeListLimit {
+								hidden
+							}
+						>
 							@listRowView(listRow{
 								Href:   project.Url,
 								Index:  index,
@@ -74,18 +80,23 @@ templ (p Home) View(posts []internal.Post) {
 						</li>
 					}
 				</ol>
-				<button
-					id="show-all-projects"
-					type="button"
-					hidden
-					class="font-sans cursor-pointer underline underline-offset-2 mt-2xs hover:text-blue"
-				>show all</button>
+				if len(projects) > homeListLimit {
+					<button
+						id="show-all-projects"
+						type="button"
+						class="font-sans text-s cursor-pointer mt-2xs text-content/50 hover:text-content/80"
+					>{ fmt.Sprintf("Show all %d projects", len(projects)) }</button>
+				}
 			}
 			if len(posts) > 0 {
 				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Writing</h2>
 				<ol id="posts-list" class="flex flex-col mt-s">
 					for index, post := range posts {
-						<li>
+						<li
+							if index >= homeListLimit {
+								hidden
+							}
+						>
 							@listRowView(listRow{
 								Href:    "/post/" + post.Slug,
 								Index:   index,
@@ -97,12 +108,13 @@ templ (p Home) View(posts []internal.Post) {
 						</li>
 					}
 				</ol>
-				<button
-					id="show-all-posts"
-					type="button"
-					hidden
-					class="font-sans cursor-pointer underline underline-offset-2 mt-2xs hover:text-blue"
-				>show all</button>
+				if len(posts) > homeListLimit {
+					<button
+						id="show-all-posts"
+						type="button"
+						class="font-sans text-s cursor-pointer mt-2xs text-content/50 hover:text-content/80"
+					>{ fmt.Sprintf("Show all %d posts", len(posts)) }</button>
+				}
 			}
 		</article>
 	}

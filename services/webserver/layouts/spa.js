@@ -71,88 +71,15 @@
     addEventListener("datastar-patch-elements", syncDetailsToHash);
     syncDetailsToHash();
 
-    function countVisible(listId) {
-        return document.querySelectorAll(`${listId} > li:not([hidden])`).length;
-    }
-    const overflowing = () =>
-        document.documentElement.scrollHeight >
-        (window.visualViewport?.height ?? window.innerHeight);
-
-    function alternatingTail(projects, posts) {
-        const tailOf = (list) =>
-            list ? Array.from(list.children).slice(1).reverse() : [];
-        const p = tailOf(projects);
-        const w = tailOf(posts);
-        const seq = [];
-        for (let i = 0; i < Math.max(p.length, w.length); i++) {
-            if (i < w.length) seq.push(w[i]);
-            if (i < p.length) seq.push(p[i]);
-        }
-        return seq;
-    }
-
-    function updateShowAllButtons(projects, posts) {
-        const update = (list, btnId) => {
-            if (!list) return;
-            const visible = Math.max(1, countVisible(`#${list.id}`));
-            const btn = document.querySelector(btnId);
-            if (btn) btn.hidden = visible >= list.children.length;
-        };
-        update(projects, "#show-all-projects");
-        update(posts, "#show-all-posts");
-    }
-
-    const expandedLists = new Set();
-
-    function fitHomeListsToViewport() {
-        const projects = document.querySelector("#projects-list");
-        const posts = document.querySelector("#posts-list");
-        if (!projects && !posts) return;
-
-        for (const list of [projects, posts]) {
-            if (!list) continue;
-            for (const li of list.children) li.hidden = false;
-        }
-
-        const collapsible = (list) =>
-            list && !expandedLists.has(list.id) ? list : null;
-        for (const li of alternatingTail(
-            collapsible(projects),
-            collapsible(posts),
-        )) {
-            if (!overflowing()) break;
-            li.hidden = true;
-        }
-
-        updateShowAllButtons(projects, posts);
-    }
-    window.fitHomeListsToViewport = fitHomeListsToViewport;
-
     document.addEventListener("click", (e) => {
         const btn = e.target?.closest?.("#show-all-posts, #show-all-projects");
         if (!btn) return;
-        const listId =
-            btn.id === "show-all-posts" ? "#posts-list" : "#projects-list";
-        const list = document.querySelector(listId);
-        if (!list) return;
-        expandedLists.add(list.id);
-        for (const li of list.children) li.hidden = false;
+        const list = document.querySelector(
+            btn.id === "show-all-posts" ? "#posts-list" : "#projects-list",
+        );
+        if (list) for (const li of list.children) li.hidden = false;
         btn.hidden = true;
     });
-
-    let fitTimer = null;
-    const debouncedFit = () => {
-        clearTimeout(fitTimer);
-        fitTimer = setTimeout(fitHomeListsToViewport, 50);
-    };
-    if (window.ResizeObserver) {
-        new ResizeObserver(debouncedFit).observe(document.documentElement);
-    } else {
-        addEventListener("resize", debouncedFit);
-    }
-    window.visualViewport?.addEventListener("resize", debouncedFit);
-    addEventListener("datastar-patch-elements", debouncedFit);
-    document.fonts?.ready?.then(fitHomeListsToViewport);
 
     const prefetchedPostURLs = new Set();
     function prefetchPostFragment(slug) {
