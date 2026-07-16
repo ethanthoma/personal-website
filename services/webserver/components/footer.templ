@@ -4,6 +4,7 @@ templ (p Footer) View() {
 	<footer class="border-t border-content/15 flex flex-wrap-reverse justify-between col-[2/-2] pt-s pb-2xl gap-x-l gap-y-s text-content/60">
 		<span>&copy; 2024&ndash;2026</span>
 		<span class="flex flex-wrap gap-x-s gap-y-2xs">
+			<a class="hover:text-blue" href="/games" data-on:click__prevent="goTo('/games'); @get('/fragment/games')">games</a>
 			<a class="hover:text-blue" href="mailto:ethoma@mail.ubc.ca">email</a>
 			<a class="hover:text-blue" href="https://github.com/ethanthoma">github</a>
 			<a class="hover:text-blue" href="https://x.com/EthanBThoma">x</a>
