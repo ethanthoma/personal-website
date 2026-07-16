@@ -52,6 +52,14 @@ templ (p Home) View(posts []internal.Post) {
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>read my resume</a>.
 			</p>
+			<p class="font-sans mt-m text-m">
+				Or take a break and play{ " " }
+				<a
+					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
+					href="/games"
+					data-on:click__prevent="goTo('/games'); @get('/fragment/games')"
+				>a daily game</a>.
+			</p>
 			if len(projects) > 0 {
 				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Projects</h2>
 				<ol id="projects-list" class="flex flex-col mt-s">
