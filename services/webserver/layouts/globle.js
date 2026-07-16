@@ -385,7 +385,7 @@
         const plural = guesses.length === 1 ? "guess" : "guesses";
         input.value = "";
         input.disabled = true;
-        input.placeholder = `Solved ${target.name} in ${guesses.length} ${plural}`;
+        input.placeholder = `Solved in ${guesses.length} ${plural}`;
         input.classList.add("text-center", "text-content", "cursor-default");
         if (button) button.hidden = true;
     }
