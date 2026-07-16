@@ -8,15 +8,13 @@
 @theme {
     /* https://utopia.fyi/type/calculator/?c=320,16,1.25,1240,18,1.25,5,2,&s=0.75%7C0.5%7C0.25,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl&g=s,l,xl,12 */
 
-    --text-xs: clamp(0.64rem, 0.6122rem + 0.1391vw, 0.72rem);
     --text-s: clamp(0.8rem, 0.7652rem + 0.1739vw, 0.9rem);
     --text-m: clamp(1rem, 0.9565rem + 0.2174vw, 1.125rem);
     --text-l: clamp(1.25rem, 1.1957rem + 0.2717vw, 1.4063rem);
-    --text-xl: clamp(1.5625rem, 1.4946rem + 0.3397vw, 1.7578rem);
-    --text-2xl: clamp(1.9531rem, 1.8682rem + 0.4246vw, 2.1973rem);
-    --text-3xl: clamp(2.4414rem, 2.3353rem + 0.5307vw, 2.7466rem);
-    --text-4xl: clamp(3.0518rem, 2.9191rem + 0.6634vw, 3.4332rem);
 
+    /* Text tiers: text-content = primary (headings, reading text);
+       /60 = secondary (metadata, supporting copy); /40 = tertiary
+       (separators, markers, decoration); /15 = hairline rules. */
     --color-base: #FBF8EF;
     --color-shadow: color-mix(in oklab, var(--color-black) 20%, var(--color-base));
     --color-content: #141413;
@@ -27,7 +25,9 @@
     --color-gold: #fab505;
 
     /* https://utopia.fyi/space/calculator/?c=320,16,1.2,1240,22,1.25,5,2,&s=0.75%7C0.5%7C0.33333333333%7C0.25%7C0.15,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl%7Cs-2xl%7C4xs-2xs%7C5xs-3xs&g=s,l,xl,12 */
-    --spacing-5xs: clamp(0.125rem, 0.1033rem + 0.1087vw, 0.1875rem);
+    /* Spacing roles: 4xs-xs = intra-component; s = block rhythm;
+       m = sub-section; l = section; 2xl = page frame.
+       Fluid pairs: 2xs-xs = list-row label padding; xs-xl = page gutter. */
     --spacing-4xs: clamp(0.25rem, 0.2065rem + 0.2174vw, 0.375rem);
     --spacing-3xs: clamp(0.3125rem, 0.269rem + 0.2174vw, 0.4375rem);
     --spacing-2xs: clamp(0.5rem, 0.4348rem + 0.3261vw, 0.6875rem);
@@ -35,48 +35,9 @@
     --spacing-s: clamp(1rem, 0.8696rem + 0.6522vw, 1.375rem);
     --spacing-m: clamp(1.5rem, 1.3043rem + 0.9783vw, 2.0625rem);
     --spacing-l: clamp(2rem, 1.7391rem + 1.3043vw, 2.75rem);
-    --spacing-xl: clamp(3rem, 2.6087rem + 1.9565vw, 4.125rem);
     --spacing-2xl: clamp(4rem, 3.4783rem + 2.6087vw, 5.5rem);
-    --spacing-3xl: clamp(6rem, 5.2174rem + 3.913vw, 8.25rem);
-    --spacing-4xl: clamp(8rem, 6.9565rem + 5.2174vw, 11rem);
-    --spacing-5xl: clamp(11rem, 9.5652rem + 7.1739vw, 15.125rem);
-    --spacing-6xl: clamp(15rem, 13.0435rem + 9.7826vw, 20.625rem);
-    --spacing-7xl: clamp(19rem, 16.5217rem + 12.3913vw, 26.125rem);
 
-    /* One-up pairs */
-    --spacing-5xs-4xs: clamp(0.125rem, 0.038rem + 0.4348vw, 0.375rem);
-    --spacing-4xs-3xs: clamp(0.25rem, 0.1848rem + 0.3261vw, 0.4375rem);
-    --spacing-3xs-2xs: clamp(0.25rem, 0.0978rem + 0.7609vw, 0.6875rem);
     --spacing-2xs-xs: clamp(0.5rem, 0.3043rem + 0.9783vw, 1.0625rem);
-    --spacing-xs-s: clamp(0.75rem, 0.5326rem + 1.087vw, 1.375rem);
-    --spacing-s-m: clamp(1rem, 0.6304rem + 1.8478vw, 2.0625rem);
-    --spacing-m-l: clamp(1.5rem, 1.0652rem + 2.1739vw, 2.75rem);
-    --spacing-l-xl: clamp(2rem, 1.2609rem + 3.6957vw, 4.125rem);
-    --spacing-xl-2xl: clamp(3rem, 2.1304rem + 4.3478vw, 5.5rem);
-    --spacing-2xl-3xl: clamp(4rem, 2.5217rem + 7.3913vw, 8.25rem);
-    --spacing-3xl-4xl: clamp(6rem, 4.2609rem + 8.6957vw, 11rem);
-    --spacing-4xl-5xl: clamp(8rem, 5.5217rem + 12.3913vw, 15.125rem);
-    --spacing-5xl-6xl: clamp(11rem, 7.6522rem + 16.7391vw, 20.625rem);
-    --spacing-6xl-7xl: clamp(15rem, 11.1304rem + 19.3478vw, 26.125rem);
-
-    /* Two-up pairs */
-    --spacing-5xs-3xs: clamp(0.125rem, 0.0163rem + 0.5435vw, 0.4375rem);
-    --spacing-4xs-2xs: clamp(0.25rem, 0.0978rem + 0.7609vw, 0.6875rem);
-    --spacing-3xs-xs: clamp(0.25rem, -0.0326rem + 1.413vw, 1.0625rem);
-    --spacing-2xs-s: clamp(0.5rem, 0.1957rem + 1.5217vw, 1.375rem);
-    --spacing-xs-m: clamp(0.75rem, 0.2935rem + 2.2826vw, 2.0625rem);
-    --spacing-s-l: clamp(1rem, 0.3913rem + 3.0435vw, 2.75rem);
-    --spacing-m-xl: clamp(1.5rem, 0.587rem + 4.5652vw, 4.125rem);
-    --spacing-l-2xl: clamp(2rem, 0.7826rem + 6.087vw, 5.5rem);
-    --spacing-xl-3xl: clamp(3rem, 1.1739rem + 9.1304vw, 8.25rem);
-    --spacing-2xl-4xl: clamp(4rem, 1.5652rem + 12.1739vw, 11rem);
-    --spacing-3xl-5xl: clamp(6rem, 2.8261rem + 15.8696vw, 15.125rem);
-    --spacing-4xl-6xl: clamp(8rem, 3.6087rem + 21.9565vw, 20.625rem);
-    --spacing-5xl-6xl: clamp(11rem, 7.6522rem + 16.7391vw, 20.625rem);
-    --spacing-6xl-7xl: clamp(15rem, 11.1304rem + 19.3478vw, 26.125rem);
-
-    /* Custom */
-    --spacing-s-2xl: clamp(1rem, -0.5652rem + 7.8261vw, 5.5rem);
     --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
     --spacing-content: 40rem;
@@ -110,7 +71,7 @@ body {
         @apply font-mono;
 
         & .heading-anchor {
-            @apply text-content/30;
+            @apply text-content/40;
             @apply no-underline;
             @apply opacity-0;
             @apply transition-opacity;
@@ -124,7 +85,7 @@ body {
 
     & h2 {
         @apply text-m;
-        @apply mt-m;
+        @apply mt-l;
         @apply flex;
         @apply items-center;
         @apply gap-xs;
@@ -133,14 +94,14 @@ body {
             content: '';
             @apply flex-1;
             @apply h-px;
-            @apply bg-content/20;
+            @apply bg-content/15;
         }
     }
 
     & h3 {
         @apply text-m;
 
-        @apply mt-s-m;
+        @apply mt-m;
     }
 
     & p {
@@ -196,7 +157,7 @@ body {
         @apply ps-m;
         @apply font-sans;
         @apply text-m;
-        @apply leading-snug;
+        @apply leading-normal;
         @apply marker:text-content/40;
 
         &>*+li {
@@ -210,9 +171,8 @@ body {
         @apply p-2xs;
         @apply ms-4xs;
         @apply space-y-xs;
-        @apply border-content/20;
+        @apply border-content/15;
         @apply border-s-1;
-        @apply text-content/60;
     }
 
     & cite {
@@ -220,8 +180,8 @@ body {
         @apply text-end;
         @apply mt-2xs;
         @apply not-italic;
-        @apply font-bold;
-        @apply text-xs;
+        @apply font-medium;
+        @apply text-s;
         @apply uppercase;
         @apply tracking-wider;
         @apply text-content/60;
@@ -239,6 +199,6 @@ body {
 hr {
     border: none;
     border-top: 1px solid;
-    @apply border-content/20;
-    @apply my-m-l;
+    @apply border-content/15;
+    @apply my-l;
 }

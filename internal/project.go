@@ -46,7 +46,6 @@ var Projects = []Project{
 		Date:  time.Date(2025, 1, 25, 0, 0, 0, 0, time.Local),
 		Title: "Canvas Group Quiz creation CLI in Gleam",
 		Url:   "https://github.com/STASER-Lab/cgq",
-		WIP:   true,
 	},
 	{
 		Date:  time.Date(2024, 12, 10, 0, 0, 0, 0, time.Local),

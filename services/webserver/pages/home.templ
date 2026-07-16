@@ -34,27 +34,27 @@ templ (p Home) View(posts []internal.Post) {
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
-				<h1 class="font-bold leading-none text-l text-content/70">Ethan Thoma</h1>
-				<p class="leading-none text-content/60">Cofounder @ stealth startup</p>
+				<h1 class="font-bold leading-none text-l">Ethan Thoma</h1>
+				<p class="leading-none text-content/60">Cofounder @ <a class="hover:text-blue" href="https://gentrail.ai">gentrail.ai</a></p>
 			</header>
-			<p class="font-sans mt-m text-m text-content/60">
-				I work on machine learning, natural language processing, and reinforcement
-				learning, with an emphasis on explainability. Mostly Python, Gleam, Zig,
-				Odin, and Nix.
+			<p class="font-sans mt-m text-m">
+				I work on machine learning, mainly natural language processing and
+				reinforcement learning, with a focus on explainability. I write mostly
+				Python, Gleam, Zig, Odin, and Nix.
 			</p>
-			<p class="font-sans mt-m text-m text-content/60">
+			<p class="font-sans mt-m text-m">
 				<a
-					class="text-content underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
+					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
 					href="mailto:ethoma@mail.ubc.ca"
 				>Send me an email</a>, or{ " " }
 				<a
-					class="text-content underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
+					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>read my resume</a>.
 			</p>
 			if len(projects) > 0 {
-				<h2 class="font-medium mt-l text-content/60">Projects</h2>
-				<ol id="projects-list" class="flex flex-col mt-2xs">
+				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Projects</h2>
+				<ol id="projects-list" class="flex flex-col mt-s">
 					for index, project := range projects {
 						{{
 							suffix := ""
@@ -78,12 +78,12 @@ templ (p Home) View(posts []internal.Post) {
 					id="show-all-projects"
 					type="button"
 					hidden
-					class="font-sans cursor-pointer text-content underline underline-offset-2 mt-2xs hover:text-blue"
+					class="font-sans cursor-pointer underline underline-offset-2 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 			if len(posts) > 0 {
-				<h2 class="font-medium mt-l text-content/60">Writing</h2>
-				<ol id="posts-list" class="flex flex-col mt-2xs">
+				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Writing</h2>
+				<ol id="posts-list" class="flex flex-col mt-s">
 					for index, post := range posts {
 						<li>
 							@listRowView(listRow{
@@ -101,7 +101,7 @@ templ (p Home) View(posts []internal.Post) {
 					id="show-all-posts"
 					type="button"
 					hidden
-					class="font-sans cursor-pointer text-content underline underline-offset-2 mt-2xs hover:text-blue"
+					class="font-sans cursor-pointer underline underline-offset-2 mt-2xs hover:text-blue"
 				>show all</button>
 			}
 		</article>
@@ -118,12 +118,13 @@ templ listRowView(row listRow) {
 	>
 		<span class="font-mono tabular-nums text-content/60 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
 		<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
-			<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-black/20"></span>
+			<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-content/15"></span>
 			<span class="relative flex-1 min-w-0">
 				<span class="bg-base box-decoration-clone pr-2xs-xs group-hover:text-blue">
 					{ row.Title }
 					if row.Suffix != "" {
-						{ " " + row.Suffix }
+						{ " " }
+						<span class="text-content/60">{ row.Suffix }</span>
 					}
 				</span>
 			</span>

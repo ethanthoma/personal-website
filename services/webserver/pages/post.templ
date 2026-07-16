@@ -24,7 +24,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
-				<h1 class="font-bold leading-none text-l text-content/70">
+				<h1 class="font-bold leading-none text-l">
 					<a
 						href="/home"
 						aria-label="home"
@@ -42,10 +42,10 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 			if post.TLDR != "" {
 				<aside class="mt-m">
 					<div class="flex items-center gap-xs">
-						<span class="font-mono uppercase text-content/60 text-s">tldr</span>
-						<span class="flex-1 h-px bg-content/20"></span>
+						<span class="font-mono font-medium uppercase tracking-wider text-content/60 text-s">tldr</span>
+						<span class="flex-1 h-px bg-content/15"></span>
 					</div>
-					<p class="font-sans italic text-content/60 mt-2xs">{ post.TLDR }</p>
+					<p class="font-sans italic text-m text-content/60 mt-2xs">{ post.TLDR }</p>
 				</aside>
 			}
 			@templ.Raw("<style>" + highlight.CSS + "</style>")
