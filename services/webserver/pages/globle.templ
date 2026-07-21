@@ -38,13 +38,14 @@ templ (p Globle) View(countriesURL string) {
 			<form id="guess-form" class="flex gap-2xs mt-m" autocomplete="off">
 				<input
 					id="guess-input"
-					list="country-list"
 					name="country"
 					placeholder="Guess a country"
 					aria-label="Guess a country"
+					autocomplete="off"
+					autocapitalize="off"
+					spellcheck="false"
 					class="flex-1 min-w-0 px-xs py-2xs font-mono bg-transparent border rounded-none border-content/30 text-content focus:border-blue focus:outline-none"
 				/>
-				<datalist id="country-list"></datalist>
 				<button
 					type="submit"
 					class="px-s py-2xs font-mono cursor-pointer border border-content/30 text-content hover:text-blue hover:border-blue"

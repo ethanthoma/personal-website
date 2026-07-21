@@ -37,8 +37,12 @@
         unitedstates: ["usa", "us", "america"],
         unitedkingdom: ["uk", "britain", "greatbritain", "england", "gb"],
         unitedarabemirates: ["uae"],
-        democraticrepublicofthecongo: ["drc", "congokinshasa"],
-        republicofthecongo: ["congo", "congobrazzaville"],
+        centralafricanrepublic: ["car"],
+        democraticrepublicofthecongo: ["drc", "drcongo", "congokinshasa"],
+        republicofthecongo: ["roc", "congo", "congobrazzaville"],
+        dominicanrepublic: ["dr"],
+        papuanewguinea: ["png"],
+        bosniaandherzegovina: ["bih", "bosnia"],
         cotedivoire: ["ivorycoast"],
         caboverde: ["capeverde"],
         myanmar: ["burma"],
@@ -46,7 +50,7 @@
         eswatini: ["swaziland"],
         macedonia: ["northmacedonia"],
         russia: ["russianfederation"],
-        southkorea: ["korea", "republicofkorea"],
+        southkorea: ["korea", "rok", "republicofkorea"],
         northkorea: ["dprk"],
         netherlands: ["holland"],
     };
@@ -57,6 +61,51 @@
             .replace(/[̀-ͯ]/g, "")
             .toLowerCase()
             .replace(/[^a-z]/g, "");
+
+    // Damerau-Levenshtein (adjacent transpositions cost 1, not 2) since swapped
+    // letters are among the most common typos: "germnay" is one edit from Germany.
+    function editDistance(a, b) {
+        if (Math.abs(a.length - b.length) > 3) return 99;
+        const d = Array.from({ length: a.length + 1 }, () =>
+            new Array(b.length + 1).fill(0),
+        );
+        for (let i = 0; i <= a.length; i++) d[i][0] = i;
+        for (let j = 0; j <= b.length; j++) d[0][j] = j;
+        for (let i = 1; i <= a.length; i++) {
+            for (let j = 1; j <= b.length; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+                d[i][j] = Math.min(
+                    d[i - 1][j] + 1,
+                    d[i][j - 1] + 1,
+                    d[i - 1][j - 1] + cost,
+                );
+                if (
+                    i > 1 &&
+                    j > 1 &&
+                    a[i - 1] === b[j - 2] &&
+                    a[i - 2] === b[j - 1]
+                ) {
+                    d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+                }
+            }
+        }
+        return d[a.length][b.length];
+    }
+    function bestMatch(key) {
+        let best = null;
+        let otherDist = Infinity;
+        for (const [k, c] of byKey) {
+            const d = editDistance(key, k);
+            if (!best || d < best.dist) {
+                if (best && best.country !== c)
+                    otherDist = Math.min(otherDist, best.dist);
+                best = { country: c, dist: d };
+            } else if (c !== best.country && d < otherDist) {
+                otherDist = d;
+            }
+        }
+        return best && { country: best.country, dist: best.dist, otherDist };
+    }
     const toXYZ = (lng, lat) => {
         const l = lng * DEG,
             p = lat * DEG,
@@ -436,7 +485,23 @@
 
     function submitGuess(raw) {
         if (won) return;
-        const country = byKey.get(normalize(raw));
+        const key = normalize(raw);
+        let country = byKey.get(key);
+        if (!country && key) {
+            const m = bestMatch(key);
+            const short = key.length <= 5;
+            const forgives =
+                m &&
+                m.dist <= (short ? 1 : 2) &&
+                m.dist < m.otherDist &&
+                m.dist <= Math.floor(key.length / 3);
+            if (forgives) {
+                country = m.country;
+            } else if (m && m.dist <= 3 && m.dist * 2 <= key.length) {
+                message(`Unknown country. Did you mean ${m.country.name}?`);
+                return;
+            }
+        }
         if (!country) {
             message(`Unknown country: "${raw.trim()}"`);
             return;
@@ -714,14 +779,6 @@
                 byKey.set(alias, c);
         }
         target = countries[hashInt(dayIndex) % countries.length];
-
-        const datalist = document.getElementById("country-list");
-        datalist.replaceChildren();
-        for (const c of countries) {
-            const option = document.createElement("option");
-            option.value = c.name;
-            datalist.append(option);
-        }
 
         restore();
         renderGuesses();
