@@ -11,6 +11,7 @@ Output: services/webserver/public/games/countries.json
 """
 
 import json
+import math
 import os
 import urllib.request
 
@@ -52,7 +53,18 @@ DISPLAY_NAMES = {
     "Macedonia": "North Macedonia",
 }
 
-EXCLUDED = {"Antarctica"}
+EXCLUDED = {
+    "Antarctica",
+    "Ashmore and Cartier Is.",
+    "Fr. S. Antarctic Lands",
+    "Heard I. and McDonald Is.",
+    "S. Geo. and the Is.",
+    "Br. Indian Ocean Ter.",
+}
+
+# Countries smaller than the simplification floor collapse to no polygon; give
+# them a small centroid box so they still render and can be shown as the answer.
+MIN_DOT_RADIUS = 0.2
 
 SOURCE_10M_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson"
 
@@ -155,6 +167,19 @@ def polygons_of(geometry):
     return geometry["arcs"]
 
 
+def min_dot(lng, lat):
+    sides = 12
+    r = MIN_DOT_RADIUS
+    r_lng = r / max(math.cos(math.radians(lat)), 0.3)
+    return [
+        [
+            round(lng + r_lng * math.cos(2 * math.pi * i / sides), COORD_DECIMALS),
+            round(lat + r * math.sin(2 * math.pi * i / sides), COORD_DECIMALS),
+        ]
+        for i in range(sides)
+    ]
+
+
 def build_country(geometry, arc_cache):
     name = geometry.get("properties", {}).get("name", "")
     name = DISPLAY_NAMES.get(name, name)
@@ -183,10 +208,14 @@ def build_country(geometry, arc_cache):
             sum(p[1] for p in biggest) / len(biggest),
         )
 
+    polygon_rings = [r for r in rings if len(r) >= 3]
+    if not polygon_rings:
+        polygon_rings = [min_dot(centroid[0], centroid[1])]
+
     return {
         "n": name,
         "c": [round(centroid[0], 2), round(centroid[1], 2)],
-        "p": [r for r in rings if len(r) >= 3],
+        "p": polygon_rings,
     }
 
 
