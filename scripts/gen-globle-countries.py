@@ -45,9 +45,21 @@ DISPLAY_NAMES = {
     "N. Cyprus": "Northern Cyprus",
     "W. Sahara": "Western Sahara",
     "eSwatini": "Eswatini",
+    "Marshall Is.": "Marshall Islands",
+    "Antigua and Barb.": "Antigua and Barbuda",
+    "St. Kitts and Nevis": "Saint Kitts and Nevis",
+    "St. Vin. and Gren.": "Saint Vincent and the Grenadines",
+    "Macedonia": "North Macedonia",
 }
 
 EXCLUDED = {"Antarctica"}
+
+# Natural Earth 50m has no polygon for Tuvalu, so inject it as a small speck
+# around its Funafuti centroid; without this it can never be guessed or be the
+# answer.
+MANUAL_COUNTRIES = {
+    "Tuvalu": (178.7, -8.0),
+}
 
 
 def ring_extent(points):
@@ -190,6 +202,17 @@ def main():
         country = build_country(geometry, arc_cache)
         if country:
             countries.append(country)
+
+    for name, (lng, lat) in MANUAL_COUNTRIES.items():
+        r = 0.3
+        ring = [
+            [round(lng - r, COORD_DECIMALS), round(lat - r, COORD_DECIMALS)],
+            [round(lng + r, COORD_DECIMALS), round(lat - r, COORD_DECIMALS)],
+            [round(lng + r, COORD_DECIMALS), round(lat + r, COORD_DECIMALS)],
+            [round(lng - r, COORD_DECIMALS), round(lat + r, COORD_DECIMALS)],
+        ]
+        countries.append({"n": name, "c": [round(lng, 2), round(lat, 2)], "p": [ring]})
+
     countries.sort(key=lambda c: c["n"])
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
