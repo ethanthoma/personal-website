@@ -31,6 +31,7 @@
     const LAND = mix(CONTENT, BASE, 0.16);
     const STROKE = mix(CONTENT, BASE, 0.28);
     const FOUND = "oklch(0.62 0.15 150)";
+    const REVEAL = cssVar("--color-blue", "#0064E6");
     const BORDER = CONTENT;
 
     const ALIASES = {
@@ -172,6 +173,7 @@
     let target = null;
     let guesses = [];
     let won = false;
+    let gaveUp = false;
     const view = { lng: 10, lat: 20 };
 
     function basis() {
@@ -303,7 +305,8 @@
             if (c === target) continue;
             paintCountry(c, colorForDistance(distanceKm(c)), BORDER, b);
         }
-        if (won && target) paintCountry(target, FOUND, BORDER, b);
+        if ((won || gaveUp) && target)
+            paintCountry(target, won ? FOUND : REVEAL, BORDER, b);
         ctx.restore();
 
         ctx.beginPath();
@@ -323,10 +326,15 @@
         });
     }
 
-    function animateTo(lng, lat) {
+    function animateTo(lng, lat, zoomTarget) {
         cancelInertia();
         const startLng = view.lng,
             startLat = view.lat;
+        const startZoom = zoom;
+        const endZoom =
+            zoomTarget === undefined
+                ? zoom
+                : Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoomTarget));
         const dLng = ((lng - startLng + 540) % 360) - 180;
         const dLat = lat - startLat;
         const t0 = performance.now();
@@ -335,6 +343,8 @@
             const e = 1 - (1 - k) ** 3;
             view.lng = startLng + dLng * e;
             view.lat = startLat + dLat * e;
+            if (zoomTarget !== undefined)
+                setZoom(startZoom + (endZoom - startZoom) * e);
             draw();
             if (k < 1) requestAnimationFrame(step);
         })(t0);
@@ -352,7 +362,11 @@
             .sort((a, b) => a.km - b.km || b.i - a.i);
         for (const { c, km } of rows) {
             const li = document.createElement("li");
-            li.className = "flex items-center gap-xs";
+            li.className =
+                "flex items-center gap-xs cursor-pointer hover:text-blue";
+            li.addEventListener("click", () =>
+                animateTo(c.centroid[0], c.centroid[1], 2.5),
+            );
             const swatch = document.createElement("span");
             swatch.className = "inline-block shrink-0";
             swatch.style.cssText = `width:0.9rem;height:0.9rem;border:1px solid ${BORDER};`;
@@ -407,6 +421,16 @@
         }
         return s;
     }
+    function recordGiveUp() {
+        const s = loadStats();
+        if (s.lastGiveUpDay !== dayIndex) {
+            s.streak = 0;
+            s.lastGiveUpDay = dayIndex;
+            try {
+                localStorage.setItem("globle-stats", JSON.stringify(s));
+            } catch (e) {}
+        }
+    }
 
     function nextPuzzleCountdown() {
         const now = new Date();
@@ -434,9 +458,14 @@
         const plural = guesses.length === 1 ? "guess" : "guesses";
         input.value = "";
         input.disabled = true;
-        input.placeholder = `Solved in ${guesses.length} ${plural}`;
-        input.classList.add("text-center", "text-content", "cursor-default");
+        input.placeholder = gaveUp
+            ? `Answer: ${target.name}`
+            : `Solved in ${guesses.length} ${plural}`;
+        input.classList.add("text-center", "cursor-default");
+        input.classList.add(gaveUp ? "placeholder:text-blue" : "text-content");
         if (button) button.hidden = true;
+        const giveUpLink = document.getElementById("give-up");
+        if (giveUpLink) giveUpLink.classList.add("invisible");
     }
 
     function showResult() {
@@ -471,7 +500,7 @@
         if (stats.streak > 1) {
             const streak = document.createElement("span");
             streak.className = "ml-xs text-content/60";
-            streak.textContent = `· ${stats.streak} day streak 🔥`;
+            streak.textContent = `${stats.streak} day streak 🔥`;
             el.append(streak);
         }
     }
@@ -483,8 +512,18 @@
         lockSolved();
     }
 
+    function finishGiveUp() {
+        gaveUp = true;
+        recordGiveUp();
+        save();
+        draw();
+        message(`The answer was ${target.name}.`);
+        document.getElementById("globle-message").classList.add("invisible");
+        lockSolved();
+    }
+
     function submitGuess(raw) {
-        if (won) return;
+        if (won || gaveUp) return;
         const key = normalize(raw);
         let country = byKey.get(key);
         if (!country && key) {
@@ -531,7 +570,11 @@
         try {
             localStorage.setItem(
                 storeKey,
-                JSON.stringify({ guesses: guesses.map((c) => c.name), won }),
+                JSON.stringify({
+                    guesses: guesses.map((c) => c.name),
+                    won,
+                    gaveUp,
+                }),
             );
         } catch (e) {}
     }
@@ -548,6 +591,7 @@
             if (c && !guesses.includes(c)) guesses.push(c);
         }
         won = guesses.includes(target);
+        gaveUp = !won && Boolean(state.gaveUp);
     }
 
     const clampLat = (lat) => Math.max(-90, Math.min(90, lat));
@@ -722,6 +766,9 @@
         for (const c of guesses)
             for (const ring of c.rings)
                 if (pointInRing(lng, lat, ring)) return c;
+        if (gaveUp && target)
+            for (const ring of target.rings)
+                if (pointInRing(lng, lat, ring)) return target;
         return null;
     }
     canvas.addEventListener("pointermove", (e) => {
@@ -751,6 +798,25 @@
         const input = document.getElementById("guess-input");
         if (input.value.trim()) submitGuess(input.value);
         input.value = "";
+    });
+
+    const giveUpDialog = document.getElementById("giveup-dialog");
+    document.getElementById("give-up").addEventListener("click", () => {
+        if (won || gaveUp) return;
+        const streak = loadStats().streak || 0;
+        document.getElementById("giveup-text").textContent =
+            streak >= 1
+                ? `Give up and reveal today's answer? This ends your ${streak} day streak 🔥.`
+                : "Give up and reveal today's answer?";
+        giveUpDialog.showModal();
+    });
+    document
+        .getElementById("giveup-cancel")
+        .addEventListener("click", () => giveUpDialog.close());
+    document.getElementById("giveup-confirm").addEventListener("click", () => {
+        giveUpDialog.close();
+        finishGiveUp();
+        animateTo(target.centroid[0], target.centroid[1]);
     });
     if (window.ResizeObserver)
         new ResizeObserver(() => resize()).observe(canvas);
@@ -784,6 +850,9 @@
         renderGuesses();
         if (won) {
             finishWin();
+            animateTo(target.centroid[0], target.centroid[1]);
+        } else if (gaveUp) {
+            finishGiveUp();
             animateTo(target.centroid[0], target.centroid[1]);
         } else if (guesses.length) {
             const nearest = guesses.reduce((a, c) =>

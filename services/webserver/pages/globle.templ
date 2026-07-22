@@ -30,7 +30,12 @@ templ (p Globle) View(countriesURL string) {
 			</header>
 			<p class="font-sans mt-m text-content/60">
 				Guess the mystery country. Warmer is closer. Drag to spin. New puzzle in{ " " }
-				<span id="globle-countdown" class="tabular-nums">24h</span>.
+				<span id="globle-countdown" class="tabular-nums">24h</span>.{ " " }
+				<button
+					type="button"
+					id="give-up"
+					class="underline underline-offset-2 cursor-pointer hover:text-content/80"
+				>give up</button>
 			</p>
 			<div class="mx-auto w-full max-w-[32rem] aspect-square mt-l">
 				<canvas id="globe" class="w-full h-full touch-none cursor-grab" aria-label="Globe"></canvas>
@@ -53,6 +58,24 @@ templ (p Globle) View(countriesURL string) {
 			</form>
 			<p id="globle-message" class="font-sans mt-xs text-content/70" aria-live="polite"></p>
 			<ol id="globle-guesses" class="flex flex-col mt-m gap-3xs"></ol>
+			<dialog
+				id="giveup-dialog"
+				class="m-auto max-w-[22rem] p-m font-sans bg-base border border-content/30 text-content backdrop:bg-content/30"
+			>
+				<p id="giveup-text">Give up and reveal today's answer? This breaks your streak.</p>
+				<div class="flex justify-end gap-xs mt-m">
+					<button
+						type="button"
+						id="giveup-cancel"
+						class="px-s py-2xs font-mono cursor-pointer border border-content/30 text-content hover:text-blue hover:border-blue"
+					>cancel</button>
+					<button
+						type="button"
+						id="giveup-confirm"
+						class="px-s py-2xs font-mono cursor-pointer border border-content/30 text-content hover:text-blue hover:border-blue"
+					>give up</button>
+				</div>
+			</dialog>
 			@templ.Raw("<script>" + layouts.GlobleJS + "</script>")
 		</article>
 	}
