@@ -54,12 +54,11 @@ DISPLAY_NAMES = {
 
 EXCLUDED = {"Antarctica"}
 
-# Natural Earth 50m has no polygon for Tuvalu, so inject it as a small speck
-# around its Funafuti centroid; without this it can never be guessed or be the
-# answer.
-MANUAL_COUNTRIES = {
-    "Tuvalu": (178.7, -8.0),
-}
+SOURCE_10M_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_admin_0_countries.geojson"
+
+# Countries absent from the 50m base, pulled from Natural Earth's public-domain
+# 10m set. Island nations only, so there is no shared-border gap with neighbours.
+SUPPLEMENT_10M = {"Tuvalu"}
 
 
 def ring_extent(points):
@@ -191,6 +190,68 @@ def build_country(geometry, arc_cache):
     }
 
 
+def outer_rings(geometry):
+    if geometry["type"] == "Polygon":
+        return [geometry["coordinates"][0]]
+    if geometry["type"] == "MultiPolygon":
+        return [polygon[0] for polygon in geometry["coordinates"]]
+    return []
+
+
+def build_supplement(name, geometry):
+    rings = []
+    for raw_ring in outer_rings(geometry):
+        points = [(point[0], point[1]) for point in raw_ring]
+        tolerance = min(SIMPLIFY_MAX, max(SIMPLIFY_MIN, ring_extent(points) * SIMPLIFY_FACTOR))
+        points = simplify(points, tolerance)
+        ring = clean_ring(
+            [[round(px, COORD_DECIMALS), round(py, COORD_DECIMALS)] for px, py in points]
+        )
+        if len(ring) >= 3:
+            rings.append(ring)
+    if not rings:
+        return None
+
+    best_area, centroid = -1.0, None
+    for ring in rings:
+        area, ring_centroid = ring_area_centroid(ring)
+        if area > best_area:
+            best_area, centroid = area, ring_centroid
+    if centroid is None:
+        biggest = max(rings, key=len)
+        centroid = (
+            sum(p[0] for p in biggest) / len(biggest),
+            sum(p[1] for p in biggest) / len(biggest),
+        )
+
+    return {
+        "n": name,
+        "c": [round(centroid[0], 2), round(centroid[1], 2)],
+        "p": rings,
+    }
+
+
+def fetch_supplements():
+    if not SUPPLEMENT_10M:
+        return []
+    with urllib.request.urlopen(SOURCE_10M_URL, timeout=60) as response:
+        geojson = json.load(response)
+
+    wanted = set(SUPPLEMENT_10M)
+    supplements = []
+    for feature in geojson["features"]:
+        name = feature.get("properties", {}).get("NAME", "")
+        name = DISPLAY_NAMES.get(name, name)
+        if name in wanted:
+            country = build_supplement(name, feature["geometry"])
+            if country:
+                supplements.append(country)
+                wanted.discard(name)
+    if wanted:
+        raise SystemExit(f"10m supplement not found: {sorted(wanted)}")
+    return supplements
+
+
 def main():
     with urllib.request.urlopen(SOURCE_URL, timeout=30) as response:
         topo = json.load(response)
@@ -203,16 +264,7 @@ def main():
         if country:
             countries.append(country)
 
-    for name, (lng, lat) in MANUAL_COUNTRIES.items():
-        r = 0.3
-        ring = [
-            [round(lng - r, COORD_DECIMALS), round(lat - r, COORD_DECIMALS)],
-            [round(lng + r, COORD_DECIMALS), round(lat - r, COORD_DECIMALS)],
-            [round(lng + r, COORD_DECIMALS), round(lat + r, COORD_DECIMALS)],
-            [round(lng - r, COORD_DECIMALS), round(lat + r, COORD_DECIMALS)],
-        ]
-        countries.append({"n": name, "c": [round(lng, 2), round(lat, 2)], "p": [ring]})
-
+    countries.extend(fetch_supplements())
     countries.sort(key=lambda c: c["n"])
 
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
