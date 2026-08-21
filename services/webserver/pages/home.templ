@@ -37,7 +37,7 @@ templ (p Home) View(posts []internal.Post) {
 		<article class="row-start-1 col-[2/-2]">
 			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
 				<h1 class="font-bold leading-none text-l">Ethan Thoma</h1>
-				<p class="leading-none text-content/60">Cofounder @ <a class="hover:text-blue" href="https://gentrail.ai">gentrail.ai</a></p>
+				<p class="leading-none text-content/60">Cofounder @ <a class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue" href="https://gentrail.ai">gentrail.ai</a></p>
 			</header>
 			<p class="font-sans mt-m text-m">
 				I work on machine learning, mainly natural language processing and
@@ -47,13 +47,25 @@ templ (p Home) View(posts []internal.Post) {
 			<p class="font-sans mt-m text-m">
 				<a
 					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
-					href="mailto:ethoma@mail.ubc.ca"
+					data-email-user="ethanthoma"
+					data-email-domain="gmail.com"
 				>Send me an email</a>, or{ " " }
 				<a
 					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
 					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
 				>read my resume</a>.
 			</p>
+			<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Featured</h2>
+			<div class="grid sm:grid-cols-2 gap-xs mt-s">
+				<a href="https://gentrail.ai" class="block group p-s border border-content/15 hover:border-blue/40">
+					<span class="text-m text-content underline underline-offset-2 decoration-content/40 group-hover:text-blue group-hover:decoration-blue">gentrail.ai</span>
+					<span class="block font-sans text-s mt-3xs text-content/60">SaaS platform for AI agent governance and compliance monitoring. I cofounded it.</span>
+				</a>
+				<a href="/games/globle" class="block group p-s border border-content/15 hover:border-blue/40">
+					<span class="text-m text-content underline underline-offset-2 decoration-content/40 group-hover:text-blue group-hover:decoration-blue">Globle</span>
+					<span class="block font-sans text-s mt-3xs text-content/60">Guess the mystery country. A daily geography game on a 3D globe.</span>
+				</a>
+			</div>
 			if len(projects) > 0 {
 				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Projects</h2>
 				<ol id="projects-list" class="flex flex-col mt-s">
@@ -121,26 +133,36 @@ templ (p Home) View(posts []internal.Post) {
 }
 
 templ listRowView(row listRow) {
-	<a
-		href={ templ.URL(row.Href) }
-		class="flex items-baseline group gap-xs py-3xs"
-		if row.OnClick != "" {
-			data-on:click__prevent={ row.OnClick }
-		}
-	>
-		<span class="font-mono tabular-nums text-content/60 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
-		<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
-			<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-content/15"></span>
-			<span class="relative flex-1 min-w-0">
-				<span class="bg-base box-decoration-clone pr-2xs-xs group-hover:text-blue">
-					{ row.Title }
-					if row.Suffix != "" {
-						{ " " }
-						<span class="text-content/60">{ row.Suffix }</span>
-					}
-				</span>
+	if row.Href != "" {
+		<a
+			href={ templ.URL(row.Href) }
+			class="flex items-baseline group gap-xs py-3xs"
+			if row.OnClick != "" {
+				data-on:click__prevent={ row.OnClick }
+			}
+		>
+			@listRowInner(row)
+		</a>
+	} else {
+		<div class="flex items-baseline group gap-xs py-3xs">
+			@listRowInner(row)
+		</div>
+	}
+}
+
+templ listRowInner(row listRow) {
+	<span class="font-mono tabular-nums text-content/60 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
+	<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
+		<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-content/15"></span>
+		<span class="relative flex-1 min-w-0">
+			<span class={ "bg-base box-decoration-clone pr-2xs-xs", templ.KV("group-hover:text-blue", row.Href != "") }>
+				{ row.Title }
+				if row.Suffix != "" {
+					{ " " }
+					<span class="text-content/60">{ row.Suffix }</span>
+				}
 			</span>
-			<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
 		</span>
-	</a>
+		<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
+	</span>
 }

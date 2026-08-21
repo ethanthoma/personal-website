@@ -71,6 +71,23 @@
     addEventListener("datastar-patch-elements", syncDetailsToHash);
     syncDetailsToHash();
 
+    // Email address is kept out of the served HTML to foil static scrapers;
+    // assemble the mailto here, re-running after each fragment swap.
+    function hydrateEmails() {
+        document.querySelectorAll("a[data-email-user]").forEach((a) => {
+            const { emailUser, emailDomain } = a.dataset;
+            if (emailUser && emailDomain) {
+                a.href = `mailto:${emailUser}@${emailDomain}`;
+            }
+        });
+    }
+    addEventListener("datastar-patch-elements", hydrateEmails);
+    if (document.readyState === "loading") {
+        addEventListener("DOMContentLoaded", hydrateEmails);
+    } else {
+        hydrateEmails();
+    }
+
     document.addEventListener("click", (e) => {
         const btn = e.target?.closest?.("#show-all-posts, #show-all-projects");
         if (!btn) return;
