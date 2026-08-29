@@ -16,6 +16,12 @@ type PostNeighbor struct {
 }
 
 templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
+	{{
+		bodyOffset := "mt-l"
+		if post.TLDR != "" {
+			bodyOffset = "mt-m"
+		}
+	}}
 	@layouts.Base{
 		Title:       "Ethan Thoma / " + post.Title,
 		Description: post.TLDR,
@@ -40,7 +46,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 				</div>
 			</header>
 			if post.TLDR != "" {
-				<aside class="mt-m">
+				<aside class="mt-l">
 					<div class="flex items-center gap-xs">
 						<span class="font-mono font-medium uppercase tracking-wider text-content/60 text-s">tldr</span>
 						<span class="flex-1 h-px bg-content/15"></span>
@@ -49,7 +55,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 				</aside>
 			}
 			@templ.Raw("<style>" + highlight.CSS + "</style>")
-			<div class="content mt-m">
+			<div class={ "content", bodyOffset }>
 				@templ.Raw(post.HTML)
 			</div>
 			if older != nil || newer != nil {
