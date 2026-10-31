@@ -1,6 +1,9 @@
 package pages
 
-import "personal-website/services/webserver/layouts"
+import (
+	"personal-website/services/webserver/components"
+	"personal-website/services/webserver/layouts"
+)
 
 type NotFound struct {
 	Path string
@@ -11,21 +14,20 @@ templ (p NotFound) View() {
 		Title: "Ethan Thoma / Not Found",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
-				<h1 class="font-bold leading-none text-l">Not found</h1>
-				<p class="leading-none text-l text-content/60">404</p>
-			</header>
-			<p class="font-sans mt-l text-m">
-				The router checked <code class="font-mono">{ p.Path }</code>. It's not here.
-			</p>
-			<p class="font-sans mt-s text-m">
-				Head{ " " }
-				<a
-					class="underline underline-offset-2 decoration-content/40 hover:decoration-content"
-					href="/home"
-					data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
-				>home</a>.
-			</p>
+			@components.PageHeader{
+				Title:   "Not found",
+				Tagline: "404",
+			}.View() {
+				<p>The router checked <code class="font-mono">{ p.Path }</code>. It's not here.</p>
+				<p>
+					Head{ " " }
+					<a
+						class="underline underline-offset-2 decoration-content/40 hover:decoration-content"
+						href="/home"
+						data-on:click__prevent="goTo('/home'); @get('/fragment/home')"
+					>home</a>.
+				</p>
+			}
 		</article>
 	}
 }

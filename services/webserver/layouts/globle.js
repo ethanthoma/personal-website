@@ -404,7 +404,7 @@
             .map((c) => (c === target ? "🟩" : squareFor(distanceKm(c))))
             .join("");
         const date = new Date(utcMidnight()).toISOString().slice(0, 10);
-        return `Globle ${date}\n${squares}\nGuessed in ${guesses.length}\n${location.origin}/games/globle`;
+        return `Globle ${date}\n${squares}\nGuessed in ${guesses.length}\n${location.origin}/tools/globle`;
     }
 
     function loadStats() {

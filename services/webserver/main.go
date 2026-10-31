@@ -32,10 +32,17 @@ func main() {
 	http.HandleFunc("GET /{$}", homeHandler)
 	http.HandleFunc("GET /home", homeHandler)
 	http.HandleFunc("GET /post/{slug}", postHandler)
-	http.HandleFunc("GET /games", gamesHandler)
-	http.HandleFunc("GET /games/{slug}", gameHandler)
+	http.HandleFunc("GET /tools", toolsHandler)
+	http.HandleFunc("GET /tools/{slug}", toolHandler)
 	http.HandleFunc("GET /rss.xml", rssHandler)
 	http.HandleFunc("GET /sitemap.xml", sitemapHandler)
+
+	http.HandleFunc("GET /games", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/tools", http.StatusMovedPermanently)
+	})
+	http.HandleFunc("GET /games/{slug}", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/tools/"+r.PathValue("slug"), http.StatusMovedPermanently)
+	})
 
 	retiredPathsNowOnHome := []string{"/blog", "/projects", "/sitemap", "/resources"}
 	for _, p := range retiredPathsNowOnHome {
@@ -46,7 +53,7 @@ func main() {
 
 	http.HandleFunc("GET /fragment/home", asFragment(homeHandler))
 	http.HandleFunc("GET /fragment/post/{slug}", asFragment(postHandler))
-	http.HandleFunc("GET /fragment/games", asFragment(gamesHandler))
+	http.HandleFunc("GET /fragment/tools", asFragment(toolsHandler))
 
 	http.HandleFunc("GET /", notFoundHandler)
 	http.Handle("GET /public/", static.Handler())

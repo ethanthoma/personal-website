@@ -33,16 +33,19 @@ func asFragment(h http.HandlerFunc) http.HandlerFunc {
 		titleEnd := strings.Index(body, "</title>") + len("</title>")
 		mainStart := strings.Index(body[titleEnd:], "<main") + titleEnd
 
-		writePatch(w, "#doc-title", body[:titleEnd])
-		writePatch(w, "#main", body[mainStart:])
+		writePatch(w, "#doc-title", body[:titleEnd], false)
+		writePatch(w, "#main", body[mainStart:], true)
 	}
 }
 
 // Hand-rolled: the datastar Go SDK's NewSSE panics against the buffering middleware and forces no-cache.
 // Datastar's SSE parser splits each `data:` line on the first space, so every HTML line is re-prefixed with `elements `.
-func writePatch(w http.ResponseWriter, selector, html string) {
+func writePatch(w http.ResponseWriter, selector, html string, useViewTransition bool) {
 	fmt.Fprint(w, "event: datastar-patch-elements\n")
 	fmt.Fprintf(w, "data: selector %s\n", selector)
+	if useViewTransition {
+		fmt.Fprint(w, "data: useViewTransition true\n")
+	}
 	for _, line := range strings.Split(html, "\n") {
 		fmt.Fprintf(w, "data: elements %s\n", line)
 	}

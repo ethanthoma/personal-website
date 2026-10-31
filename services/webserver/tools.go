@@ -7,18 +7,23 @@ import (
 	"personal-website/services/webserver/static"
 )
 
-var gameCards = []pages.GameCard{
-	{Slug: "globle", Title: "Globle", Blurb: "Guess the mystery country. Warmer is closer."},
+var toolCards = []pages.ToolCard{
+	{
+		Slug:     "globle",
+		Title:    "Globle",
+		Blurb:    "Guess the mystery country. Warmer is closer.",
+		Category: "Play",
+	},
 }
 
-func gamesHandler(w http.ResponseWriter, r *http.Request) {
+func toolsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", pageCacheControl)
-	pages.Games{}.View(gameCards).Render(r.Context(), w)
+	pages.Tools{}.View(toolCards).Render(r.Context(), w)
 }
 
-// Games are standalone client-side apps, so they full-page load (no SSE fragment nav):
+// Tools are standalone client-side apps, so they full-page load (no SSE fragment nav):
 // datastar patches inject the shell's inline <script> without executing it.
-func gameHandler(w http.ResponseWriter, r *http.Request) {
+func toolHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.PathValue("slug") {
 	case "globle":
 		w.Header().Set("Cache-Control", pageCacheControl)

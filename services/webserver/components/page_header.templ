@@ -1,0 +1,50 @@
+package components
+
+type Breadcrumb struct {
+	Label       string
+	Href        string
+	HasFragment bool
+}
+
+type PageHeader struct {
+	Title       string
+	Breadcrumbs []Breadcrumb
+	Tagline     string
+	TaglineHref string
+}
+
+templ (p PageHeader) View() {
+	<header class="flex flex-col gap-2xs">
+		if len(p.Breadcrumbs) > 0 {
+			<nav aria-label="Breadcrumb" class="flex flex-wrap items-baseline gap-x-3xs text-s leading-none text-content/60">
+				for index, crumb := range p.Breadcrumbs {
+					if index > 0 {
+						<span aria-hidden="true" class="text-content/40">/</span>
+					}
+					<a
+						href={ templ.URL(crumb.Href) }
+						class="hover:text-blue"
+						if crumb.HasFragment {
+							data-on:click__prevent={ "goTo('" + crumb.Href + "'); @get('/fragment" + crumb.Href + "')" }
+						}
+					>{ crumb.Label }</a>
+				}
+			</nav>
+		}
+		<div class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
+			<h1 class="font-mono font-bold leading-none text-xl text-content">{ p.Title }</h1>
+			if p.Tagline != "" {
+				<p class="leading-none text-content/60">
+					if p.TaglineHref != "" {
+						<a class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue" href={ templ.URL(p.TaglineHref) }>{ p.Tagline }</a>
+					} else {
+						{ p.Tagline }
+					}
+				</p>
+			}
+		</div>
+	</header>
+	<div class="mt-l font-sans text-m leading-[1.7] text-content space-y-s">
+		{ children... }
+	</div>
+}

@@ -39,9 +39,13 @@
           devshells.default = {
             packages = [
               pkgs.air
+              pkgs.curl
+              pkgs.findutils
               pkgs.turso-cli
               pkgs.gcc
               pkgs.gopls
+              pkgs.iproute2
+              pkgs.procps
               pkgs.tailwindcss_4
               pkgs.tailwindcss-language-server
               templpkgs
@@ -58,6 +62,7 @@
               pkgs.google-lighthouse
               pkgs.chromium
               pkgs.jq
+              pkgs.rsync
               pythonFonttools
             ];
 

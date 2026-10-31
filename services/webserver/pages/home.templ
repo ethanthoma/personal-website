@@ -3,6 +3,7 @@ package pages
 import (
 	"fmt"
 	"personal-website/internal"
+	"personal-website/services/webserver/components"
 	"personal-website/services/webserver/layouts"
 	"slices"
 	"sort"
@@ -21,7 +22,7 @@ type listRow struct {
 	OnClick string
 }
 
-const homeListLimit = 6
+const homeListLimit = 3
 
 templ (p Home) View(posts []internal.Post) {
 	{{
@@ -35,37 +36,67 @@ templ (p Home) View(posts []internal.Post) {
 		URL:   "/home",
 	}.View() {
 		<article class="row-start-1 col-[2/-2]">
-			<header class="flex flex-wrap justify-between items-baseline gap-x-s gap-y-2xs">
-				<h1 class="font-bold leading-none text-l">Ethan Thoma</h1>
-				<p class="leading-none text-content/60">Cofounder @ <a class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue" href="https://gentrail.ai">gentrail.ai</a></p>
-			</header>
-			<p class="font-sans mt-l text-m">
-				I work on machine learning, mainly natural language processing and
-				reinforcement learning, with a focus on explainability. I write mostly
-				Python, Gleam, Zig, Odin, and Nix.
-			</p>
-			<p class="font-sans mt-s text-m">
-				<a
-					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
-					data-email-user="ethanthoma"
-					data-email-domain="gmail.com"
-				>Send me an email</a>, or{ " " }
-				<a
-					class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
-					href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
-				>read my resume</a>.
-			</p>
+			@components.PageHeader{
+				Title:       "Ethan Thoma",
+				Tagline:     "Cofounder @ gentrail.ai",
+				TaglineHref: "https://gentrail.ai",
+			}.View() {
+				<p>
+					I work on machine learning, mainly natural language processing and
+					reinforcement learning, with a focus on explainability. I write mostly
+					Python, Gleam, Zig, Odin, and Nix.
+				</p>
+				<p>
+					<a
+						class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
+						data-email-user="ethanthoma"
+						data-email-domain="gmail.com"
+					>Send me an email</a>, or{ " " }
+					<a
+						class="underline underline-offset-2 decoration-content/40 hover:text-blue hover:decoration-blue"
+						href="https://raw.githubusercontent.com/ethanthoma/personal-website/main/docs/Resume.pdf"
+					>read my resume</a>.
+				</p>
+			}
 			<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Featured</h2>
 			<div class="grid sm:grid-cols-2 gap-xs mt-2xs">
 				<a href="https://gentrail.ai" class="block group p-s border border-content/15 hover:border-blue/40">
 					<span class="text-m text-content underline underline-offset-2 decoration-content/40 group-hover:text-blue group-hover:decoration-blue">gentrail.ai</span>
-					<span class="block font-sans text-s mt-3xs text-content/60">SaaS platform for AI agent governance and compliance monitoring. I cofounded it.</span>
+					<span class="block font-sans text-s mt-3xs text-content/60">Self-hosted platform for AI agent governance and compliance monitoring. I cofounded it.</span>
 				</a>
-				<a href="/games/globle" class="block group p-s border border-content/15 hover:border-blue/40">
+				<a href="/tools/globle" class="block group p-s border border-content/15 hover:border-blue/40">
 					<span class="text-m text-content underline underline-offset-2 decoration-content/40 group-hover:text-blue group-hover:decoration-blue">Globle</span>
 					<span class="block font-sans text-s mt-3xs text-content/60">Guess the mystery country. A daily geography game on a 3D globe.</span>
 				</a>
 			</div>
+			if len(posts) > 0 {
+				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Writing</h2>
+				<ol id="posts-list" class="flex flex-col mt-2xs">
+					for index, post := range posts {
+						<li
+							if index >= homeListLimit {
+								hidden
+							}
+						>
+							@listRowView(listRow{
+								Href:    "/post/" + post.Slug,
+								Index:   index,
+								Total:   len(posts),
+								Title:   post.Title,
+								Date:    post.Date,
+								OnClick: "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')",
+							})
+						</li>
+					}
+				</ol>
+				if len(posts) > homeListLimit {
+					<button
+						id="show-all-posts"
+						type="button"
+						class="font-sans text-s cursor-pointer py-3xs text-content/50 hover:text-content/80"
+					>{ fmt.Sprintf("Show all %d posts", len(posts)) }</button>
+				}
+			}
 			if len(projects) > 0 {
 				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Projects</h2>
 				<ol id="projects-list" class="flex flex-col mt-2xs">
@@ -100,34 +131,6 @@ templ (p Home) View(posts []internal.Post) {
 					>{ fmt.Sprintf("Show all %d projects", len(projects)) }</button>
 				}
 			}
-			if len(posts) > 0 {
-				<h2 class="font-medium uppercase tracking-wider mt-l text-s text-content/60">Writing</h2>
-				<ol id="posts-list" class="flex flex-col mt-2xs">
-					for index, post := range posts {
-						<li
-							if index >= homeListLimit {
-								hidden
-							}
-						>
-							@listRowView(listRow{
-								Href:    "/post/" + post.Slug,
-								Index:   index,
-								Total:   len(posts),
-								Title:   post.Title,
-								Date:    post.Date,
-								OnClick: "goTo('/post/" + post.Slug + "'); @get('/fragment/post/" + post.Slug + "')",
-							})
-						</li>
-					}
-				</ol>
-				if len(posts) > homeListLimit {
-					<button
-						id="show-all-posts"
-						type="button"
-						class="font-sans text-s cursor-pointer py-3xs text-content/50 hover:text-content/80"
-					>{ fmt.Sprintf("Show all %d posts", len(posts)) }</button>
-				}
-			}
 		</article>
 	}
 }
@@ -152,10 +155,10 @@ templ listRowView(row listRow) {
 
 templ listRowInner(row listRow) {
 	<span class="font-mono tabular-nums text-content/60 shrink-0">{ fmt.Sprintf("%03d", row.Total-row.Index-1) }</span>
-	<span class="flex relative flex-1 items-baseline min-w-0 gap-xs">
-		<span class="absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-content/15"></span>
-		<span class="relative flex-1 min-w-0">
-			<span class={ "bg-base box-decoration-clone pr-2xs-xs", templ.KV("group-hover:text-blue", row.Href != "") }>
+	<span class="flex flex-col relative flex-1 items-start sm:flex-row sm:items-baseline min-w-0 gap-3xs sm:gap-xs">
+		<span class="hidden sm:block absolute inset-x-0 h-px top-[calc(0.5lh-0.5px)] bg-content/15"></span>
+		<span class="relative w-full sm:w-auto sm:flex-1 min-w-0">
+			<span class={ "bg-base box-decoration-clone sm:pr-2xs-xs", templ.KV("group-hover:text-blue", row.Href != "") }>
 				{ row.Title }
 				if row.Suffix != "" {
 					{ " " }
@@ -163,6 +166,6 @@ templ listRowInner(row listRow) {
 				}
 			</span>
 		</span>
-		<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
+		<span class="relative tabular-nums shrink-0 bg-base box-decoration-clone sm:pl-2xs-xs text-content/60"><time datetime={ row.Date.Format("2006-01-02") }>{ row.Date.Format("2006-01-02") }</time></span>
 	</span>
 }

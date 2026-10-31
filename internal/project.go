@@ -3,15 +3,17 @@ package internal
 import "time"
 
 type Project struct {
-	Title, Url string
-	Date       time.Time
-	WIP        bool
+	Title string
+	Url   string
+	Date  time.Time
+	WIP   bool
 }
 
 var Projects = []Project{
 	{
 		Date:  time.Date(2026, 8, 18, 0, 0, 0, 0, time.Local),
-		Title: "Bronze Age grand-strategy game in Bevy",
+		Title: "Crowns Adrift: roguelike city builder",
+		Url:   "https://holyfurries.com/games/crowns-adrift",
 		WIP:   true,
 	},
 	{

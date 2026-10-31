@@ -23,7 +23,7 @@ var (
 	headingAnchorRe            = regexp.MustCompile(`(?s)<(h[23]) id="([^"]+)">(.*?)</h[23]>`)
 )
 
-// Cacheable HTML pages (home, posts, games) carry no per-visitor data; s-maxage tracks the 5m
+// Cacheable HTML pages (home, posts, tools) carry no per-visitor data; s-maxage tracks the 5m
 // post cache. DEV serves no-store so the browser never holds a stale inlined globle.js/spa.js.
 var pageCacheControl = func() string {
 	if os.Getenv("DEV") == "1" {

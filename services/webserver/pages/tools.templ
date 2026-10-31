@@ -1,0 +1,44 @@
+package pages
+
+import (
+	"personal-website/services/webserver/components"
+	"personal-website/services/webserver/layouts"
+)
+
+type Tools struct{}
+
+type ToolCard struct {
+	Slug     string
+	Title    string
+	Blurb    string
+	Category string
+}
+
+templ (p Tools) View(cards []ToolCard) {
+	@layouts.Base{
+		Title:       "Ethan Thoma / Tools",
+		Description: "Small browser tools and daily games.",
+		URL:         "/tools",
+	}.View() {
+		<article class="row-start-1 col-[2/-2]">
+			@components.PageHeader{
+				Title:       "Tools",
+				Breadcrumbs: []components.Breadcrumb{{Label: "Home", Href: "/home", HasFragment: true}},
+				Tagline:     "Useful things, kept local",
+			}.View() {
+				<p>Small utilities and experiments that run in your browser.</p>
+			}
+			<ol class="flex flex-col mt-l gap-xs">
+				for _, card := range cards {
+					<li>
+						<a href={ templ.URL("/tools/" + card.Slug) } class="block group py-2xs">
+							<span class="font-mono uppercase tracking-wider text-s text-content/50">{ card.Category }</span>
+							<span class="block text-m text-content group-hover:text-blue mt-3xs">{ card.Title }</span>
+							<span class="block font-sans text-content/60 mt-3xs">{ card.Blurb }</span>
+						</a>
+					</li>
+				}
+			</ol>
+		</article>
+	}
+}

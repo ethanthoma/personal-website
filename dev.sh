@@ -101,7 +101,7 @@ tailwindcss \
 #    Go watcher for :8080 on every static-asset change.
 air \
     --build.cmd "rsync -a ./services/webserver/public/ ./public --exclude='*.css' && curl -sf http://localhost:${PROXY_PORT}/_templ/reload > /dev/null 2>&1 || true" \
-    --build.entrypoint "$(which true)" \
+    --build.entrypoint "$(command -v true)" \
     --build.include_dir "services/webserver/public" \
     --build.include_ext "js,css,svg,png,jpg,ico,woff,woff2,ttf,json" \
     --build.exclude_dir "tmp" \
