@@ -8,11 +8,13 @@ import (
 
 type ImageEditor struct{}
 
-const editorButtonClass = "flex min-h-11 min-w-11 items-center justify-center gap-2xs px-2xs py-2xs font-mono text-s cursor-pointer text-content hover:bg-lightblue hover:text-blue focus-visible:outline-2 disabled:bg-transparent disabled:text-content disabled:opacity-40 disabled:cursor-not-allowed @min-[56rem]:min-h-0 @min-[56rem]:min-w-0 @min-[56rem]:justify-start @min-[72rem]:px-3xs"
+const editorButtonBaseClass = "flex min-h-11 min-w-11 items-center justify-center gap-2xs px-2xs py-2xs font-mono text-s cursor-pointer text-content hover:bg-lightblue hover:text-blue focus-visible:outline-2 disabled:bg-transparent disabled:text-content disabled:opacity-40 disabled:cursor-not-allowed @min-[56rem]:min-h-0 @min-[56rem]:min-w-0 @min-[72rem]:px-3xs"
+
+const editorButtonClass = editorButtonBaseClass + " @min-[56rem]:justify-start"
 
 const editorToggleButtonClass = editorButtonClass + " aria-pressed:bg-blue aria-pressed:text-base aria-pressed:hover:bg-darkblue aria-pressed:hover:text-base"
 
-const editorIconButtonClass = editorButtonClass + " @min-[56rem]:size-8 @min-[56rem]:justify-center @min-[56rem]:gap-0 @min-[56rem]:px-0"
+const editorIconButtonClass = editorButtonBaseClass + " @min-[56rem]:size-8 @min-[56rem]:gap-0 @min-[56rem]:px-0"
 
 const editorIconToggleButtonClass = editorIconButtonClass + " aria-pressed:bg-blue aria-pressed:text-base aria-pressed:hover:bg-darkblue aria-pressed:hover:text-base"
 
@@ -32,7 +34,7 @@ const editorControlSideClass = "flex min-w-0 flex-wrap items-center gap-3xs @max
 
 const editorControlTrailingClass = "ms-auto flex min-w-0 flex-wrap items-center gap-3xs @max-[56rem]:flex-nowrap"
 
-const editorNumberInputClass = "h-7 w-14 border-0 border-b border-content/25 bg-transparent px-3xs text-right font-mono text-s tabular-nums text-content focus:border-blue focus:outline-none disabled:opacity-35"
+const editorNumberInputClass = "h-7 w-20 border-0 border-b border-content/25 bg-transparent px-3xs text-right font-mono text-s tabular-nums text-content focus:border-blue focus:outline-none disabled:opacity-35"
 
 const editorLayerActionClass = "flex size-11 items-center justify-center p-2xs font-mono text-s cursor-pointer text-content/60 hover:bg-lightblue hover:text-blue focus-visible:outline-2 disabled:bg-transparent disabled:text-content disabled:opacity-30 disabled:cursor-not-allowed @min-[36rem]:size-10 @min-[56rem]:size-8"
 
