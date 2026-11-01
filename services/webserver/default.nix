@@ -46,6 +46,7 @@ buildGoApplication rec {
 
     mkdir -p $static/js
     cp ${datastar} $static/js/datastar.js
+    cp $public/js/image-editor-selection-worker.js $static/js/
 
     UNICODES='U+0020-007E,U+00A0-00FF,U+2010-206F,U+2190-21FF'
     FEATURES='kern,liga,calt,ccmp,locl'

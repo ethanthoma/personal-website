@@ -4,6 +4,7 @@
 @import "tailwindcss/preflight.css" layer(base);
 
 @source "../**/*.templ";
+@source "../layouts/image_editor.js";
 
 @theme {
     /* https://utopia.fyi/type/calculator/?c=320,16,1.25,1240,18,1.25,5,2,&s=0.75%7C0.5%7C0.25,1.5%7C2%7C3%7C4%7C6%7C8%7C11%7C15%7C19,3xs-xs%7C2xs-s%7Cxs-m%7Cs-l%7Cm-xl%7Cl-2xl%7Cxl-3xl%7C2xl-4xl%7C3xl-5xl%7C4xl-6xl%7C5xl-6xl%7C6xl-7xl&g=s,l,xl,12 */
@@ -50,7 +51,7 @@
     --spacing-2xs-xs: clamp(0.5rem, 0.3043rem + 0.9783vw, 1.0625rem);
     --spacing-xs-xl: clamp(0.75rem, -0.4239rem + 5.8696vw, 4.125rem);
 
-    --spacing-content: 48rem;
+    --spacing-content: 56rem;
 
     /* Font */
     --font-mono:
@@ -62,6 +63,62 @@
 * {
     @apply focus-visible:outline-blue;
     @apply focus-visible:outline-offset-4;
+}
+
+.editor-range {
+    appearance: none;
+    height: 1rem;
+    background: transparent;
+    cursor: pointer;
+
+    &::-webkit-slider-runnable-track {
+        height: 2px;
+        background: var(--color-content);
+    }
+
+    &::-webkit-slider-thumb {
+        appearance: none;
+        width: 0.5rem;
+        height: 0.875rem;
+        margin-top: -0.375rem;
+        border: 1px solid var(--color-content);
+        background: var(--color-blue);
+        box-shadow: 0 0 0 2px var(--color-base);
+    }
+
+    &::-moz-range-track {
+        height: 2px;
+        background: var(--color-content);
+    }
+
+    &::-moz-range-thumb {
+        width: 0.5rem;
+        height: 0.875rem;
+        border: 1px solid var(--color-content);
+        border-radius: 0;
+        background: var(--color-blue);
+        box-shadow: 0 0 0 2px var(--color-base);
+    }
+
+    &:hover::-webkit-slider-thumb {
+        background: var(--color-orange);
+    }
+
+    &:hover::-moz-range-thumb {
+        background: var(--color-orange);
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+        background: var(--color-orange);
+    }
+
+    &:focus-visible::-moz-range-thumb {
+        background: var(--color-orange);
+    }
+}
+
+#image-editor-root[data-interactive="false"] #editor-toolbar {
+    transition: none;
 }
 
 body {
@@ -168,7 +225,6 @@ body {
     }
 
     & p {
-        max-width: 65ch;
         @apply font-sans;
         @apply tracking-normal;
         @apply text-m;
@@ -218,7 +274,6 @@ body {
 
     & ul,
     & ol {
-        max-width: 65ch;
         @apply list-outside;
         @apply list-disc;
         @apply ps-m;

@@ -47,7 +47,7 @@ templ (p Post) View(post internal.Post, older, newer *PostNeighbor) {
 						<span class="font-mono font-medium uppercase tracking-wider text-content/60 text-s">tldr</span>
 						<span class="flex-1 h-px bg-content/15"></span>
 					</div>
-					<p class="font-sans italic text-m text-content/60 mt-2xs max-w-[65ch] leading-relaxed">{ post.TLDR }</p>
+					<p class="font-sans italic text-m text-content/60 mt-2xs leading-relaxed">{ post.TLDR }</p>
 				</aside>
 			}
 			@templ.Raw("<style>" + highlight.CSS + "</style>")

@@ -22,6 +22,12 @@
         nav.replaying = false;
     });
 
+    addEventListener("pageswap", (event) => {
+        if (event.activation?.navigationType === "reload") {
+            event.viewTransition?.skipTransition();
+        }
+    });
+
     // On fragment-fetch failure, full-page nav to the URL so the user gets fresh content, not stale DOM.
     document.addEventListener("datastar-fetch", (evt) => {
         const t = evt.detail?.type;
