@@ -117,8 +117,27 @@
     }
 }
 
-#image-editor-root[data-interactive="false"] #editor-toolbar {
-    transition: none;
+@container (width < 56rem) {
+    .editor-canvas-stage {
+        container-type: size;
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: var(--spacing-2xs);
+        background: color-mix(
+            in oklab,
+            var(--color-content) 5%,
+            var(--color-base)
+        );
+    }
+
+    .editor-canvas-stage > .editor-canvas-fit {
+        width: min(100cqw, calc(100cqh * var(--canvas-aspect)));
+        max-width: 100%;
+    }
 }
 
 body {

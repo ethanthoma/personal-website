@@ -2,8 +2,6 @@
     const root = document.getElementById("image-editor-root");
     if (!root) return;
 
-    const toolbar = document.getElementById("editor-toolbar");
-    const workspace = document.getElementById("editor-workspace");
     const canvas = document.getElementById("editor-canvas");
     const dropZone = document.getElementById("editor-drop-zone");
     const status = document.getElementById("editor-status");
@@ -15,6 +13,9 @@
     const copyLabel = document.getElementById("editor-copy-label");
     const layerList = document.getElementById("editor-layer-list");
     const layerCount = document.getElementById("editor-layer-count");
+    const layerPanel = document.getElementById("editor-layers");
+    const layerBackdrop = document.getElementById("editor-layer-backdrop");
+    const layerCloseButton = document.getElementById("editor-layer-close");
     const layerRowTemplate = document.getElementById(
         "editor-layer-row-template",
     );
@@ -59,6 +60,16 @@
     const layerReadout = document.getElementById("editor-layer-readout");
     const cursorReadout = document.getElementById("editor-cursor-readout");
     const historyReadout = document.getElementById("editor-history-readout");
+    const mobileAddButton = document.getElementById("editor-mobile-add");
+    const emptyState = document.getElementById("editor-empty-state");
+    const emptyAddButton = document.getElementById("editor-empty-add");
+    const mobileLayersButton = document.getElementById("editor-mobile-layers");
+    const mobileCopyButton = document.getElementById("editor-mobile-copy");
+    const mobileLayerCount = document.getElementById(
+        "editor-mobile-layer-count",
+    );
+    const mobileMode = document.getElementById("editor-mobile-mode");
+    const mobileLayer = document.getElementById("editor-mobile-layer");
     const selectGroup = document.getElementById("editor-select-group");
     const selectSummary = document.getElementById("editor-select-summary");
     const selectXInput = document.getElementById("editor-select-x");
@@ -125,6 +136,18 @@
 
     function setStatus(message) {
         status.textContent = message;
+    }
+
+    function setLayerSheetOpen(open) {
+        layerPanel.dataset.sheetOpen = String(open);
+        layerBackdrop.hidden = !open;
+        mobileLayersButton.setAttribute("aria-expanded", String(open));
+        if (open) setColorPickerOpen(false);
+    }
+
+    function toolLabel(tool) {
+        if (tool === "wand") return "Magic wand";
+        return tool.charAt(0).toUpperCase() + tool.slice(1);
     }
 
     function activeBoard() {
@@ -323,6 +346,7 @@
         undoButton.disabled = board.history.length === 0;
         clearButton.disabled = !hasInk;
         copyButton.disabled = !state.ready;
+        mobileCopyButton.disabled = !state.ready;
         selectSummary.textContent = selectedImage
             ? `${selectedImage.name} · ${Math.round(selectedImage.width)} × ${Math.round(selectedImage.height)} · drag to move`
             : layer
@@ -334,6 +358,8 @@
         copyLabel.textContent = copyLabelText;
         copyButton.setAttribute("aria-label", copyLabelText);
         copyButton.title = copyLabelText;
+        mobileCopyButton.setAttribute("aria-label", copyLabelText);
+        mobileCopyButton.title = copyLabelText;
         fillButton.disabled = !hasSelection || !layer?.visible;
         clearSelectionButton.disabled = !hasSelection;
         const selectedIndex = layer ? board.layers.indexOf(layer) : -1;
@@ -342,10 +368,21 @@
             selectedIndex < 0 || selectedIndex === board.layers.length - 1;
         layerDuplicateButton.disabled = !layer;
         layerDeleteButton.disabled = !layer;
+        emptyState.hidden = board.layers.length > 0 || state.tool !== "select";
+        mobileLayerCount.hidden = board.layers.length === 0;
+        mobileLayersButton.setAttribute(
+            "aria-label",
+            board.layers.length === 0
+                ? "Open layers"
+                : `Open layers, ${board.layers.length} total`,
+        );
         modeReadout.textContent = state.tool.toUpperCase();
+        mobileMode.textContent = toolLabel(state.tool);
         frameReadout.textContent = `${board.width} × ${board.height}`;
         layerReadout.textContent = layer ? layer.name : "—";
         layerReadout.title = layer ? layer.name : "No active layer";
+        mobileLayer.textContent = layer ? layer.name : "No layer";
+        mobileLayer.title = layer ? layer.name : "No active layer";
         historyReadout.textContent = String(board.history.length).padStart(
             2,
             "0",
@@ -565,6 +602,7 @@
     }
 
     function setColorPickerOpen(open) {
+        if (open) setLayerSheetOpen(false);
         colorPopover.hidden = !open;
         colorToggle.setAttribute("aria-expanded", String(open));
         if (open) drawColorPicker();
@@ -1102,6 +1140,7 @@
         }
 
         layerCount.textContent = String(board.layers.length).padStart(2, "0");
+        mobileLayerCount.textContent = String(board.layers.length);
         if (board.layers.length === 0) {
             rows.append(
                 layerEmptyTemplate.content.firstElementChild.cloneNode(true),
@@ -1928,6 +1967,7 @@
         board.activeLayerId = layer.id;
         state.draftStroke = null;
         state.imageInteraction = null;
+        setLayerSheetOpen(false);
         updateControls();
         render();
         setStatus(
@@ -2453,6 +2493,10 @@
             canvas.width = board.width;
             canvas.height = board.height;
             dropZone.style.aspectRatio = `${board.width} / ${board.height}`;
+            dropZone.style.setProperty(
+                "--canvas-aspect",
+                String(board.width / board.height),
+            );
             state.ready = true;
             updateControls();
             render();
@@ -2462,14 +2506,6 @@
                 "This browser could not initialize a 2D canvas for the editor.",
             );
         }
-    }
-
-    function markEditorInteractive() {
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                root.dataset.interactive = "true";
-            });
-        });
     }
 
     window.addEventListener("paste", (event) => {
@@ -2527,6 +2563,14 @@
     undoButton.addEventListener("click", undo);
     clearButton.addEventListener("click", clearDrawing);
     copyButton.addEventListener("click", () => void copyImage());
+    mobileAddButton.addEventListener("click", () => fileInput.click());
+    emptyAddButton.addEventListener("click", () => fileInput.click());
+    mobileCopyButton.addEventListener("click", () => void copyImage());
+    mobileLayersButton.addEventListener("click", () => {
+        setLayerSheetOpen(layerPanel.dataset.sheetOpen !== "true");
+    });
+    layerBackdrop.addEventListener("click", () => setLayerSheetOpen(false));
+    layerCloseButton.addEventListener("click", () => setLayerSheetOpen(false));
     fillButton.addEventListener("click", fillSelection);
     clearSelectionButton.addEventListener("click", clearSelection);
     layerList.addEventListener("click", (event) => {
@@ -2733,6 +2777,12 @@
                 target instanceof HTMLSelectElement);
         if (editing) return;
 
+        if (event.key === "Escape" && layerPanel.dataset.sheetOpen === "true") {
+            event.preventDefault();
+            setLayerSheetOpen(false);
+            return;
+        }
+
         if (event.key === "Escape") {
             const board = activeBoard();
             if (board?.selection) {
@@ -2779,13 +2829,6 @@
     updateWidthLabel();
     updateToleranceLabel();
     setInkColor(colorInput.value);
-    const editorDockObserver = new IntersectionObserver(
-        ([entry]) => {
-            toolbar.dataset.dockVisible = String(entry.isIntersecting);
-        },
-        { threshold: 0.01 },
-    );
-    editorDockObserver.observe(workspace);
     initialization = initializeEditor();
-    void initialization.finally(markEditorInteractive);
+    void initialization;
 })();
